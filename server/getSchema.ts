@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 
 const getSchema = async (req: Request, res: Response, _next: NextFunction) => {
-  const fetchModule = await import ('node-fetch');
-  const fetch = fetchModule.default; 
+  const fetchModule = await import('node-fetch');
+  const fetch = fetchModule.default;
   const query = `
   query IntrospectionQuery {
     __schema {
@@ -104,17 +104,18 @@ const getSchema = async (req: Request, res: Response, _next: NextFunction) => {
     const response = await fetch(API, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/graphql',
       },
-      body: JSON.stringify({ query }),
+      body: query,
     });
-    type DataType = {
-      details: Record<string, any>;
-    };
-    //this part is in the works- figuring how to break them up with types/might get ride of ts 
-    const obj: DataType = await response.json();
-    console.log(obj.data.__schema.types);
-    
+    // type DataType = {
+    //   details: Record<string, any>;
+    // };
+    console.log('response: ', response);
+    //this part is in the works- figuring how to break them up with types/might get rid of ts
+    const obj: any = await response.json();
+    console.log('obj: ', obj.data.__schema.types);
+
     res.sendStatus(200);
   } catch (err) {
     console.log('getSchema middleware', err);
