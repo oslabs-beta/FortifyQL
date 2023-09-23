@@ -40,3 +40,75 @@
 .read-the-docs {
   color: #888;
 }
+
+#textbox {
+  height: 35px;
+  width: 170%;
+  font-size: 14pt;
+
+}
+
+.switch {
+  /* display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  margin-right: 200px;
+  width: 100px;
+  padding: 20%; */
+
+  position: relative;
+  display: inline-block;
+  width: 100px;
+  height: 50px;
+  margin: 0 10px;
+  
+}
+/* 
+.checkbox {
+
+  display: flex;
+  flex-direction: row;
+  
+} */
+
+.tests {
+  display: flex;
+  flex-direction: row-reverse;
+  
+}
+
+.slider {
+
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: .4s;
+  border-radius: 34px;
+  background-color: grey;
+
+}
+
+.switch input {display: none} 
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 45px;
+  width: 45px;
+  left: 5px;
+  top: 2px;
+  background-color: whitesmoke;
+  transition: 0.4s;
+  border-radius: 50px;
+}
+
+input:checked + .slider {
+  background-color: #7902cf;
+}
+
+input:checked + .slider:before {
+  transform: translateX(50px);
+}
