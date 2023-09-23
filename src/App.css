@@ -43,42 +43,29 @@
 
 #textbox {
   height: 35px;
-  width: 170%;
+  width: 100%;
   font-size: 14pt;
-
+  margin: 20px;
 }
 
 .switch {
-  /* display: flex;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-  margin-right: 200px;
-  width: 100px;
-  padding: 20%; */
-
   position: relative;
   display: inline-block;
-  width: 100px;
-  height: 50px;
+  width: 80px;
+  height: 40px;
   margin: 0 10px;
+  margin: 15px;
   
 }
-/* 
-.checkbox {
-
-  display: flex;
-  flex-direction: row;
-  
-} */
 
 .tests {
   display: flex;
   flex-direction: row-reverse;
-  
+  float: left;
+  vertical-align: middle;
 }
 
 .slider {
-
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -96,13 +83,13 @@
 .slider:before {
   position: absolute;
   content: '';
-  height: 45px;
-  width: 45px;
-  left: 5px;
+  height: 35px;
+  width: 35px;
+  left: 3px;
   top: 2px;
   background-color: whitesmoke;
   transition: 0.4s;
-  border-radius: 50px;
+  border-radius: 40px;
 }
 
 input:checked + .slider {
@@ -110,5 +97,23 @@ input:checked + .slider {
 }
 
 input:checked + .slider:before {
-  transform: translateX(50px);
+  transform: translateX(38px);
+}
+
+button {
+  float: right;
+  margin: 50px;
+}
+
+.text {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 20px;
+}
+
+.checkbox {
+  height: auto;
 }
