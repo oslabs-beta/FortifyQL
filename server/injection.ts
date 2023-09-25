@@ -45,43 +45,12 @@ export const injection: InjectionType = {
             "') OR ('1'='1"
         ];
 
-        // const getFieldsForType = (typeName: string, visitedTypes: Set<string> = new Set(), memo: Map<string, string> = new Map()): string => {
-        //     if (visitedTypes.has(typeName)) {
-        //         return '';
-        //     }
-            
-        //     if (memo.has(typeName)) {
-        //         return memo.get(typeName)!; 
-        //     }
-        
-        //     visitedTypes.add(typeName);
-        
-        //     const type = schema.__schema.types.find((t: GraphQLType) => t.name === typeName);
-        //     if (type && type.fields) {
-        //         const result = type.fields
-        //             .filter(field => field.type.kind === 'SCALAR')
-        //             .map(field => field.name)
-        //             .slice(0, 1)
-        //             .map(fieldName => `${fieldName} ${getFieldsForType(type.name, visitedTypes, memo)}`)
-        //             .join(' ');
-                    
-        //         memo.set(typeName, result); 
-        //         return result;
-        //     }
-        
-        //     return '';
-        // };
-          
-
         const generateQuery = (field : GraphQLField, input: string, type: string) => {
             const queryName = type === 'queryType' ? 'query' : 'mutation';
             const args = field.args
             ?.filter(arg => arg.type?.kind === 'SCALAR' && arg.type?.name === 'String')
             .map(arg => `${arg.name}: "${input}"`)
             .join(', ') || '';
-            
-            // const typeName = field.type.name;
-            // const fields = typeName ? getFieldsForType(typeName) : '';
 
             return `${queryName} { ${field.name}(${args}) }`;
         }
