@@ -1,4 +1,4 @@
-#root {
+/* #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -39,7 +39,7 @@
 
 .read-the-docs {
   color: #888;
-}
+} */
 
 #textbox {
   height: 35px;
@@ -55,7 +55,6 @@
   height: 40px;
   margin: 0 10px;
   margin: 15px;
-  
 }
 
 .tests {
@@ -72,13 +71,14 @@
   left: 0;
   right: 0;
   bottom: 0;
-  transition: .4s;
+  transition: 0.4s;
   border-radius: 34px;
   background-color: grey;
-
 }
 
-.switch input {display: none} 
+.switch input {
+  display: none;
+}
 
 .slider:before {
   position: absolute;
