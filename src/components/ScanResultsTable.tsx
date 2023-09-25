@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, GridApi } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { ITestResult } from '../interfaces/results';
@@ -12,6 +12,9 @@ interface IResultsTableProps {
 const ScanResultsTable: React.FC<IResultsTableProps> = ({
   resultsData: results,
 }) => {
+  // State to store the AG Grid API
+  const [gridApi, setGridApi] = useState<GridApi | null>(null);
+
   const colDefs: ColDef[] = [
     { headerName: 'Test ID', field: 'id' },
     { field: 'status', headerTooltip: 'Pending / Pass / Fail' },
@@ -32,13 +35,29 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
     [],
   );
 
+  // Function to handle exporting data to CSV
+  const handleExportCSV = () => {
+    if (gridApi) {
+      const params = {
+        fileName: 'test-results.csv',
+        columnSeparator: ',',
+      };
+      gridApi.exportDataAsCsv(params);
+    }
+  };
+
   return (
     <div className='ag-theme-alpine' style={{ height: '400px', width: '100%' }}>
+      <h2>Security Scan Results</h2>
+      <div className='export-container'>
+        <button onClick={handleExportCSV}>Export to CSV</button>
+      </div>
       <AgGridReact
         columnDefs={colDefs}
         rowData={results}
         defaultColDef={defaultColDef}
         domLayout='autoHeight'
+        onGridReady={(params) => setGridApi(params.api)}
       />
     </div>
   );
