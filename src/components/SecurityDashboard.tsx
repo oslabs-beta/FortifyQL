@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import ScanConfigForm from './ScanConfigForm';
+import ScanConfigForm from './ScanConfigForm';
 import ScanResultsTable from './ScanResultsTable';
 import testData from './scanTestData.json';
 import { ITestResult } from '../interfaces/results';
