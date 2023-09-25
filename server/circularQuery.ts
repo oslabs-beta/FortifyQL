@@ -69,3 +69,80 @@ const circularQuery = async (req: Request, res: Response, _next: NextFunction) =
 };
 
 export default circularQuery;
+
+// import { Request, Response, NextFunction, RequestHandler } from 'express';
+
+// type InjectionType = {
+//     generateQuery: RequestHandler
+//     attack: RequestHandler
+// }
+// interface GraphQLType {
+//     name: string
+//     kind:string
+//     fields?: GraphQLField[]
+// }
+// interface GraphQLField {
+//     name: string
+//     args?: GraphQLArgs[]
+//     type: GraphQLTypeReference
+// }
+// interface GraphQLArgs {
+//     name: string
+//     type?: GraphQLTypeReference
+// }
+// interface GraphQLTypeReference {
+//     kind: string
+//     name?: string
+//     ofType?: GraphQLTypeReference
+//     fields?: GraphQLField[]
+// }
+
+// export const injection: InjectionType = {
+//     generateQuery: async (req: Request, res: Response, _next: NextFunction) => {
+//         const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types;
+
+//         const SQLInputs = [
+//             "OR 1=1",
+//             "' OR '1'='1",
+//             "--",
+//             "';--",
+//             "') OR ('1'='1"
+//         ];
+
+//         const generateSubFields = (type: GraphQLTypeReference): string => {
+//             return type.fields ? type.fields.map(subField => subField.name).join('') : '';
+//             const args = field.args?.map(arg => `${arg.name}: "${input}"`).join(', ') ?? '';
+//             const subFields = field.type.ofType ? generateSubFields(field.type.ofType) : '';
+//             return `${operationType} { ${field.name}(${args}) { ${subFields} } }`;
+//         }
+//         }
+
+//         const generateQuery = (field : GraphQLField, input: string) => {
+//             const subFields = field.type.ofType ? generateSubFields(field.type.ofType) : '';
+//             return `${field.name}(${input}) { ${subFields} }`;
+//         }
+
+//         const arrOfQueries: string[] = [];
+
+//         for (const typeName of ['queryType', 'mutationType']) {
+//             const name: string | null = res.locals.schema.data.__schema[typeName]?.name; 
+//             if(!name) continue;
+
+//             const types: GraphQLType | undefined = schemaTypes.find(type => type.name === name);
+//             if(!types?.fields) continue;
+
+//             for(const field of types.fields) {
+//                 for (const input of SQLInputs){
+//                     const query = generateQuery(field, input);
+//                     arrOfQueries.push(query);
+//                 }
+//             }
+//         }
+
+//         console.log(arrOfQueries)
+//         res.status(200).json(arrOfQueries)
+//     },
+//     attack: async (req: Request, res: Response, next: NextFunction) => {
+
+//     }
+// }
