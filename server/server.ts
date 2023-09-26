@@ -11,7 +11,7 @@ import { injection } from './injection.ts';
 import injectionAttack from './injectionAttack.ts';
 import verboseError from './verboseError.ts';
 import circularQuery from './circularQuery.ts';
-import dashboard from './dashboard';
+import dashboard from './dashboard.ts';
 
 // Use cors
 server.use(cors());

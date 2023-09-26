@@ -98,13 +98,16 @@ fragment TypeRef on __Type {
       body: query,
     });
     const result: any = await response.json();
-    res.locals.schema = result; 
-    console.log('Retrieved Schema...')
-    console.log(result)
-    res.status(200).json(result)
+    res.locals.schema = result;
+    console.log('Retrieved Schema...');
+    console.log(result);
+    return next();
+    // res.status(200).json(result)
   } catch (err) {
     console.log('getSchema middleware', err);
-    res.status(400).json('Unable to retrieve schema, please turn introspection on ');
+    res
+      .status(400)
+      .json('Unable to retrieve schema, please turn introspection on ');
   }
 };
 
