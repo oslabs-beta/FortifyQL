@@ -25,7 +25,7 @@ server.use((req, _res, next) => {
   return next();
 });
 //PATHS
-server.use('/scan', getSchema, injection.generateQuery);
+server.use('/scan', getSchema, injection.generateQueries, injection.attack);
 server.use('/inject', injectionAttack);
 server.use('/error', verboseError);
 server.use('/circular', circularQuery);

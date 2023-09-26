@@ -99,6 +99,7 @@ fragment TypeRef on __Type {
     });
     const result: any = await response.json();
     res.locals.schema = result; 
+    console.log('Retrieved Schema...')
     return next()
   } catch (err) {
     console.log('getSchema middleware', err);

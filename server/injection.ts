@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 
 type InjectionType = {
-    generateQuery: RequestHandler
+    generateQueries: RequestHandler
     attack: RequestHandler
 }
 interface Schema {
@@ -20,6 +20,7 @@ interface GraphQLField {
     name: string
     args?: GraphQLArgs[]
     type: GraphQLTypeReference
+    fields?: GraphQLField
 }
 interface GraphQLArgs {
     name: string
@@ -33,9 +34,10 @@ interface GraphQLTypeReference {
 }
 
 export const injection: InjectionType = {
-    generateQuery: async (req: Request, res: Response, _next: NextFunction) => {
-        const schema: Schema = res.locals.schema.data;
-        const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types;
+    generateQueries: async (req: Request, res: Response, next: NextFunction) => {
+        console.log('Generating SQL Injection Queries...')
+        // const schema: Schema = res.locals.schema.data;
+        const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types
 
         const SQLInputs = [
             "OR 1=1",
@@ -45,15 +47,39 @@ export const injection: InjectionType = {
             "') OR ('1'='1"
         ];
 
-        const generateQuery = (field : GraphQLField, input: string, type: string) => {
-            const queryName = type === 'queryType' ? 'query' : 'mutation';
+        const getBaseType = (type: GraphQLTypeReference): string => {
+            let curr = type;
+            while(curr.ofType){
+                curr = curr.ofType;
+            }
+            return curr.name || '';
+        }
+
+        const getSubFields = (type: GraphQLType | GraphQLTypeReference, depth: number = 0, maxDepth: number = 1): string => {
+            if(!type.fields || depth > maxDepth) return '';
+            return `{ ${type.fields
+                .filter(field => {
+                  const baseTypeName = getBaseType(field.type);
+                  const baseType = schemaTypes.find(t => t.name === baseTypeName);
+                  return !baseType?.fields;
+                })
+                .map(field => field.name)
+                .join(' ')} }`;
+        }
+
+        const generateQuery = (field : GraphQLField, input: string, QueryType: string) => {
+            const queryName = QueryType === 'queryType' ? 'query' : 'mutation';
             const args = field.args
             ?.filter(arg => arg.type?.kind === 'SCALAR' && arg.type?.name === 'String')
             .map(arg => `${arg.name}: "${input}"`)
             .join(', ') || '';
 
-            return `${queryName} { ${field.name}(${args}) }`;
-        }
+            const baseTypeName = field.type ? getBaseType(field.type) : '';
+            const baseType = schemaTypes.find(type => type.name === baseTypeName);
+            const subFields = baseType ? getSubFields(baseType) : '';
+
+            return `${queryName} { ${field.name}(${args}) ${subFields} }`;
+        };
 
         const arrOfQueries: string[] = [];
 
@@ -73,11 +99,39 @@ export const injection: InjectionType = {
                 }
             }
         }
+        res.locals.SQLQueries = arrOfQueries;
+        console.log('Generated Queries...')
 
-        console.log(arrOfQueries)
-        res.status(200).json(schema)
+        return next();
     },
-    attack: async (_req: Request, _res: Response, _next: NextFunction) => {
+    attack: async (req: Request, res: Response, next: NextFunction) => {
+        const result = [];
+        const API: string = req.body.API;
+        const sendReqAndEvaluate = async (query: string) => {
+            try {
+              const sendDate = Date.now();
+              const response = await fetch(API, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/graphql',
+                },
+                body: query,
+              });
+              const obj = await response.json();
+              return obj 
+            } catch (err) {
+                console.log(err)
+            }
+          
+            //evaluate response
+          };
+          //loop here
+          const query = res.locals.SQLQueries[0]
+          console.log(query)
+          const response = await sendReqAndEvaluate(query);
+          console.log(response)
+          res.status(200).json(response)
 
-    }
+          //return result
+        }
 }
