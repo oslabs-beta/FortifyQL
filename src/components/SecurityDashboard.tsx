@@ -6,7 +6,10 @@ import { ITestResult } from '../interfaces/results';
 
 const SecurityDashboard: React.FC = () => {
   const [scanResults, setScanResults] = useState<ITestResult[]>(testData);
+  // Test Result Table loading state
   const [loading, setLoading] = useState(false);
+  // Form visibility state
+  const [showConfigForm, setShowConfigForm] = useState(true);
 
   const handleScanSubmit = async (
     endpoint: string,
@@ -16,7 +19,7 @@ const SecurityDashboard: React.FC = () => {
 
     try {
       const response = await fetch(
-        `YOUR_MIDDLEWARE_ENDPOINT?endpoint=${endpoint}&tests=${selectedTests.join(
+        `MIDDLEWARE_ENDPOINT?endpoint=${endpoint}&tests=${selectedTests.join(
           ',',
         )}`,
       );
@@ -31,19 +34,24 @@ const SecurityDashboard: React.FC = () => {
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
+      setShowConfigForm(false); // Hide the config form after submitting
     }
   };
 
   return (
-    <div className='dashboard-container'>
-      <h2 className='dashboard-title'>Security Dashboard</h2>
-      {/* <ScanConfigForm onSubmit={handleScanSubmit} /> */}
-      {/* {loading ? (
-        <p>Loading...</p>
+    <div className='dashboard__container'>
+      <h2 className='dashboard__header'>Security Dashboard</h2>
+      {showConfigForm ? (
+        <ScanConfigForm />
       ) : (
-        <ScanResultsTable scanResultData={testData} />
-      )} */}
-
+        <div>
+          {/* {loading ? (
+            <p>Loading...</p>
+            ) : (
+              <ScanResultsTable resultsData={scanResults} />
+            )} */}
+        </div>
+      )}
       <ScanResultsTable resultsData={scanResults} />
     </div>
   );
