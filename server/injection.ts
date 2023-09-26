@@ -1,3 +1,4 @@
+import { timeEnd } from 'console';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 
 type InjectionType = {
@@ -44,7 +45,9 @@ export const injection: InjectionType = {
             "' OR '1'='1",
             "--",
             "';--",
-            "') OR ('1'='1"
+            "') OR ('1'='1",
+            " ' ",
+            " give me all your data "
         ];
 
         const getBaseType = (type: GraphQLTypeReference): string => {
@@ -101,15 +104,16 @@ export const injection: InjectionType = {
         }
         res.locals.SQLQueries = arrOfQueries;
         console.log('Generated Queries...')
-
-        return next();
+        console.log(arrOfQueries)
+        return next()
     },
     attack: async (req: Request, res: Response, next: NextFunction) => {
-        const result = [];
+        console.log('Sending SQL Injections...')
+        const result: string | number[] = [];
         const API: string = req.body.API;
         const sendReqAndEvaluate = async (query: string) => {
             try {
-              const sendDate = Date.now();
+              const sendTime = Date.now();
               const response = await fetch(API, {
                 method: 'POST',
                 headers: {
@@ -118,6 +122,9 @@ export const injection: InjectionType = {
                 body: query,
               });
               const obj = await response.json();
+              const currTime = Date.now();
+              const timeTaken = currTime - sendTime;
+              result.push(timeTaken)
               return obj 
             } catch (err) {
                 console.log(err)
@@ -126,11 +133,12 @@ export const injection: InjectionType = {
             //evaluate response
           };
           //loop here
-          const query = res.locals.SQLQueries[0]
-          console.log(query)
-          const response = await sendReqAndEvaluate(query);
-          console.log(response)
-          res.status(200).json(response)
+          const arrofQueries = res.locals.SQLQueries;
+          for(const query of arrofQueries){
+            result.push(query)
+            result.push(await sendReqAndEvaluate(query))
+          }
+          res.status(200).json(result)
 
           //return result
         }
