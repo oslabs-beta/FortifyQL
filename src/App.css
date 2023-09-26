@@ -77,9 +77,16 @@ input:checked + .slider:before {
   transform: translateX(38px);
 }
 
-button {
-  float: right;
-  margin: 50px;
+#select_all_button {
+  float: left;
+  margin: 30px;
+  margin-left: 10px;
+}
+
+#submit_button {
+  float: left;
+  margin: 30px;
+  margin-left: .5px;
 }
 
 .text {
