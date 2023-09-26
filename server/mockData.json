@@ -1,5 +1,5 @@
 {
-  "Injection Scan": {
+  "injection-scan": {
     "id": 1,
     "status": "Pass",
     "title": "Injection Scan",
@@ -8,7 +8,7 @@
     "testDuration": "03:52",
     "lastDetected": "21 Sept 2023"
   },
-  "Denial of Service (DoS) Scan": {
+  "DoS-scan": {
     "id": 2,
     "status": "Fail",
     "title": "Denial of Service (DoS) Scan",
@@ -17,7 +17,7 @@
     "testDuration": "03:52",
     "lastDetected": "21 Sept 2023"
   },
-  "Authorization Configuration Scan": {
+  "authorization-scan": {
     "id": 3,
     "status": "Pending",
     "title": "Authorization Configuration Scan",
@@ -26,7 +26,7 @@
     "testDuration": "03:52",
     "lastDetected": "21 Sept 2023"
   },
-  "Batching Scan": {
+  "batching-scan": {
     "id": 4,
     "status": "Fail",
     "title": "Batching Scan",
@@ -35,7 +35,7 @@
     "testDuration": "03:52",
     "lastDetected": "21 Sept 2023"
   },
-  "Introspection Scan": {
+  "introspection-scan": {
     "id": 5,
     "status": "Pass",
     "title": "Introspection Scan",

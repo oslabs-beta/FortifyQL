@@ -7,10 +7,12 @@ import { ITestResult } from '../interfaces/results';
 
 interface IResultsTableProps {
   resultsData: ITestResult[];
+  handleDisplayTestConfig: () => void;
 }
 
 const ScanResultsTable: React.FC<IResultsTableProps> = ({
-  resultsData: results,
+  resultsData,
+  handleDisplayTestConfig,
 }) => {
   // State to store the AG Grid API
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
@@ -54,11 +56,17 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
       >
         <h2 className='results-table__header'>Security Scan Results</h2>
         <div className='results-table-export__container'>
+          <button
+            className='dashboard-test-config__button'
+            onClick={handleDisplayTestConfig}
+          >
+            Back to Test Configuration
+          </button>
           <button onClick={handleExportCSV}>Export to CSV</button>
         </div>
         <AgGridReact
           columnDefs={colDefs}
-          rowData={results}
+          rowData={resultsData}
           defaultColDef={defaultColDef}
           domLayout='autoHeight'
           onGridReady={(params) => setGridApi(params.api)}
