@@ -10,6 +10,7 @@ import getSchema from './getSchema';
 import injectionAttack from './injectionAttack';
 import verboseError from './verboseError';
 import circularQuery from './circularQuery';
+import dashboard from './dashboard';
 
 // Use cors
 server.use(cors());
@@ -24,6 +25,9 @@ server.use((req, _res, next) => {
   return next();
 });
 //PATHS
+server.use('/test', dashboard, (req, res, _next) => {
+  res.json(res.locals.dashboard);
+});
 server.use('/scan', getSchema);
 server.use('/inject', injectionAttack);
 server.use('/error', verboseError);
@@ -38,16 +42,18 @@ interface CustomError {
   };
 }
 
-server.use((err: CustomError, _req: Request, res: Response, _next: NextFunction) => {
-  const defaultErr = {
-    log: 'Express error handler caught unknown middleware error',
-    status: 500,
-    message: { err: 'An error occurred' },
-  };
+server.use(
+  (err: CustomError, _req: Request, res: Response, _next: NextFunction) => {
+    const defaultErr = {
+      log: 'Express error handler caught unknown middleware error',
+      status: 500,
+      message: { err: 'An error occurred' },
+    };
 
-  const errorObj = { ...defaultErr, ...err };
-  console.log(errorObj.log);
-  return res.status(errorObj.status).json(errorObj.message);
-});
+    const errorObj = { ...defaultErr, ...err };
+    console.log(errorObj.log);
+    return res.status(errorObj.status).json(errorObj.message);
+  },
+);
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
