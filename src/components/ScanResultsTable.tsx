@@ -47,18 +47,23 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
   };
 
   return (
-    <div className='ag-theme-alpine' style={{ height: '400px', width: '100%' }}>
-      <h2>Security Scan Results</h2>
-      <div className='export-container'>
-        <button onClick={handleExportCSV}>Export to CSV</button>
+    <div className='results-table__container'>
+      <div
+        className='ag-theme-alpine'
+        style={{ height: '400px', width: '100%' }}
+      >
+        <h2 className='results-table__header'>Security Scan Results</h2>
+        <div className='results-table-export__container'>
+          <button onClick={handleExportCSV}>Export to CSV</button>
+        </div>
+        <AgGridReact
+          columnDefs={colDefs}
+          rowData={results}
+          defaultColDef={defaultColDef}
+          domLayout='autoHeight'
+          onGridReady={(params) => setGridApi(params.api)}
+        />
       </div>
-      <AgGridReact
-        columnDefs={colDefs}
-        rowData={results}
-        defaultColDef={defaultColDef}
-        domLayout='autoHeight'
-        onGridReady={(params) => setGridApi(params.api)}
-      />
     </div>
   );
 };
