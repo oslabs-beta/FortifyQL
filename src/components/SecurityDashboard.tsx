@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import ScanConfigForm from './ScanConfigForm';
 import ScanResultsTable from './ScanResultsTable';
-import testData from './scanTestData.json';
+// import testData from './scanTestData.json';
 import { ITestResult } from '../interfaces/results';
 
 const SecurityDashboard: React.FC = () => {
-  const [scanResults, setScanResults] = useState<ITestResult[]>(testData);
+  const [scanResults, setScanResults] = useState<ITestResult[]>([]);
   // Test Result Table loading state
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   // Form visibility state
-  const [showConfigForm, setShowConfigForm] = useState(true);
+  const [showConfigForm, setShowConfigForm] = useState<boolean>(true);
 
   const handleScanSubmit = async (
     endpoint: string,
@@ -18,17 +18,25 @@ const SecurityDashboard: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `MIDDLEWARE_ENDPOINT?endpoint=${endpoint}&tests=${selectedTests.join(
-          ',',
-        )}`,
-      );
+      const requestBody = JSON.stringify({
+        API: endpoint,
+        tests: selectedTests,
+      });
+
+      const response = await fetch('/api/test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: requestBody,
+      });
 
       if (!response.ok) {
-        throw new Error('');
+        throw new Error('test api response error occurred');
       }
 
       const data = await response.json();
+
       setScanResults(data); // Update scanResults with the received data
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -38,21 +46,28 @@ const SecurityDashboard: React.FC = () => {
     }
   };
 
+  const handleDisplayTestConfig = () => {
+    setShowConfigForm(true);
+  };
+
   return (
     <div className='dashboard__container'>
       <h2 className='dashboard__header'>Security Dashboard</h2>
+
       {showConfigForm ? (
-        <ScanConfigForm />
+        <ScanConfigForm onScanSubmit={handleScanSubmit} />
       ) : (
         <div>
-          {/* {loading ? (
+          {loading ? (
             <p>Loading...</p>
-            ) : (
-              <ScanResultsTable resultsData={scanResults} />
-            )} */}
+          ) : (
+            <ScanResultsTable
+              resultsData={scanResults}
+              handleDisplayTestConfig={handleDisplayTestConfig}
+            />
+          )}
         </div>
       )}
-      <ScanResultsTable resultsData={scanResults} />
     </div>
   );
 };
