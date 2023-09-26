@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 
 const injectionAttack = async (req: Request, res: Response, _next: NextFunction) => {
   const fetchModule = await import('node-fetch');
@@ -10,7 +10,6 @@ const injectionAttack = async (req: Request, res: Response, _next: NextFunction)
         title
         }
     }`;
-
   try {
     console.log('entered scan');
     const API = req.body.API;

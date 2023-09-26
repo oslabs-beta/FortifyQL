@@ -6,10 +6,11 @@ const server = express();
 const PORT = 3000;
 
 // REQUIRED ROUTES && MIDDLEWARE
-import getSchema from './getSchema';
-import injectionAttack from './injectionAttack';
-import verboseError from './verboseError';
-import circularQuery from './circularQuery';
+import getSchema from './getSchema.ts';
+import { injection } from './injection.ts';
+import injectionAttack from './injectionAttack.ts';
+import verboseError from './verboseError.ts';
+import circularQuery from './circularQuery.ts';
 
 // Use cors
 server.use(cors());
@@ -24,7 +25,7 @@ server.use((req, _res, next) => {
   return next();
 });
 //PATHS
-server.use('/scan', getSchema);
+server.use('/scan', getSchema, injection.generateQueries, injection.attack);
 server.use('/inject', injectionAttack);
 server.use('/error', verboseError);
 server.use('/circular', circularQuery);
