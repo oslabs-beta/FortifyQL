@@ -41,13 +41,20 @@ export const injection: InjectionType = {
         const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types
 
         const SQLInputs = [
+            // Boolean Based SQL Injection
             "OR 1=1",
             "' OR '1'='1",
-            "--",
-            "';--",
             "') OR ('1'='1",
-            " ' ",
-            " give me all your data "
+        
+            // Error Based SQL Injection
+            "'",
+            "';",
+            "--",
+        
+            // Time-Based Blind SQL Injection
+            "OR IF(1=1, SLEEP(5), 0)", // MySQL, MariaDB
+            "OR pg_sleep(5)", // PostgreSQL
+            "OR 1=(SELECT 1 FROM (SELECT SLEEP(5))A)", // Another example for MySQL
         ];
 
         const getBaseType = (type: GraphQLTypeReference): string => {
@@ -108,35 +115,77 @@ export const injection: InjectionType = {
         return next()
     },
     attack: async (req: Request, res: Response, next: NextFunction) => {
-        console.log('Sending SQL Injections...')
-        const result: string | number[] = [];
+        console.log('Sending SQL Injections...');
+        
+        interface QueryResult {
+            ID : number
+            Status: string
+            Title: string
+            Description: string
+            Severity: string | number
+            TestDuration: string | number
+            LastDetected: string | number
+        }
+        
+        const titles = {
+            booleanBased: 'Boolean Based SQL Injection',
+            errorBased: 'Error Based SQL Injection',
+            timeBased: 'Time-Based Blind SQL Injection',
+        };
+
+        const result: any[] = [];
         const API: string = req.body.API;
+        let ID: number = 1;
+
+
         const sendReqAndEvaluate = async (query: string) => {
             try {
+                const queryResult: QueryResult = {
+                    ID: ID++,
+                    Status: 'Pass',
+                    Title: '',
+                    Description: '',
+                    Severity: 'P1',
+                    TestDuration: '',
+                    LastDetected: '',
+                };
+
               const sendTime = Date.now();
-              const response = await fetch(API, {
+              
+              const data = await fetch(API, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/graphql',
                 },
                 body: query,
               });
-              const obj = await response.json();
+
+              const response = await data.json();
               const currTime = Date.now();
               const timeTaken = currTime - sendTime;
-              result.push(timeTaken)
-              return obj 
+              queryResult.Description = query;
+              queryResult.TestDuration = `${timeTaken} ms`
+              queryResult.LastDetected = currTime
+
+              if(query.includes("OR 1=1") || query.includes("OR '1'='1")){
+                queryResult.Title = titles.booleanBased;
+                if(response.data) queryResult.Status = "Fail";
+              }else if (query.includes(" ' ") || query.includes(";") || query.includes('--')){
+                queryResult.Title = titles.errorBased;
+                if(response.errors) queryResult.Status = "Fail";
+              }else if (query.toLowerCase().includes("sleep")){
+                queryResult.Title = titles.timeBased
+                if(timeTaken > 5000) queryResult.Status = "Fail";
+              }
+              result.push(queryResult)
             } catch (err) {
                 console.log(err)
             }
-          
             //evaluate response
           };
-          //loop here
           const arrofQueries = res.locals.SQLQueries;
           for(const query of arrofQueries){
-            result.push(query)
-            result.push(await sendReqAndEvaluate(query))
+            await sendReqAndEvaluate(query)
           }
           res.status(200).json(result)
 
