@@ -114,7 +114,7 @@ export const injection: InjectionType = {
         console.log(arrOfQueries)
         return next()
     },
-    attack: async (req: Request, res: Response, next: NextFunction) => {
+    attack: async (req: Request, res: Response, _next: NextFunction) => {
         console.log('Sending SQL Injections...');
         
         interface QueryResult {
@@ -133,7 +133,7 @@ export const injection: InjectionType = {
             timeBased: 'Time-Based Blind SQL Injection',
         };
 
-        const result: any[] = [];
+        const result: QueryResult[] = [];
         const API: string = req.body.API;
         let ID: number = 1;
 
@@ -158,37 +158,39 @@ export const injection: InjectionType = {
                   'Content-Type': 'application/graphql',
                 },
                 body: query,
-              });
+              }).catch(err => console.log(err))
+
+              if(!data) return;
 
               const response = await data.json();
-              const currTime = Date.now();
-              const timeTaken = currTime - sendTime;
+              const timeTaken = Date.now() - sendTime;
               queryResult.Description = query;
               queryResult.TestDuration = `${timeTaken} ms`
-              queryResult.LastDetected = currTime
+              queryResult.LastDetected = `${new Date().toLocaleTimeString('en-GB')} - ${new Date().toLocaleDateString('en-GB').split('/').reverse().join('-')}`;
 
-              if(query.includes("OR 1=1") || query.includes("OR '1'='1")){
+              if(query.includes("OR 1=1") || query.includes("'1'='1")){
                 queryResult.Title = titles.booleanBased;
-                if(response.data) queryResult.Status = "Fail";
-              }else if (query.includes(" ' ") || query.includes(";") || query.includes('--')){
+                if(response.data && response.data.length > 1) queryResult.Status = "Fail";
+              }else if (query.includes("'") || query.includes(";") || query.includes('--')){
+                const sqlErrorKeywords = ['syntax error', 'unexpected', 'mysql_fetch', 'invalid query'];
                 queryResult.Title = titles.errorBased;
-                if(response.errors) queryResult.Status = "Fail";
+                if(response.errors && response.errors.some((error: {message: string}) => sqlErrorKeywords.some(keyword => error.message.toLowerCase().includes(keyword)))) {
+                    queryResult.Status = "Fail";
+                }
               }else if (query.toLowerCase().includes("sleep")){
                 queryResult.Title = titles.timeBased
                 if(timeTaken > 5000) queryResult.Status = "Fail";
               }
               result.push(queryResult)
+              result.push(response)
             } catch (err) {
                 console.log(err)
             }
-            //evaluate response
           };
           const arrofQueries = res.locals.SQLQueries;
           for(const query of arrofQueries){
             await sendReqAndEvaluate(query)
           }
-          res.status(200).json(result)
-
-          //return result
+          res.status(200).json(result);
         }
 }
