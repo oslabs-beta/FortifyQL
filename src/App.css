@@ -1,42 +1,96 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.dashboard__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 20px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.input_form {
+  width: 100%; /* Occupy full width of the container */
+  max-width: 400px; /* Limit the maximum width */
+  margin-bottom: 20px; /* Add space below the form */
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#textbox {
+  height: 35px;
+  width: 100%;
+  font-size: 14pt;
+  margin: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 40px;
+  margin: 0 10px;
+  margin: 15px;
 }
 
-.card {
-  padding: 2em;
+.tests {
+  display: flex;
+  flex-direction: row-reverse;
+  float: left;
+  vertical-align: middle;
 }
 
-.read-the-docs {
-  color: #888;
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.4s;
+  border-radius: 34px;
+  background-color: grey;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 35px;
+  width: 35px;
+  left: 3px;
+  top: 2px;
+  background-color: whitesmoke;
+  transition: 0.4s;
+  border-radius: 40px;
+}
+
+input:checked + .slider {
+  background-color: #7902cf;
+}
+
+input:checked + .slider:before {
+  transform: translateX(38px);
+}
+
+#select_all_button {
+  float: left;
+  margin: 30px;
+  margin-left: 10px;
+}
+
+#submit_button {
+  float: left;
+  margin: 30px;
+  margin-left: 0.5px;
+}
+
+.text {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 20px;
+}
+
+.checkbox {
+  height: auto;
 }
