@@ -16,13 +16,18 @@
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "dependencies": {
+    "ag-grid-community": "^30.1.0",
+    "ag-grid-react": "^30.1.0",
     "cors": "^2.8.5",
     "eslint-config-airbnb-typescript": "^17.1.0",
     "eslint-plugin": "^1.0.1",
     "express": "^4.18.2",
+    "fs": "^0.0.1-security",
     "node-fetch": "^3.3.2",
+    "path": "^0.12.7",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "url": "^0.11.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.14",

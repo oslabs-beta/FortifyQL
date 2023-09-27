@@ -11,6 +11,7 @@ import { injection } from './injection.ts';
 import injectionAttack from './injectionAttack.ts';
 import verboseError from './verboseError.ts';
 import circularQuery from './circularQuery.ts';
+import dashboard from './dashboard.ts';
 
 // Use cors
 server.use(cors());
@@ -21,10 +22,13 @@ server.use(express.json());
 
 //GLOBAL ROUTE CHECK
 server.use((req, _res, next) => {
-  console.log('Request recieved', req.method, req.path, req.body);
+  console.log('Request received', req.method, req.path, req.body);
   return next();
 });
 //PATHS
+server.use('/api/test', dashboard, (req, res, _next) => {
+  res.json(res.locals.dashboard);
+});
 server.use('/scan', getSchema, injection.generateQueries, injection.attack);
 server.use('/inject', injectionAttack);
 server.use('/error', verboseError);
@@ -39,16 +43,18 @@ interface CustomError {
   };
 }
 
-server.use((err: CustomError, _req: Request, res: Response, _next: NextFunction) => {
-  const defaultErr = {
-    log: 'Express error handler caught unknown middleware error',
-    status: 500,
-    message: { err: 'An error occurred' },
-  };
+server.use(
+  (err: CustomError, _req: Request, res: Response, _next: NextFunction) => {
+    const defaultErr = {
+      log: 'Express error handler caught unknown middleware error',
+      status: 500,
+      message: { err: 'An error occurred' },
+    };
 
-  const errorObj = { ...defaultErr, ...err };
-  console.log(errorObj.log);
-  return res.status(errorObj.status).json(errorObj.message);
-});
+    const errorObj = { ...defaultErr, ...err };
+    console.log(errorObj.log);
+    return res.status(errorObj.status).json(errorObj.message);
+  },
+);
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
