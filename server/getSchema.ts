@@ -101,7 +101,8 @@ fragment TypeRef on __Type {
     res.locals.schema = result;
     console.log('Retrieved Schema...');
     console.log(result);
-    res.status(200).json(result);
+    // res.status(200).json(result);
+    return next();
   } catch (err) {
     console.log('getSchema middleware', err);
     res

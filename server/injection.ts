@@ -41,13 +41,21 @@ export const injection: InjectionType = {
     const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types;
 
     const SQLInputs = [
-      'OR 1=1',
-      "' OR '1'='1",
-      '--',
-      "';--",
-      "') OR ('1'='1",
+      // Boolean Based SQL Injection
       " ' ",
-      ' give me all your data ',
+      " 'OR 1=1-- ",
+      "' OR '1'='1",
+      "') OR ('1'='1",
+
+      // Error Based SQL Injection
+      "'",
+      "';",
+      '--',
+
+      // Time-Based Blind SQL Injection
+      "'OR IF(1=1, SLEEP(5), 0)", // MySQL, MariaDB
+      "'OR pg_sleep(5)", // PostgreSQL
+      "'OR 1=(SELECT 1 FROM (SELECT SLEEP(5))A)", // Another example for MySQL
     ];
 
     const getBaseType = (type: GraphQLTypeReference): string => {
@@ -126,39 +134,119 @@ export const injection: InjectionType = {
     console.log(arrOfQueries);
     return next();
   },
-  attack: async (req: Request, res: Response, next: NextFunction) => {
+  attack: async (req: Request, res: Response, _next: NextFunction) => {
     console.log('Sending SQL Injections...');
-    const result: string | number[] = [];
+
+    interface QueryResult {
+      ID: number;
+      Status: string;
+      Title: string;
+      Description: string;
+      Severity: string | number;
+      TestDuration: string | number;
+      LastDetected: string | number;
+    }
+
+    const titles = {
+      booleanBased: 'Boolean Based SQL Injection',
+      errorBased: 'Error Based SQL Injection',
+      timeBased: 'Time-Based Blind SQL Injection',
+    };
+
+    const result: QueryResult[] = [];
     const API: string = req.body.API;
+    let ID: number = 1;
+
+    // const sendReq = async (query: string) => {
+    //     try {
+    //         const data = await fetch(API, {
+    //         method: "POST",
+    //         headers: {
+    //             'Content-Type': 'application/graphql'
+    //         },
+    //         body
+    //         })
+    //     }catch(err) {
+    //         console.log(err)
+    //     }
+    // }
+
     const sendReqAndEvaluate = async (query: string) => {
       try {
+        const queryResult: QueryResult = {
+          ID: ID++,
+          Status: 'Pass',
+          Title: '',
+          Description: '',
+          Severity: 'P1',
+          TestDuration: '',
+          LastDetected: '',
+        };
+
         const sendTime = Date.now();
-        const response = await fetch(API, {
+
+        const data = await fetch(API, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/graphql',
           },
           body: query,
-        });
-        const obj = await response.json();
-        const currTime = Date.now();
-        const timeTaken = currTime - sendTime;
-        result.push(timeTaken);
-        return obj;
+        }).catch((err) => console.log(err));
+
+        if (!data) return;
+
+        const response = await data.json();
+        const timeTaken = Date.now() - sendTime;
+        queryResult.Description = query;
+        queryResult.TestDuration = `${timeTaken} ms`;
+        queryResult.LastDetected = `${new Date().toLocaleTimeString(
+          'en-GB',
+        )} - ${new Date()
+          .toLocaleDateString('en-GB')
+          .split('/')
+          .reverse()
+          .join('-')}`;
+
+        if (query.includes('OR 1=1') || query.includes("'1'='1")) {
+          queryResult.Title = titles.booleanBased;
+          if (response.data && response.data.length > 1)
+            queryResult.Status = 'Fail';
+        } else if (
+          query.includes("'") ||
+          query.includes(';') ||
+          query.includes('--')
+        ) {
+          const sqlErrorKeywords = [
+            'syntax error',
+            'unexpected',
+            'mysql_fetch',
+            'invalid query',
+          ];
+          queryResult.Title = titles.errorBased;
+          if (
+            response.errors &&
+            response.errors.some((error: { message: string }) =>
+              sqlErrorKeywords.some((keyword) =>
+                error.message.toLowerCase().includes(keyword),
+              ),
+            )
+          ) {
+            queryResult.Status = 'Fail';
+          }
+        } else if (query.toLowerCase().includes('sleep')) {
+          queryResult.Title = titles.timeBased;
+          if (timeTaken > 5000) queryResult.Status = 'Fail';
+        }
+        result.push(queryResult);
+        result.push(response);
       } catch (err) {
         console.log(err);
       }
-
-      //evaluate response
     };
-    //loop here
     const arrofQueries = res.locals.SQLQueries;
     for (const query of arrofQueries) {
-      result.push(query);
-      result.push(await sendReqAndEvaluate(query));
+      await sendReqAndEvaluate(query);
     }
     res.status(200).json(result);
-
-    //return result
   },
 };
