@@ -42,6 +42,7 @@ export const injection: InjectionType = {
 
         const SQLInputs = [
             // Boolean Based SQL Injection
+            " ' ",
             "OR 1=1",
             "' OR '1'='1",
             "') OR ('1'='1",
@@ -104,7 +105,7 @@ export const injection: InjectionType = {
                 if(!field.args || field.args.some(arg => arg.type?.kind == 'SCALAR' && arg.type?.name === 'String')){
                     for(const input of SQLInputs){
                         const query = generateQuery(field, input, typeName);
-                        arrOfQueries.push(query)
+                        arrOfQueries.push(query);
                     }
                 }
             }
@@ -125,7 +126,7 @@ export const injection: InjectionType = {
             Severity: string | number
             TestDuration: string | number
             LastDetected: string | number
-        }
+        };
         
         const titles = {
             booleanBased: 'Boolean Based SQL Injection',
@@ -136,6 +137,20 @@ export const injection: InjectionType = {
         const result: QueryResult[] = [];
         const API: string = req.body.API;
         let ID: number = 1;
+
+        // const sendReq = async (query: string) => {
+        //     try {
+        //         const data = await fetch(API, {
+        //         method: "POST",
+        //         headers: {
+        //             'Content-Type': 'application/graphql'
+        //         },
+        //         body
+        //         })
+        //     }catch(err) {
+        //         console.log(err)
+        //     }
+        // }
 
 
         const sendReqAndEvaluate = async (query: string) => {
