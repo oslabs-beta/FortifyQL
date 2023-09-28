@@ -137,13 +137,13 @@ export const injection: InjectionType = {
     console.log('Sending SQL Injections...');
 
     interface QueryResult {
-      ID: number;
-      Status: string;
-      Title: string;
-      Description: string;
-      Severity: string | number;
-      TestDuration: string | number;
-      LastDetected: string | number;
+      id: string;
+      status: string;
+      title: string;
+      description: string;
+      severity: string | number;
+      testDuration: string | number;
+      lastDetected: string | number;
     }
 
     const titles = {
