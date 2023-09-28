@@ -138,13 +138,13 @@ export const injection: InjectionType = {
     console.log('Sending SQL Injections...');
 
     interface QueryResult {
-      ID: number;
-      Status: string;
-      Title: string;
-      Description: string;
-      Severity: string | number;
-      TestDuration: string | number;
-      LastDetected: string | number;
+      id: string;
+      status: string;
+      title: string;
+      description: string;
+      severity: string | number;
+      testDuration: string | number;
+      lastDetected: string | number;
     }
 
     const titles = {
@@ -174,13 +174,13 @@ export const injection: InjectionType = {
     const sendReqAndEvaluate = async (query: string) => {
       try {
         const queryResult: QueryResult = {
-          ID: ID++,
-          Status: 'Pass',
-          Title: '',
-          Description: '',
-          Severity: 'P1',
-          TestDuration: '',
-          LastDetected: '',
+          id: `Inj-${ID++}`,
+          status: 'Pass',
+          title: '',
+          description: '',
+          severity: 'P1',
+          testDuration: '',
+          lastDetected: '',
         };
 
         const sendTime = Date.now();
@@ -197,9 +197,9 @@ export const injection: InjectionType = {
 
         const response = await data.json();
         const timeTaken = Date.now() - sendTime;
-        queryResult.Description = query;
-        queryResult.TestDuration = `${timeTaken} ms`;
-        queryResult.LastDetected = `${new Date().toLocaleTimeString(
+        queryResult.description = query;
+        queryResult.testDuration = `${timeTaken} ms`;
+        queryResult.lastDetected = `${new Date().toLocaleTimeString(
           'en-GB',
         )} - ${new Date()
           .toLocaleDateString('en-GB')
@@ -208,9 +208,9 @@ export const injection: InjectionType = {
           .join('-')}`;
 
         if (query.includes('OR 1=1') || query.includes("'1'='1")) {
-          queryResult.Title = titles.booleanBased;
+          queryResult.title = titles.booleanBased;
           if (response.data && response.data.length > 1)
-            queryResult.Status = 'Fail';
+            queryResult.status = 'Fail';
         } else if (
           query.includes("'") ||
           query.includes(';') ||
@@ -222,7 +222,7 @@ export const injection: InjectionType = {
             'mysql_fetch',
             'invalid query',
           ];
-          queryResult.Title = titles.errorBased;
+          queryResult.title = titles.errorBased;
           if (
             response.errors &&
             response.errors.some((error: { message: string }) =>
@@ -231,14 +231,14 @@ export const injection: InjectionType = {
               ),
             )
           ) {
-            queryResult.Status = 'Fail';
+            queryResult.status = 'Fail';
           }
         } else if (query.toLowerCase().includes('sleep')) {
-          queryResult.Title = titles.timeBased;
-          if (timeTaken > 5000) queryResult.Status = 'Fail';
+          queryResult.title = titles.timeBased;
+          if (timeTaken > 5000) queryResult.status = 'Fail';
         }
         result.push(queryResult);
-        result.push(response);
+        // result.push(response);
       } catch (err) {
         console.log(err);
       }

@@ -106,13 +106,13 @@ export const verboseError: VulnerabilityType = {
     console.log('Sending Queries...');
 
     interface QueryResult {
-      ID: number;
-      Status: string;
-      Title: string;
-      Description: string;
-      Severity: string | number;
-      TestDuration: string | number;
-      LastDetected: string | number;
+      id: string;
+      status: string;
+      title: string;
+      description: string;
+      severity: string | number;
+      testDuration: string | number;
+      lastDetected: string | number;
     }
 
     const result: QueryResult[] = [];
@@ -136,13 +136,13 @@ export const verboseError: VulnerabilityType = {
     const sendReqAndEvaluate = async (query: string) => {
       try {
         const queryResult: QueryResult = {
-          ID: ID++,
-          Status: 'Pass',
-          Title: 'Verbose Error',
-          Description: '',
-          Severity: 'P1',
-          TestDuration: '',
-          LastDetected: '',
+          id: `VE-${ID++}`,
+          status: 'Pass',
+          title: 'Verbose Error',
+          description: '',
+          severity: 'P1',
+          testDuration: '',
+          lastDetected: '',
         };
 
         const sendTime = Date.now();
@@ -159,9 +159,9 @@ export const verboseError: VulnerabilityType = {
 
         const response = await data.json();
         const timeTaken = Date.now() - sendTime;
-        queryResult.Description = query;
-        queryResult.TestDuration = `${timeTaken} ms`;
-        queryResult.LastDetected = `${new Date().toLocaleTimeString(
+        queryResult.description = query;
+        queryResult.testDuration = `${timeTaken} ms`;
+        queryResult.lastDetected = `${new Date().toLocaleTimeString(
           'en-GB',
         )} - ${new Date()
           .toLocaleDateString('en-GB')
@@ -172,11 +172,11 @@ export const verboseError: VulnerabilityType = {
         // Currently, pass/fail is based on error message length, but we could also look at "Did you mean..." to see if the response includes sugggested fields
         if (response.errors) {
           response.errors[0].message.length > 50
-            ? (queryResult.Status = 'Fail')
-            : (queryResult.Status = 'Pass');
+            ? (queryResult.status = 'Fail')
+            : (queryResult.status = 'Pass');
         }
         result.push(queryResult);
-        result.push(response);
+        // result.push(response);
       } catch (err) {
         console.log(err);
       }
