@@ -49,7 +49,7 @@ const ScanConfigForm: React.FC<ConfigFormProps> = (props) => {
     <div className='container'>
       <form className='input_form' onSubmit={handleSubmit}>
         <h2 id='dashboardHeader'>Security Scan Configuration</h2>
-        <div className='underlineDashboard'></div>
+        <div className='underline'></div>
         <input
           id='textbox'
           type='text'
