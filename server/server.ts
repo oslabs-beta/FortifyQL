@@ -22,11 +22,11 @@ server.use(express.json());
 
 //GLOBAL ROUTE CHECK
 server.use((req, _res, next) => {
-  console.log('Request recieved', req.method, req.path, req.body);
+  console.log('Request received', req.method, req.path, req.body);
   return next();
 });
 //PATHS
-server.use('/test', dashboard, (req, res, _next) => {
+server.use('/api/test', dashboard, (req, res, _next) => {
   res.json(res.locals.dashboard);
 });
 server.use('/scan', getSchema, injection.generateQueries, injection.attack);

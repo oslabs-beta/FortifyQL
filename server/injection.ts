@@ -41,16 +41,13 @@ export const injection: InjectionType = {
     const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types;
 
     const SQLInputs = [
-      " ' UNION SELECT username,password,3,4,5,6,7,8 FROM users-- ",
-      " ' OR 1=1-- ",
+      'OR 1=1',
+      "' OR '1'='1",
+      '--',
+      "';--",
+      "') OR ('1'='1",
       " ' ",
-      //   'OR 1=1',
-      //   "' OR '1'='1",
-      //   '--',
-      //   "';--",
-      //   "') OR ('1'='1",
-      //   " ' ",
-      //   ' give me all your data ',
+      ' give me all your data ',
     ];
 
     const getBaseType = (type: GraphQLTypeReference): string => {
