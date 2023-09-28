@@ -1,3 +1,6 @@
+body {
+  background-color: rgb(233, 223, 235);
+}
 .dashboard__container {
   display: flex;
   flex-direction: column;
@@ -21,8 +24,8 @@
 .switch {
   position: relative;
   display: inline-block;
-  width: 80px;
-  height: 40px;
+  width: 63px;
+  height: 33px;
   margin: 0 10px;
   margin: 15px;
 }
@@ -42,7 +45,7 @@
   right: 0;
   bottom: 0;
   transition: 0.4s;
-  border-radius: 34px;
+  border-radius: 20px;
   background-color: grey;
 }
 
@@ -53,13 +56,13 @@
 .slider:before {
   position: absolute;
   content: '';
-  height: 35px;
-  width: 35px;
+  height: 29px;
+  width: 30px;
   left: 3px;
   top: 2px;
   background-color: whitesmoke;
   transition: 0.4s;
-  border-radius: 40px;
+  border-radius: 20px;
 }
 
 input:checked + .slider {
@@ -67,7 +70,7 @@ input:checked + .slider {
 }
 
 input:checked + .slider:before {
-  transform: translateX(38px);
+  transform: translateX(28px);
 }
 
 #select_all_button {
@@ -94,3 +97,40 @@ input:checked + .slider:before {
 .checkbox {
   height: auto;
 }
+.underline {
+  width: calc(100vw - 80px);
+  border-bottom: 1px solid rgb(178, 18, 178);
+}
+.underlineDashboard {
+  width: calc(100vw - 100px);
+  height: 3px; /* Adjust the height to control the thickness of the line */
+  margin-left: 20px;
+  background-image: linear-gradient(90deg, rgba(128,0,128,1) 0%, rgba(147,112,219,1) 50%, rgba(238,130,238,1) 100%);
+  background-clip: content-box;
+  padding: 1px; /* This will act as the border */
+}
+
+.container {
+  margin-top: 10px;
+  margin-left: 0;
+  padding-left: 0;
+  border: 1px solid grey;
+  border-radius: 10px;
+  box-shadow: rgba(240, 46, 170, 0.4) 5px 5px, rgba(240, 46, 170, 0.3) 10px 10px, rgba(240, 46, 170, 0.2) 15px 15px, rgba(240, 46, 170, 0.1) 20px 20px, rgba(240, 46, 170, 0.05) 25px 25px;
+  /* box-shadow: 5px 5px 5px rgb(159, 154, 154); */
+}
+
+#dashboardHeader {
+  margin-left: 20px;
+}
+#submit_button {
+  margin-left: 20px;
+  border-radius: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  font-size: 20px;
+  &:hover {
+    border: 3px solid rgb(202, 66, 202);
+  }
+}
+
