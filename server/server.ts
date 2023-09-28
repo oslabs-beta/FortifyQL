@@ -9,7 +9,7 @@ const PORT = 3000;
 import getSchema from './getSchema.ts';
 import { injection } from './injection.ts';
 import injectionAttack from './injectionAttack.ts';
-import verboseError from './verboseError.ts';
+import { verboseError } from './verboseError.ts';
 import circularQuery from './circularQuery.ts';
 import dashboard from './dashboard.ts';
 
@@ -31,7 +31,12 @@ server.use('/api/test', dashboard, (req, res, _next) => {
 });
 server.use('/scan', getSchema, injection.generateQueries, injection.attack);
 server.use('/inject', injectionAttack);
-server.use('/error', verboseError);
+server.use(
+  '/error',
+  getSchema,
+  verboseError.generateQueries,
+  verboseError.attack,
+);
 server.use('/circular', circularQuery);
 
 // GLOBAL ERROR HANDLER
