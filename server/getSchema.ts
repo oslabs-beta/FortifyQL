@@ -1,8 +1,20 @@
+/**
+ * ************************************
+ *
+ * @module  getSchema.ts
+ * @author  MADR Productions - AY
+ * @date    9-23-23
+ * @description middleware for all tests to generate introspection query to acquire schema for generating other queries.
+ *
+ * ************************************
+ */
+
 import { Request, Response, NextFunction } from 'express';
 
 const getSchema = async (req: Request, res: Response, next: NextFunction) => {
   const fetchModule = await import('node-fetch');
   const fetch = fetchModule.default;
+
   const query = `query IntrospectionQuery {
     __schema {
         queryType {
@@ -87,9 +99,9 @@ fragment TypeRef on __Type {
 }`;
 
   try {
-    console.log('Executing Introspection Query...');
+    // console.log('Executing Introspection Query...');
     const API = req.body.API;
-    console.log('GraphQL API Endpoint', API);
+    // console.log('GraphQL API Endpoint', API);
     const response = await fetch(API, {
       method: 'POST',
       headers: {
@@ -97,11 +109,12 @@ fragment TypeRef on __Type {
       },
       body: query,
     });
-    const result: any = await response.json();
+
+    // Should we store this in a file to avoid more unnecessary calls to the the GraphQL server?
+    const result: any = await response.json(); // clean up any
     res.locals.schema = result;
-    console.log('Retrieved Schema...');
-    console.log(result);
-    // res.status(200).json(result);
+    // console.log('Retrieved Schema...');
+    // console.log(result);
     return next();
   } catch (err) {
     console.log('getSchema middleware', err);

@@ -1,4 +1,14 @@
-import { timeEnd } from 'console';
+/**
+ * ************************************
+ *
+ * @module  injection.ts
+ * @author  MADR Productions - AY
+ * @date    9-25-23
+ * @description middleware for server.use('/injection') to generate and send queries to test for SQL injection and evaluate response
+ *
+ * ************************************
+ */
+
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 
 type InjectionType = {
