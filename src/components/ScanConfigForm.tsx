@@ -1,45 +1,35 @@
-import React, { useState, useEffect, FormEvent } from 'react';
+import React, { useState, FormEvent } from 'react';
 
-interface ConfigFormProps {
+interface IConfigFormProps {
   onScanSubmit: (endpoint: string, tests: string[]) => void;
-}
+};
 
-const ScanConfigForm: React.FC<ConfigFormProps> = (props) => {
-  // handleScanSubmit function
+const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
+  // Destructuring props
   const { onScanSubmit } = props;
+
   // Sets the state of textbox input
   const [endpoint, setEndpoint] = useState<string>('');
 
   // Function that handles and updates the textbox state
   const handleEndpoint = (e: React.BaseSyntheticEvent) => {
-    console.log(e.target.value);
     setEndpoint(e.target.value);
   };
 
   // Sets the state of the selected tests array
   const [selectedTests, setSelectedTests] = useState<string[]>([]);
 
-  // Renders and console logs the updated selectedTests array immediately
-  useEffect(() => {
-    console.log(selectedTests);
-  }, [selectedTests]);
-
-  // Function that evaluates the 'value' and 'checked' values on the event and updates the state of the selectedTests array accordingly depending on if 'checked' is true or false
+  // Function that evaluates the 'value' and 'checked' properties on the event object and updates the state of the selectedTests array accordingly
   const handleSelectedTests = (e: React.ChangeEvent<HTMLInputElement>) => {
     const testType = e.target.value;
-
     if (e.target.checked === true) {
       setSelectedTests([...selectedTests, testType]);
     } else if (e.target.checked === false) {
       setSelectedTests(selectedTests.filter((test) => test !== testType));
     }
-    console.log(selectedTests);
   };
 
-  // const handleSelectAllButton = () => {
-  //   console.log('clicked');
-  // }
-
+  // Submits the form data
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onScanSubmit(endpoint, selectedTests);
@@ -81,7 +71,7 @@ const ScanConfigForm: React.FC<ConfigFormProps> = (props) => {
           <label className='switch'>
             <input
               type='checkbox'
-              value='DoS-scan'
+              value='dos-scan'
               onChange={handleSelectedTests}
             />
             <span className='slider' />
