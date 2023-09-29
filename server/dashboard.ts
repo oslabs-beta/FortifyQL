@@ -24,8 +24,8 @@ const dashboard = async (req: Request, res: Response, next: NextFunction) => {
     const fetchModule = await import('node-fetch');
     const fetch = fetchModule.default;
     let results: any[] = []; // Change any to TS interface
-    const tests: TestData = req.body.tests; // tests is an array of strings in the body object
-    const URI: string = req.body.API; // API is a string of the URL in the body object
+    const tests: TestData = req.body.tests;
+    const URI: string = req.body.API;
     const requestBody = JSON.stringify({ API: URI });
 
     // iterate through the tests to initiate each each one

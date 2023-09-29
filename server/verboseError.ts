@@ -55,7 +55,7 @@ export const verboseError: VulnerabilityType = {
     // types is an array of objects retrieved from getSchema and includes all of the query, mutation, and subscription types
     const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types;
 
-    // function
+    // function to extract field name based on query type.
     const getBaseType = (type: GraphQLTypeReference): string => {
       let curr = type;
       while (curr.ofType) {
@@ -64,6 +64,7 @@ export const verboseError: VulnerabilityType = {
       return curr.name || '';
     };
 
+    // function to extract the subfields which are the fields expected in the response from the GraphQL server
     const getSubFields = (
       type: GraphQLType | GraphQLTypeReference,
       depth: number = 0,
@@ -80,7 +81,7 @@ export const verboseError: VulnerabilityType = {
         .join('s ')} }`;
     };
 
-    // Builds query with queryName (i.e., query or mutation), field name, and subfields which are part of the response.
+    // function to build queries with queryName (i.e., query or mutation), field name, and subfields which are part of the response.
     const generateQuery = (field: GraphQLField, QueryType: string) => {
       const queryName = QueryType === 'queryType' ? 'query' : 'mutation';
       const baseTypeName = field.type ? getBaseType(field.type) : '';
@@ -114,13 +115,14 @@ export const verboseError: VulnerabilityType = {
       }
     }
     res.locals.queries = arrOfQueries;
-    console.log('Generated Queries...');
-    console.log(arrOfQueries);
+    // console.log('Generated Queries...');
+    // console.log(arrOfQueries);
     return next();
   },
   attack: async (req: Request, res: Response, _next: NextFunction) => {
-    console.log('Sending Queries...');
+    // console.log('Sending Queries...');
 
+    // Move this to TS file
     interface QueryResult {
       id: string;
       status: string;
@@ -135,20 +137,7 @@ export const verboseError: VulnerabilityType = {
     const API: string = req.body.API;
     let ID: number = 1;
 
-    // const sendReq = async (query: string) => {
-    //     try {
-    //         const data = await fetch(API, {
-    //         method: "POST",
-    //         headers: {
-    //             'Content-Type': 'application/graphql'
-    //         },
-    //         body
-    //         })
-    //     }catch(err) {
-    //         console.log(err)
-    //     }
-    // }
-
+    // Think about logic of the query result and how we define each variable, should we summarize and use accordion? The send req could be modularized.
     const sendReqAndEvaluate = async (query: string) => {
       try {
         const queryResult: QueryResult = {
@@ -161,7 +150,7 @@ export const verboseError: VulnerabilityType = {
           lastDetected: '',
         };
 
-        const sendTime = Date.now();
+        const sendTime = Date.now(); // checks for the time to send and receive respsonse from GraphQL API
 
         const data = await fetch(API, {
           method: 'POST',
@@ -171,7 +160,7 @@ export const verboseError: VulnerabilityType = {
           body: query,
         }).catch((err) => console.log(err));
 
-        if (!data) return;
+        if (!data) return; // is this line necessary?
 
         const response = await data.json();
         const timeTaken = Date.now() - sendTime;
@@ -192,7 +181,7 @@ export const verboseError: VulnerabilityType = {
             : (queryResult.status = 'Pass');
         }
         result.push(queryResult);
-        // result.push(response);
+        // result.push(response); - This is the response from the server but it is not currently used by the client
       } catch (err) {
         console.log(err);
       }
