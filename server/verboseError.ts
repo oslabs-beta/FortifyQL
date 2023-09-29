@@ -1,10 +1,23 @@
-import { timeEnd } from 'console';
+/**
+ * ************************************
+ *
+ * @module  verboseError.ts
+ * @author  MADR Productions - RP
+ * @date    9-28-23
+ * @description middleware for server.use('/error') to generate and send queries to trigger an error and evaluate response for verbosity (a security vulnerability in GraphQL APIs)
+ *
+ * ************************************
+ */
+
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 
+// move all of the following types and interfaces to a TS file
+// also can some of them be removed they seem duplicative
 type VulnerabilityType = {
   generateQueries: RequestHandler;
   attack: RequestHandler;
 };
+
 interface Schema {
   __schema: {
     types: GraphQLType[];
@@ -35,11 +48,14 @@ interface GraphQLTypeReference {
 }
 
 export const verboseError: VulnerabilityType = {
+  // method for generating queries that trigger an error response by purposefully creating a typo
   generateQueries: async (req: Request, res: Response, next: NextFunction) => {
-    console.log('Generating Queries...');
-    // const schema: Schema = res.locals.schema.data;
+    // console.log('Generating Queries...');
+
+    // types is an array of objects retrieved from getSchema and includes all of the query, mutation, and subscription types
     const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types;
 
+    // function
     const getBaseType = (type: GraphQLTypeReference): string => {
       let curr = type;
       while (curr.ofType) {
