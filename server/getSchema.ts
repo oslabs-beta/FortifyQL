@@ -1,106 +1,107 @@
+/**
+ * ************************************
+ *
+ * @module  getSchema.ts
+ * @author  MADR Productions - AY
+ * @date    9-23-23
+ * @description middleware for all tests to generate introspection query to acquire schema for generating other queries.
+ *
+ * ************************************
+ */
+
 import { Request, Response, NextFunction } from 'express';
 
-const getSchema = async (req: Request, res: Response, _next: NextFunction) => {
+const getSchema = async (req: Request, res: Response, next: NextFunction) => {
   const fetchModule = await import('node-fetch');
   const fetch = fetchModule.default;
-  const query = `
-  query IntrospectionQuery {
-    __schema {
-      queryType { name }
-      mutationType { name }
-      subscriptionType { name }
-      types {
-        ...FullType
-      }
-      directives {
-        name
-        description
-        locations
-        args {
-          ...InputValue
-        }
-      }
-    }
-  }
 
-  fragment FullType on __Type {
+  const query = `query IntrospectionQuery {
+    __schema {
+        queryType {
+            name
+        }
+        mutationType {
+            name
+        }
+        subscriptionType {
+            name
+        }
+        types {
+         ...FullType
+        }
+        directives {
+            name
+            description
+            args {
+                ...InputValue
+        }
+        }
+    }
+}
+
+fragment FullType on __Type {
     kind
     name
     description
     fields(includeDeprecated: true) {
-      name
-      description
-      args {
-        ...InputValue
-      }
-      type {
-        ...TypeRef
-      }
-      isDeprecated
-      deprecationReason
+        name
+        description
+        args {
+            ...InputValue
+        }
+        type {
+            ...TypeRef
+        }
+        isDeprecated
+        deprecationReason
     }
     inputFields {
-      ...InputValue
+        ...InputValue
     }
     interfaces {
-      ...TypeRef
+        ...TypeRef
     }
     enumValues(includeDeprecated: true) {
-      name
-      description
-      isDeprecated
-      deprecationReason
+        name
+        description
+        isDeprecated
+        deprecationReason
     }
     possibleTypes {
-      ...TypeRef
+        ...TypeRef
     }
-  }
+}
 
-  fragment InputValue on __InputValue {
+fragment InputValue on __InputValue {
     name
     description
-    type { ...TypeRef }
+    type {
+        ...TypeRef
+    }
     defaultValue
-  }
+}
 
-  fragment TypeRef on __Type {
+fragment TypeRef on __Type {
     kind
     name
     ofType {
-      kind
-      name
-      ofType {
         kind
         name
         ofType {
-          kind
-          name
-          ofType {
             kind
             name
             ofType {
-              kind
-              name
-              ofType {
                 kind
                 name
-                ofType {
-                  kind
-                  name
-                }
-              }
             }
-          }
         }
-      }
     }
-  }
-`;
+}`;
 
   try {
-    console.log('entered scan');
+    // console.log('Executing Introspection Query...');
     const API = req.body.API;
-    console.log('using this API', API);
+    // console.log('GraphQL API Endpoint', API);
     const response = await fetch(API, {
       method: 'POST',
       headers: {
@@ -108,18 +109,18 @@ const getSchema = async (req: Request, res: Response, _next: NextFunction) => {
       },
       body: query,
     });
-    // type DataType = {
-    //   details: Record<string, any>;
-    // };
-    console.log('response: ', response);
-    //this part is in the works- figuring how to break them up with types/might get rid of ts
-    const obj: any = await response.json();
-    console.log('obj: ', obj.data.__schema.types);
 
-    res.sendStatus(200);
+    // Should we store this in a file to avoid more unnecessary calls to the the GraphQL server?
+    const result: any = await response.json(); // clean up any
+    res.locals.schema = result;
+    // console.log('Retrieved Schema...');
+    // console.log(result);
+    return next();
   } catch (err) {
     console.log('getSchema middleware', err);
-    res.status(400).json('Unable to retrieve schema, please turn introspection on ');
+    res
+      .status(400)
+      .json('Unable to retrieve schema, please turn introspection on ');
   }
 };
 

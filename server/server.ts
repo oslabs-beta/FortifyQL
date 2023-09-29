@@ -1,3 +1,14 @@
+/**
+ * ************************************
+ *
+ * @module  server.ts
+ * @author  MADR Productions - AY
+ * @date    9-21-23
+ * @description server for FortifyQL
+ *
+ * ************************************
+ */
+
 import express, { Request, Response, NextFunction } from 'express';
 // import path from 'path'
 import cors from 'cors';
@@ -6,11 +17,11 @@ const server = express();
 const PORT = 3000;
 
 // REQUIRED ROUTES && MIDDLEWARE
-import getSchema from './getSchema';
-import injectionAttack from './injectionAttack';
-import verboseError from './verboseError';
-import circularQuery from './circularQuery';
-import dashboard from './dashboard';
+import getSchema from './getSchema.ts';
+import { injection } from './injection.ts';
+import { verboseError } from './verboseError.ts';
+import circularQuery from './circularQuery.ts';
+import dashboard from './dashboard.ts';
 
 // Use cors
 server.use(cors());
@@ -25,12 +36,17 @@ server.use((req, _res, next) => {
   return next();
 });
 //PATHS
+// path for frontend to request security scan
 server.use('/api/test', dashboard, (req, res, _next) => {
   res.json(res.locals.dashboard);
 });
-server.use('/scan', getSchema);
-server.use('/inject', injectionAttack);
-server.use('/error', verboseError);
+server.use('/scan', getSchema, injection.generateQueries, injection.attack);
+server.use(
+  '/error',
+  getSchema,
+  verboseError.generateQueries,
+  verboseError.attack,
+);
 server.use('/circular', circularQuery);
 
 // GLOBAL ERROR HANDLER

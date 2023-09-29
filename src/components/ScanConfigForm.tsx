@@ -48,12 +48,12 @@ const ScanConfigForm: React.FC<ConfigFormProps> = (props) => {
   return (
     <div className='container'>
       <form className='input_form' onSubmit={handleSubmit}>
-        <h1>FortifyQL</h1>
-        <h2>Security Scan Dashboard</h2>
+        <h2 id='dashboardHeader'>Security Scan Configuration</h2>
+        <div className='underline'></div>
         <input
           id='textbox'
           type='text'
-          placeholder='Enter GraphQL API URI here'
+          placeholder='Enter GraphQL API URI Here'
           onChange={handleEndpoint}
         ></input>
 
@@ -135,7 +135,7 @@ const ScanConfigForm: React.FC<ConfigFormProps> = (props) => {
         </div>
 
         {/* <button id='select_all_button' onChange={handleSelectAllButton}>Select All Tests</button> */}
-        <button id='submit_button'>Submit</button>
+        <button id='submit_button'>Scan</button>
       </form>
     </div>
   );

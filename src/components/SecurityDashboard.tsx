@@ -52,8 +52,7 @@ const SecurityDashboard: React.FC = () => {
 
   return (
     <div className='dashboard__container'>
-      <h2 className='dashboard__header'>Security Dashboard</h2>
-
+      <h1 className='dashboard__header'>FortifyQL</h1>
       {showConfigForm ? (
         <ScanConfigForm onScanSubmit={handleScanSubmit} />
       ) : (
