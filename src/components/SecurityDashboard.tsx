@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import ScanConfigForm from './ScanConfigForm';
 import ScanResultsTable from './ScanResultsTable';
-// import testData from './scanTestData.json';
 import { ITestResult } from '../interfaces/results';
 
 const SecurityDashboard: React.FC = () => {
@@ -32,7 +31,7 @@ const SecurityDashboard: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error('test api response error occurred');
+        throw new Error('Test api response error occurred');
       }
 
       const data = await response.json();
