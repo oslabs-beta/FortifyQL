@@ -10,6 +10,7 @@
  */
 
 import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { send } from 'process';
 
 type InjectionType = {
   generateQueries: RequestHandler;
@@ -42,6 +43,15 @@ interface GraphQLTypeReference {
   name?: string;
   ofType?: GraphQLTypeReference;
   fields?: GraphQLField[];
+}
+interface QueryResult {
+  id: string;
+  status: string;
+  title: string;
+  description: string;
+  severity: string | number;
+  testDuration: string | number;
+  lastDetected: string | number;
 }
 
 export const injection: InjectionType = {
@@ -141,20 +151,10 @@ export const injection: InjectionType = {
     res.locals.SQLQueries = arrOfQueries;
     console.log('Generated Queries...');
     console.log(arrOfQueries);
-    return next();
+    return;
   },
-  attack: async (req: Request, res: Response, _next: NextFunction) => {
+  attack: async (req: Request, res: Response): Promise<QueryResult[]>  => {
     console.log('Sending SQL Injections...');
-
-    interface QueryResult {
-      id: string;
-      status: string;
-      title: string;
-      description: string;
-      severity: string | number;
-      testDuration: string | number;
-      lastDetected: string | number;
-    }
 
     const titles = {
       booleanBased: 'Boolean Based SQL Injection',
@@ -162,36 +162,21 @@ export const injection: InjectionType = {
       timeBased: 'Time-Based Blind SQL Injection',
     };
 
-    const result: QueryResult[] = [];
     const API: string = req.body.API;
     let ID: number = 1;
 
-    // const sendReq = async (query: string) => {
-    //     try {
-    //         const data = await fetch(API, {
-    //         method: "POST",
-    //         headers: {
-    //             'Content-Type': 'application/graphql'
-    //         },
-    //         body
-    //         })
-    //     }catch(err) {
-    //         console.log(err)
-    //     }
-    // }
+    const sendReqAndEvaluate = async (query: string): Promise<QueryResult> => {
+      const queryResult: QueryResult = {
+        id: `Inj-${ID++}`,
+        status: 'Pass',
+        title: '',
+        description: '',
+        severity: 'P1',
+        testDuration: '',
+        lastDetected: '',
+      };
 
-    const sendReqAndEvaluate = async (query: string) => {
       try {
-        const queryResult: QueryResult = {
-          id: `Inj-${ID++}`,
-          status: 'Pass',
-          title: '',
-          description: '',
-          severity: 'P1',
-          testDuration: '',
-          lastDetected: '',
-        };
-
         const sendTime = Date.now();
 
         const data = await fetch(API, {
@@ -202,7 +187,10 @@ export const injection: InjectionType = {
           body: query,
         }).catch((err) => console.log(err));
 
-        if (!data) return;
+        if (!data) {
+          queryResult.title = "No Data";
+          return queryResult
+        }
 
         const response = await data.json();
         const timeTaken = Date.now() - sendTime;
@@ -246,16 +234,21 @@ export const injection: InjectionType = {
           queryResult.title = titles.timeBased;
           if (timeTaken > 5000) queryResult.status = 'Fail';
         }
-        result.push(queryResult);
-        // result.push(response);
+        return queryResult;
       } catch (err) {
         console.log(err);
+        queryResult.title = "Fail to run test"
+        return queryResult;
       }
     };
-    const arrofQueries = res.locals.SQLQueries;
-    for (const query of arrofQueries) {
-      await sendReqAndEvaluate(query);
+    const arrofQueries: string[] = res.locals.SQLQueries;
+
+    const results: QueryResult[] = []
+
+    for(const query of arrofQueries) {
+      const result = await sendReqAndEvaluate(query);
+      results.push(result)
     }
-    res.status(200).json(result);
+    return results;
   },
 };

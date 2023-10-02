@@ -50,7 +50,7 @@ interface GraphQLTypeReference {
 export const verboseError: VulnerabilityType = {
   // method for generating queries that trigger an error response by purposefully creating a typo
   generateQueries: async (req: Request, res: Response, next: NextFunction) => {
-    // console.log('Generating Queries...');
+    console.log('Generating Queries for verbose...');
 
     // types is an array of objects retrieved from getSchema and includes all of the query, mutation, and subscription types
     const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types;

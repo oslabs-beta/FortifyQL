@@ -9,9 +9,9 @@
  * ************************************
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 
-const getSchema = async (req: Request, res: Response, next: NextFunction) => {
+const getSchema = async (req: Request, res: Response) => {
   const fetchModule = await import('node-fetch');
   const fetch = fetchModule.default;
 
@@ -99,7 +99,7 @@ fragment TypeRef on __Type {
 }`;
 
   try {
-    // console.log('Executing Introspection Query...');
+    console.log('Executing Introspection Query...');
     const API = req.body.API;
     // console.log('GraphQL API Endpoint', API);
     const response = await fetch(API, {
@@ -113,9 +113,8 @@ fragment TypeRef on __Type {
     // Should we store this in a file to avoid more unnecessary calls to the the GraphQL server?
     const result: any = await response.json(); // clean up any
     res.locals.schema = result;
-    // console.log('Retrieved Schema...');
-    // console.log(result);
-    return next();
+    console.log('Retrieved Schema...');
+    return;
   } catch (err) {
     console.log('getSchema middleware', err);
     res

@@ -22,6 +22,7 @@ import { injection } from './injection.ts';
 import { verboseError } from './verboseError.ts';
 import circularQuery from './circularQuery.ts';
 import dashboard from './dashboard.ts';
+import { get } from 'http';
 
 // Use cors
 server.use(cors());
@@ -36,18 +37,54 @@ server.use((req, _res, next) => {
   return next();
 });
 //PATHS
+server.use('/runPentest', async (req: Request, res: Response) => {
+  try {
+    console.log("Starting Penetration Testing...")
+    await getSchema(req, res);
+
+    const testsMap: {[key:string]: {generate: Function, evaluate: Function}} = {
+      SQL: {
+        generate: injection.generateQueries,
+        evaluate: injection.attack
+      },
+      Verbose: {
+        generate: verboseError.generateQueries,
+        evaluate: verboseError.attack
+      }
+    };
+
+    const results: {[key: string]: any[]} = {};
+
+    const runTest = async (test: string) => {
+      if(req.body.tests.includes(test)) {
+        await testsMap[test].generate(req, res);
+        const testResult = await testsMap[test].evaluate(req, res);
+        results[test] = testResult;
+      }
+    }
+
+    const runAllTests = Object.keys(testsMap).map(runTest);
+    await Promise.all(runAllTests);
+    return res.status(200).json(results);
+
+
+  }catch(err) {
+    return res.status(400).json("error running tests")
+  }
+
+})
 // path for frontend to request security scan
-server.use('/api/test', dashboard, (req, res, _next) => {
-  res.json(res.locals.dashboard);
-});
-server.use('/scan', getSchema, injection.generateQueries, injection.attack);
-server.use(
-  '/error',
-  getSchema,
-  verboseError.generateQueries,
-  verboseError.attack,
-);
-server.use('/circular', circularQuery);
+// server.use('/api/test', dashboard, (req, res, _next) => {
+//   res.json(res.locals.dashboard);
+// });
+// server.use('/scan', getSchema, injection.generateQueries, injection.attack);
+// server.use(
+//   '/error',
+//   getSchema,
+//   verboseError.generateQueries,
+//   verboseError.attack,
+// );
+// server.use('/circular', circularQuery);
 
 // GLOBAL ERROR HANDLER
 interface CustomError {
