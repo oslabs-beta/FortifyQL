@@ -52,7 +52,7 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
     <div className='results-table__container'>
       <div
         className='ag-theme-alpine'
-        style={{ height: '400px', width: '100%' }}
+        style={{ height: '100%', width: '100%' }}
       >
         <h2 className='results-table__header'>Security Scan Results</h2>
         <div className='results-table-export__container'>
