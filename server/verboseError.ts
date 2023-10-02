@@ -117,7 +117,7 @@ export const verboseError: VulnerabilityType = {
     res.locals.queries = arrOfQueries;
     // console.log('Generated Queries...');
     // console.log(arrOfQueries);
-    return next();
+    return;
   },
   attack: async (req: Request, res: Response, _next: NextFunction) => {
     // console.log('Sending Queries...');
@@ -190,6 +190,6 @@ export const verboseError: VulnerabilityType = {
     for (const query of arrofQueries) {
       await sendReqAndEvaluate(query);
     }
-    res.status(200).json(result);
+    return result;
   },
 };

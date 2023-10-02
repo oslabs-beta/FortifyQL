@@ -175,8 +175,9 @@ export const injection: InjectionType = {
         testDuration: '',
         lastDetected: '',
       };
-
+      
       try {
+        console.log(`starting test ${ID}`)
         const sendTime = Date.now();
 
         const data = await fetch(API, {
@@ -234,6 +235,7 @@ export const injection: InjectionType = {
           queryResult.title = titles.timeBased;
           if (timeTaken > 5000) queryResult.status = 'Fail';
         }
+        console.log("finished test")
         return queryResult;
       } catch (err) {
         console.log(err);
@@ -246,8 +248,21 @@ export const injection: InjectionType = {
     const results: QueryResult[] = []
 
     for(const query of arrofQueries) {
-      const result = await sendReqAndEvaluate(query);
-      results.push(result)
+      try {
+        const result = await sendReqAndEvaluate(query);
+        results.push(result);
+      }catch(err) {
+        console.log(err);
+        results.push({
+          id: `Inj-${ID++}`,
+          status: 'Error',
+          title: 'Failed Test',
+          description: `Error encountered for query: ${query}`,
+          severity: 'P1',
+          testDuration: '',
+          lastDetected: `${new Date().toLocaleTimeString('en-GB')} - ${new Date().toLocaleDateString('en-GB').split('/').reverse().join('-')}`,
+      });
+      }
     }
     return results;
   },

@@ -59,12 +59,17 @@ server.use('/runPentest', async (req: Request, res: Response) => {
       if(req.body.tests.includes(test)) {
         await testsMap[test].generate(req, res);
         const testResult = await testsMap[test].evaluate(req, res);
+        console.log(testResult);
         results[test] = testResult;
       }
     }
 
-    const runAllTests = Object.keys(testsMap).map(runTest);
-    await Promise.all(runAllTests);
+    const runAllTests = async () => {
+      console.log("running all tests")
+      await Promise.all(Object.keys(testsMap).map(runTest));
+    } 
+    await runAllTests();
+    console.log("sending response")
     return res.status(200).json(results);
 
 
