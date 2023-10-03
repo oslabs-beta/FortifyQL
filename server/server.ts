@@ -40,7 +40,7 @@ server.use((req, _res, next) => {
 server.use('/runPentest', async (req: Request, res: Response) => {
   try {
     console.log("Starting Penetration Testing...")
-    await getSchema(req, res);
+    // await getSchema(req, res);
 
     const testsMap: {[key:string]: {generate: Function, evaluate: Function}} = {
       SQL: {
@@ -78,18 +78,7 @@ server.use('/runPentest', async (req: Request, res: Response) => {
   }
 
 })
-// path for frontend to request security scan
-// server.use('/api/test', dashboard, (req, res, _next) => {
-//   res.json(res.locals.dashboard);
-// });
-// server.use('/scan', getSchema, injection.generateQueries, injection.attack);
-// server.use(
-//   '/error',
-//   getSchema,
-//   verboseError.generateQueries,
-//   verboseError.attack,
-// );
-// server.use('/circular', circularQuery);
+server.use('/sql',getSchema,injection.generateQueries, injection.attack)
 
 // GLOBAL ERROR HANDLER
 interface CustomError {

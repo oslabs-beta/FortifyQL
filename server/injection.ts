@@ -62,7 +62,7 @@ export const injection: InjectionType = {
 
     const SQLInputs = [
       // Boolean Based SQL Injection
-      'OR 1=1',
+      "'OR 1=1--",
       "' OR '1'='1",
       "') OR ('1'='1",
 
@@ -150,10 +150,10 @@ export const injection: InjectionType = {
     }
     res.locals.SQLQueries = arrOfQueries;
     console.log('Generated Queries...');
-    console.log(arrOfQueries);
-    return;
+    return next()
   },
-  attack: async (req: Request, res: Response): Promise<QueryResult[]>  => {
+  // attack: async (req: Request, res: Response): Promise<QueryResult[]>  => {
+    attack: async (req: Request, res: Response)  => {
     console.log('Sending SQL Injections...');
 
     const titles = {
@@ -164,6 +164,8 @@ export const injection: InjectionType = {
 
     const API: string = req.body.API;
     let ID: number = 1;
+
+    const results = []
 
     const sendReqAndEvaluate = async (query: string): Promise<QueryResult> => {
       const queryResult: QueryResult = {
@@ -177,9 +179,9 @@ export const injection: InjectionType = {
       };
       
       try {
-        console.log(`starting test ${ID}`)
+        console.log(`Starting Test ${ID}`)
         const sendTime = Date.now();
-
+        
         const data = await fetch(API, {
           method: 'POST',
           headers: {
@@ -187,70 +189,71 @@ export const injection: InjectionType = {
           },
           body: query,
         }).catch((err) => console.log(err));
-
+        
         if (!data) {
           queryResult.title = "No Data";
+          queryResult.status = "Failed to send test"
           return queryResult
         }
-
+        
         const response = await data.json();
         const timeTaken = Date.now() - sendTime;
         queryResult.description = query;
         queryResult.testDuration = `${timeTaken} ms`;
         queryResult.lastDetected = `${new Date().toLocaleTimeString(
           'en-GB',
-        )} - ${new Date()
-          .toLocaleDateString('en-GB')
-          .split('/')
-          .reverse()
-          .join('-')}`;
-
-        if (query.includes('OR 1=1') || query.includes("'1'='1")) {
-          queryResult.title = titles.booleanBased;
-          if (response.data && response.data.length > 1)
-            queryResult.status = 'Fail';
-        } else if (
-          query.includes("'") ||
-          query.includes(';') ||
-          query.includes('--')
-        ) {
-          const sqlErrorKeywords = [
-            'syntax error',
-            'unexpected',
-            'mysql_fetch',
-            'invalid query',
-          ];
-          queryResult.title = titles.errorBased;
-          if (
-            response.errors &&
-            response.errors.some((error: { message: string }) =>
-              sqlErrorKeywords.some((keyword) =>
+          )} - ${new Date()
+            .toLocaleDateString('en-GB')
+            .split('/')
+            .reverse()
+            .join('-')}`;
+            
+            if (query.includes('OR 1=1') || query.includes("'1'='1")) {
+              queryResult.title = titles.booleanBased;
+              if (response.data && response.data.length > 1)
+              queryResult.status = 'Fail';
+          } else if (
+            query.includes("'") ||
+            query.includes(';') ||
+            query.includes('--')
+            ) {
+              const sqlErrorKeywords = [
+                'syntax error',
+                'unexpected',
+                'mysql_fetch',
+                'invalid query',
+              ];
+              queryResult.title = titles.errorBased;
+              if (
+                response.errors &&
+                response.errors.some((error: { message: string }) =>
+                sqlErrorKeywords.some((keyword) =>
                 error.message.toLowerCase().includes(keyword),
-              ),
-            )
-          ) {
-            queryResult.status = 'Fail';
-          }
-        } else if (query.toLowerCase().includes('sleep')) {
-          queryResult.title = titles.timeBased;
-          if (timeTaken > 5000) queryResult.status = 'Fail';
-        }
-        console.log("finished test")
-        return queryResult;
-      } catch (err) {
-        console.log(err);
-        queryResult.title = "Fail to run test"
-        return queryResult;
-      }
-    };
-    const arrofQueries: string[] = res.locals.SQLQueries;
-
-    const results: QueryResult[] = []
-
-    for(const query of arrofQueries) {
-      try {
-        const result = await sendReqAndEvaluate(query);
-        results.push(result);
+                ),
+                )
+                ) {
+                  queryResult.status = 'Fail';
+                }
+              } else if (query.toLowerCase().includes('sleep')) {
+                queryResult.title = titles.timeBased;
+                if (timeTaken > 5000) queryResult.status = 'Fail';
+              }
+              results.push(response)
+              return queryResult;
+            } catch (err) {
+              console.log(err);
+              queryResult.title = "Fail to run test"
+              return queryResult;
+            }
+          };
+          const arrofQueries: string[] = res.locals.SQLQueries;
+          
+          // const results: QueryResult[] = []
+          
+          for(const query of arrofQueries) {
+            try {
+              const result = await sendReqAndEvaluate(query);
+              results.push(result);
       }catch(err) {
         console.log(err);
         results.push({
@@ -264,6 +267,6 @@ export const injection: InjectionType = {
       });
       }
     }
-    return results;
+    return res.status(200).json(results)
   },
 };
