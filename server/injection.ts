@@ -1,23 +1,20 @@
 /**
  * ************************************
  *
- * @module  verboseError.ts
- * @author  MADR Productions - RP
- * @date    9-28-23
- * @description middleware for server.use('/error') to generate and send queries to trigger an error and evaluate response for verbosity (a security vulnerability in GraphQL APIs)
+ * @module  injection.ts
+ * @author  MADR Productions - AY
+ * @date    9-25-23
+ * @description middleware for server.use('/injection') to generate and send queries to test for SQL injection and evaluate response
  *
  * ************************************
  */
 
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 
-// move all of the following types and interfaces to a TS file
-// also can some of them be removed they seem duplicative
-type VulnerabilityType = {
+type InjectionType = {
   generateQueries: RequestHandler;
   attack: RequestHandler;
 };
-
 interface Schema {
   __schema: {
     types: GraphQLType[];
@@ -47,15 +44,29 @@ interface GraphQLTypeReference {
   fields?: GraphQLField[];
 }
 
-export const verboseError: VulnerabilityType = {
-  // method for generating queries that trigger an error response by purposefully creating a typo
+export const injection: InjectionType = {
   generateQueries: async (req: Request, res: Response, next: NextFunction) => {
-    // console.log('Generating Queries...');
-
-    // types is an array of objects retrieved from getSchema and includes all of the query, mutation, and subscription types
+    console.log('Generating SQL Injection Queries...');
+    // const schema: Schema = res.locals.schema.data;
     const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types;
 
-    // function to extract field name based on query type.
+    const SQLInputs = [
+      // Boolean Based SQL Injection
+      'OR 1=1',
+      "' OR '1'='1",
+      "') OR ('1'='1",
+
+      // Error Based SQL Injection
+      "'",
+      "';",
+      '--',
+
+      // Time-Based Blind SQL Injection
+      'OR IF(1=1, SLEEP(5), 0)', // MySQL, MariaDB
+      'OR pg_sleep(5)', // PostgreSQL
+      'OR 1=(SELECT 1 FROM (SELECT SLEEP(5))A)', // Another example for MySQL
+    ];
+
     const getBaseType = (type: GraphQLTypeReference): string => {
       let curr = type;
       while (curr.ofType) {
@@ -64,7 +75,6 @@ export const verboseError: VulnerabilityType = {
       return curr.name || '';
     };
 
-    // function to extract the subfields which are the fields expected in the response from the GraphQL server
     const getSubFields = (
       type: GraphQLType | GraphQLTypeReference,
       depth: number = 0,
@@ -78,27 +88,32 @@ export const verboseError: VulnerabilityType = {
           return !baseType?.fields;
         })
         .map((field) => field.name)
-        .join('s ')} }`;
+        .join(' ')} }`;
     };
 
-    // function to build queries with queryName (i.e., query or mutation), field name, and subfields which are part of the response.
-    const generateQuery = (field: GraphQLField, QueryType: string) => {
+    const generateQuery = (
+      field: GraphQLField,
+      input: string,
+      QueryType: string,
+    ) => {
       const queryName = QueryType === 'queryType' ? 'query' : 'mutation';
+      const args =
+        field.args
+          ?.filter(
+            (arg) => arg.type?.kind === 'SCALAR' && arg.type?.name === 'String',
+          )
+          .map((arg) => `${arg.name}: "${input}"`)
+          .join(', ') || '';
+
       const baseTypeName = field.type ? getBaseType(field.type) : '';
       const baseType = schemaTypes.find((type) => type.name === baseTypeName);
       const subFields = baseType ? getSubFields(baseType) : '';
 
-      return `${queryName} { ${field.name} ${subFields} }`;
+      return `${queryName} { ${field.name}(${args}) ${subFields} }`;
     };
 
     const arrOfQueries: string[] = [];
 
-    // Identifies the naming convention for queryType and mutationType
-    // For example, DVGA calls them "Query" and "Mutations."
-    // Then look for the object with the name "Query" and check for fields.
-    // Fields represent the names of the different Queries.
-    // For example, the Query fields for DVGA include "pastes", "paste", "users"
-    // Args are opportunities for client input to filter data or mutate data.
     for (const typeName of ['queryType', 'mutationType']) {
       const name: string | null =
         res.locals.schema.data.__schema[typeName]?.name;
@@ -110,19 +125,27 @@ export const verboseError: VulnerabilityType = {
       if (!types?.fields) continue;
 
       for (const field of types.fields) {
-        const query = generateQuery(field, typeName);
-        arrOfQueries.push(query);
+        if (
+          !field.args ||
+          field.args.some(
+            (arg) => arg.type?.kind == 'SCALAR' && arg.type?.name === 'String',
+          )
+        ) {
+          for (const input of SQLInputs) {
+            const query = generateQuery(field, input, typeName);
+            arrOfQueries.push(query);
+          }
+        }
       }
     }
-    res.locals.queries = arrOfQueries;
-    // console.log('Generated Queries...');
-    // console.log(arrOfQueries);
+    res.locals.SQLQueries = arrOfQueries;
+    console.log('Generated Queries...');
+    console.log(arrOfQueries);
     return next();
   },
   attack: async (req: Request, res: Response, _next: NextFunction) => {
-    // console.log('Sending Queries...');
+    console.log('Sending SQL Injections...');
 
-    // Move this to TS file
     interface QueryResult {
       id: string;
       status: string;
@@ -133,24 +156,43 @@ export const verboseError: VulnerabilityType = {
       lastDetected: string | number;
     }
 
+    const titles = {
+      booleanBased: 'Boolean Based SQL Injection',
+      errorBased: 'Error Based SQL Injection',
+      timeBased: 'Time-Based Blind SQL Injection',
+    };
+
     const result: QueryResult[] = [];
     const API: string = req.body.API;
     let ID: number = 1;
 
-    // Think about logic of the query result and how we define each variable, should we summarize and use accordion? The send req could be modularized.
+    // const sendReq = async (query: string) => {
+    //     try {
+    //         const data = await fetch(API, {
+    //         method: "POST",
+    //         headers: {
+    //             'Content-Type': 'application/graphql'
+    //         },
+    //         body
+    //         })
+    //     }catch(err) {
+    //         console.log(err)
+    //     }
+    // }
+
     const sendReqAndEvaluate = async (query: string) => {
       try {
         const queryResult: QueryResult = {
-          id: `VE-${ID++}`,
+          id: `Inj-${ID++}`,
           status: 'Pass',
-          title: 'Verbose Error',
+          title: '',
           description: '',
           severity: 'P1',
           testDuration: '',
           lastDetected: '',
         };
 
-        const sendTime = Date.now(); // checks for the time to send and receive respsonse from GraphQL API
+        const sendTime = Date.now();
 
         const data = await fetch(API, {
           method: 'POST',
@@ -160,7 +202,7 @@ export const verboseError: VulnerabilityType = {
           body: query,
         }).catch((err) => console.log(err));
 
-        if (!data) return; // is this line necessary?
+        if (!data) return;
 
         const response = await data.json();
         const timeTaken = Date.now() - sendTime;
@@ -174,19 +216,43 @@ export const verboseError: VulnerabilityType = {
           .reverse()
           .join('-')}`;
 
-        // Currently, pass/fail is based on error message length, but we could also look at "Did you mean..." to see if the response includes sugggested fields
-        if (response.errors) {
-          response.errors[0].message.length > 50
-            ? (queryResult.status = 'Fail')
-            : (queryResult.status = 'Pass');
+        if (query.includes('OR 1=1') || query.includes("'1'='1")) {
+          queryResult.title = titles.booleanBased;
+          if (response.data && response.data.length > 1)
+            queryResult.status = 'Fail';
+        } else if (
+          query.includes("'") ||
+          query.includes(';') ||
+          query.includes('--')
+        ) {
+          const sqlErrorKeywords = [
+            'syntax error',
+            'unexpected',
+            'mysql_fetch',
+            'invalid query',
+          ];
+          queryResult.title = titles.errorBased;
+          if (
+            response.errors &&
+            response.errors.some((error: { message: string }) =>
+              sqlErrorKeywords.some((keyword) =>
+                error.message.toLowerCase().includes(keyword),
+              ),
+            )
+          ) {
+            queryResult.status = 'Fail';
+          }
+        } else if (query.toLowerCase().includes('sleep')) {
+          queryResult.title = titles.timeBased;
+          if (timeTaken > 5000) queryResult.status = 'Fail';
         }
         result.push(queryResult);
-        // result.push(response); - This is the response from the server but it is not currently used by the client
+        // result.push(response);
       } catch (err) {
         console.log(err);
       }
     };
-    const arrofQueries = res.locals.queries;
+    const arrofQueries = res.locals.SQLQueries;
     for (const query of arrofQueries) {
       await sendReqAndEvaluate(query);
     }

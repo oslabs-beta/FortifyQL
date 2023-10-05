@@ -1,13 +1,16 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
-      "module": "ESNext",
+      "module": "CommonJS",
       "target": "ESNext",
       "outDir": "./build/server",
       "rootDir": "./server",
       "moduleResolution": "node",
       "esModuleInterop": true
     },
-    "include": ["server/**/*.ts"]
+    "include": ["server/**/*.ts"],
+    "ts-node": {
+      "esm": true,
+    }
  }
  

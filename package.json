@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev:frontend": "vite",
-    "dev:backend": "NODE_OPTIONS='--loader ts-node/esm' node --experimental-specifier-resolution=node --loader ts-node/esm/transpile-only server/server.ts",
+    "dev:backend": "nodemon --exec ts-node -P tsconfig.server.json server/server.ts",
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "build:frontend": "vite build",
     "build:backend": "tsc -p tsconfig.server.json",
@@ -46,6 +46,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "nodemon": "^3.0.1",
     "prettier": "^3.0.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2",
