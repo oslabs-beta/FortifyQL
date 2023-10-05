@@ -19,9 +19,11 @@ const PORT = 3000;
 // REQUIRED ROUTES && MIDDLEWARE
 import getSchema from './getSchema.ts';
 import { injection } from './injection.ts';
+import { batching } from './batching.ts'
 import { verboseError } from './verboseError.ts';
 import circularQuery from './circularQuery.ts';
 import dashboard from './dashboard.ts';
+import { get } from 'http';
 
 // Use cors
 server.use(cors());
@@ -36,18 +38,51 @@ server.use((req, _res, next) => {
   return next();
 });
 //PATHS
-// path for frontend to request security scan
-server.use('/api/test', dashboard, (req, res, _next) => {
-  res.json(res.locals.dashboard);
-});
-server.use('/scan', getSchema, injection.generateQueries, injection.attack);
-server.use(
-  '/error',
-  getSchema,
-  verboseError.generateQueries,
-  verboseError.attack,
-);
-server.use('/circular', circularQuery);
+server.use('/runPentest', async (req: Request, res: Response) => {
+  try {
+    console.log("Starting Penetration Testing...")
+    await getSchema(req, res);
+
+    const testsMap: {[key:string]: {generate: Function, evaluate: Function}} = {
+      SQL: {
+        generate: injection.generateQueries,
+        evaluate: injection.attack
+      },
+      Verbose: {
+        generate: verboseError.generateQueries,
+        evaluate: verboseError.attack
+      },
+      // batching: {
+      //   generate: batching.generateQueries,
+      //   evaluate: batching.attack
+      // }
+    };
+
+    const results: {[key: string]: any[]} = {};
+
+    const runTest = async (test: string) => {
+      if(req.body.tests.includes(test)) {
+        await testsMap[test].generate(req, res);
+        const testResult = await testsMap[test].evaluate(req, res);
+        results[test] = testResult;
+      }
+    }
+
+    const runAllTests = async () => {
+      console.log("running all tests")
+      await Promise.all(Object.keys(testsMap).map(runTest));
+    } 
+
+    await runAllTests();
+    console.log("sending response")
+    return res.status(200).json(results);
+
+  }catch(err) {
+    return res.status(400).json("error running tests")
+  }
+})
+
+server.use('/bashing', getSchema, batching.generateQueries)
 
 // GLOBAL ERROR HANDLER
 interface CustomError {

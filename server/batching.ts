@@ -1,7 +1,7 @@
 /**
  * ************************************
  *
- * @module  injection.ts
+ * @module  bashing.ts
  * @author  MADR Productions - AY
  * @date    9-25-23
  * @description middleware for server.use('/injection') to generate and send queries to test for SQL injection and evaluate response
@@ -11,7 +11,16 @@
 
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 
-type InjectionType = {
+//remove arguments 
+//2 types 
+  //identical queries ~10 
+    //grab sub fields without arguments
+  //multiple resource intensive 
+    //grab subfields with a specified depth 
+
+
+
+type BatchingType = {
   generateQueries: RequestHandler;
   attack: RequestHandler;
 };
@@ -53,28 +62,11 @@ interface QueryResult {
   lastDetected: string | number;
 }
 
-export const injection: InjectionType = {
+export const batching: BatchingType = {
   generateQueries: async (req: Request, res: Response, next: NextFunction) => {
     console.log('Generating SQL Injection Queries...');
     // const schema: Schema = res.locals.schema.data;
     const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types;
-
-    const SQLInputs = [
-      // Boolean Based SQL Injection
-      "'OR 1=1'",
-      "' OR '1'='1",
-      "') OR ('1'='1",
-
-      // Error Based SQL Injection
-      "'",
-      "';",
-      '--',
-
-      // Time-Based Blind SQL Injection
-      'OR IF(1=1, SLEEP(5), 0)', // MySQL, MariaDB
-      'OR pg_sleep(5)', // PostgreSQL
-      'OR 1=(SELECT 1 FROM (SELECT SLEEP(5))A)', // Another example for MySQL
-    ];
 
     const getBaseType = (type: GraphQLTypeReference): string => {
       let curr = type;
@@ -102,23 +94,15 @@ export const injection: InjectionType = {
 
     const generateQuery = (
       field: GraphQLField,
-      input: string,
       QueryType: string,
     ) => {
       const queryName = QueryType === 'queryType' ? 'query' : 'mutation';
-      const args =
-        field.args
-          ?.filter(
-            (arg) => arg.type?.kind === 'SCALAR' && arg.type?.name === 'String',
-          )
-          .map((arg) => `${arg.name}: "${input}"`)
-          .join(', ') || '';
 
       const baseTypeName = field.type ? getBaseType(field.type) : '';
       const baseType = schemaTypes.find((type) => type.name === baseTypeName);
       const subFields = baseType ? getSubFields(baseType) : '';
 
-      return `${queryName} { ${field.name}(${args}) ${subFields} }`;
+      return `${queryName} { ${field.name} ${subFields} }`;
     };
 
     const arrOfQueries: string[] = [];
@@ -134,21 +118,15 @@ export const injection: InjectionType = {
       if (!types?.fields) continue;
 
       for (const field of types.fields) {
-        if (
-          !field.args ||
-          field.args.some(
-            (arg) => arg.type?.kind == 'SCALAR' && arg.type?.name === 'String',
-          )
-        ) {
-          for (const input of SQLInputs) {
-            const query = generateQuery(field, input, typeName);
+          
+            const query = generateQuery(field, typeName);
             arrOfQueries.push(query);
-          }
-        }
+        
       }
     }
-    res.locals.SQLQueries = arrOfQueries;
+    res.locals.bashingQueries = arrOfQueries;
     console.log('Generated Queries...');
+    console.log(arrOfQueries)
     return;
   },
   attack: async (req: Request, res: Response): Promise<QueryResult[]>  => {
