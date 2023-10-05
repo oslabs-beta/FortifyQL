@@ -17,12 +17,12 @@ const server = express();
 const PORT = 3000;
 
 // REQUIRED ROUTES && MIDDLEWARE
-import getSchema from './getSchema';
-import { injection } from './injection';
-import { batching } from './batching'
-import { verboseError } from './verboseError';
-import circularQuery from './circularQuery';
-import dashboard from './dashboard';
+import getSchema from './getSchema.ts';
+import { injection } from './injection.ts';
+import { batching } from './batching.ts'
+import { verboseError } from './verboseError.ts';
+import circularQuery from './circularQuery.ts';
+import dashboard from './dashboard.ts';
 import { get } from 'http';
 
 // Use cors
@@ -52,10 +52,10 @@ server.use('/runPentest', async (req: Request, res: Response) => {
         generate: verboseError.generateQueries,
         evaluate: verboseError.attack
       },
-      batching: {
-        generate: batching.generateQueries,
-        evaluate: batching.attack
-      }
+      // batching: {
+      //   generate: batching.generateQueries,
+      //   evaluate: batching.attack
+      // }
     };
 
     const results: {[key: string]: any[]} = {};

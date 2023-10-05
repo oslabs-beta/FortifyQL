@@ -118,10 +118,10 @@ export const batching: BatchingType = {
       if (!types?.fields) continue;
 
       for (const field of types.fields) {
-          for (const input of SQLInputs) {
+          
             const query = generateQuery(field, typeName);
             arrOfQueries.push(query);
-        }
+        
       }
     }
     res.locals.bashingQueries = arrOfQueries;
