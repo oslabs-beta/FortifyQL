@@ -17,11 +17,12 @@ const server = express();
 const PORT = 3000;
 
 // REQUIRED ROUTES && MIDDLEWARE
-import getSchema from './getSchema.ts';
-import { injection } from './injection.ts';
-import { verboseError } from './verboseError.ts';
-import circularQuery from './circularQuery.ts';
-import dashboard from './dashboard.ts';
+import getSchema from './getSchema';
+import { injection } from './injection';
+import { batching } from './batching'
+import { verboseError } from './verboseError';
+import circularQuery from './circularQuery';
+import dashboard from './dashboard';
 import { get } from 'http';
 
 // Use cors
@@ -40,7 +41,7 @@ server.use((req, _res, next) => {
 server.use('/runPentest', async (req: Request, res: Response) => {
   try {
     console.log("Starting Penetration Testing...")
-    // await getSchema(req, res);
+    await getSchema(req, res);
 
     const testsMap: {[key:string]: {generate: Function, evaluate: Function}} = {
       SQL: {
@@ -50,6 +51,10 @@ server.use('/runPentest', async (req: Request, res: Response) => {
       Verbose: {
         generate: verboseError.generateQueries,
         evaluate: verboseError.attack
+      },
+      batching: {
+        generate: batching.generateQueries,
+        evaluate: batching.attack
       }
     };
 
@@ -59,7 +64,6 @@ server.use('/runPentest', async (req: Request, res: Response) => {
       if(req.body.tests.includes(test)) {
         await testsMap[test].generate(req, res);
         const testResult = await testsMap[test].evaluate(req, res);
-        console.log(testResult);
         results[test] = testResult;
       }
     }
@@ -68,17 +72,17 @@ server.use('/runPentest', async (req: Request, res: Response) => {
       console.log("running all tests")
       await Promise.all(Object.keys(testsMap).map(runTest));
     } 
+
     await runAllTests();
     console.log("sending response")
     return res.status(200).json(results);
 
-
   }catch(err) {
     return res.status(400).json("error running tests")
   }
-
 })
-server.use('/sql',getSchema,injection.generateQueries, injection.attack)
+
+server.use('/bashing', getSchema, batching.generateQueries)
 
 // GLOBAL ERROR HANDLER
 interface CustomError {

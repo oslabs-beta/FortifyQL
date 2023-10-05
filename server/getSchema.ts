@@ -9,9 +9,9 @@
  * ************************************
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 
-const getSchema = async (req: Request, res: Response, next: NextFunction) => {
+const getSchema = async (req: Request, res: Response) => {
   const fetchModule = await import('node-fetch');
   const fetch = fetchModule.default;
 
@@ -114,7 +114,7 @@ fragment TypeRef on __Type {
     const result: any = await response.json(); // clean up any
     res.locals.schema = result;
     console.log('Retrieved Schema...');
-    return next()
+    return;
   } catch (err) {
     console.log('getSchema middleware', err);
     res
