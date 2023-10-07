@@ -63,7 +63,7 @@ export const circularQuery: VulnerabilityType = {
         fields?.forEach((field) => {
           if (field.type.ofType?.kind === 'OBJECT') {
             firstObjName = customNameTypes[i].name; // PasteObject
-            objTypeName = field.type.ofType?.name; // OwnerObject
+            objTypeName = field.type.ofType?.name!; // OwnerObject
             // (field.type.name != null) ? objTypeName = field.type.name : objTypeName = field.type.ofType.name;
             field_1_name = field.name; // owner
           }
