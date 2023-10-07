@@ -1,99 +1,115 @@
 /**
  * ************************************
-*
-* @module  circularQuery.ts
-* @author  MADR Productions - MK & RP
-* @date    10-05-23
-* @description searches for circular references within the object types in the schema, generates and executes circular queries when found, and returns a pass or fail depending on if the number of nested relationships exceeds the maximum allowable depth
-*
-* ************************************
-*/
+ *
+ * @module  circularQuery.ts
+ * @author  MADR Productions - MK & RP
+ * @date    10-05-23
+ * @description searches for circular references within the object types in the schema, generates and executes circular queries when found, and returns a pass or fail depending on if the number of nested relationships exceeds the maximum allowable depth
+ *
+ * ************************************
+ */
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 
 type VulnerabilityType = {
-    generateQueries: RequestHandler
-    attack: RequestHandler
+  generateQueries: RequestHandler;
+  attack: RequestHandler;
 };
 interface GraphQLType {
-    name: string
-    kind:string
-    fields?: GraphQLField[]
+  name: string;
+  kind: string;
+  fields?: GraphQLField[];
 }
 interface GraphQLField {
-    name: string
-    args?: GraphQLArgs[]
-    type: GraphQLTypeReference
+  name: string;
+  args?: GraphQLArgs[];
+  type: GraphQLTypeReference;
 }
 interface GraphQLArgs {
-    name: string
-    type?: GraphQLTypeReference
+  name: string;
+  type?: GraphQLTypeReference;
 }
 interface GraphQLTypeReference {
-    kind: string
-    name?: string
-    ofType?: GraphQLTypeReference
-    fields?: GraphQLField[]
+  kind: string;
+  name?: string;
+  ofType?: GraphQLTypeReference;
+  fields?: GraphQLField[];
 }
 
 // Helper function that searches for circular references within the schema
 export const circularQuery: VulnerabilityType = {
   generateQueries: async (req: Request, res: Response, next: NextFunction) => {
     console.log('Generating circular queries...');
-  // Retrieves all the operation types "Query, Mutation, Subscription" in the schema
-  const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types;
-  let field_1_name: string = '';
-  let field_2_name: string = '';
-  let scalar_name: string = '';
+    // Retrieves all the operation types "Query, Mutation, Subscription" in the schema
+    const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types;
+    let field_1_name: string = '';
+    let field_2_name: string = '';
+    let scalar_name: string = '';
+    let firstObjName: string = '';
+    let objTypeName: string = '';
+    const allRelationships: string[] = []; // contains all circularly referenced field names
 
-  const findCircularRelationship = (
-    type: GraphQLType | GraphQLTypeReference,
-    firstObjName: string = '',
-    objTypeName: string = '',
-    allRelationships: string[], // contains all circularly referenced field names
-    ): void => {
+    const findCircularRelationship = (): void => {
       // Filter out objects that are query, mutation, and subscription types
-      const customNameTypes = schemaTypes.filter((object) => 
-      object.name !== 'Query' && 'Mutations' && 'Subscription' 
-      && object.kind === 'OBJECT');
-
-    // Iterate over the array of customNameType objects
-    for (let i = 0; i < customNameTypes.length; i++) {
-      const fields = customNameTypes[i].fields;
-      if (firstObjName === '') {
-        fields?.forEach((field) => {
-          if (field.type.ofType?.kind === 'OBJECT') {
-            firstObjName = customNameTypes[i].name; // PasteObject
-            objTypeName = field.type.ofType?.name!; // OwnerObject
-            // (field.type.name != null) ? objTypeName = field.type.name : objTypeName = field.type.ofType.name;
-            field_1_name = field.name; // owner
-          }
-        })
-      } else if (customNameTypes[i].name === objTypeName) {      
-        const fields2 = customNameTypes[i].fields;
-        fields2?.forEach((field) => {
-          if (field.type.ofType?.kind === 'SCALAR' && scalar_name === '') {
-            scalar_name = field.name;
-          }
-          if (field.type.ofType?.kind === 'OBJECT' && 
-            field.type.ofType?.name === firstObjName) {
-              field_2_name = field.name;
-              return; 
+      const customNameTypes = schemaTypes.filter(
+        (object) =>
+          object.name !== 'Query' &&
+          object.name !== 'Mutations' &&
+          object.name !== 'Subscription' &&
+          object.kind === 'OBJECT',
+      );
+      console.log('CustomNameTypes: ', customNameTypes);
+      // Iterate over the array of customNameType objects
+      for (let i = 0; i < customNameTypes.length; i++) {
+        const fields = customNameTypes[i].fields; // array of objects
+        console.log('fields: ', fields);
+        if (firstObjName === '') {
+          console.log('-----------> In the first field object <-----------');
+          fields?.forEach((field) => {
+            if (
+              field.type?.kind === 'OBJECT' ||
+              field.type.ofType?.kind! === 'OBJECT'
+            ) {
+              firstObjName = customNameTypes[i].name; // PasteObject
+              console.log('firstObjName: ', firstObjName);
+              // objTypeName = field.type.ofType?.name!; // OwnerObject
+              field.type.name !== null
+                ? (objTypeName = field.type?.name!)
+                : (objTypeName = field.type.ofType?.name!);
+              console.log('objTypeName: ', objTypeName);
+              field_1_name = field.name; // owner
+              console.log('field_1_name', field_1_name);
             }
-        })
+          });
+        } else if (customNameTypes[i].name === objTypeName) {
+          const fields2 = customNameTypes[i].fields;
+          fields2?.forEach((field) => {
+            if (field.type.ofType?.kind === 'SCALAR' && scalar_name === '') {
+              scalar_name = field.name;
+            }
+            if (
+              field.type.ofType?.kind === 'OBJECT' &&
+              field.type.ofType?.name === firstObjName
+            ) {
+              console.log('---------> In the second field object <----------');
+              field_2_name = field.name;
+              console.log('field_2_name', field_2_name);
+              return;
+            }
+          });
+        }
       }
+      console.log('names: ', field_1_name, field_2_name);
+      // enter for loop
+      // check if firstObjName is = '', if so then enter the if statement
+      // if not check if customNameTypes = objTypeName if so then enter second if
+      // otherwise continue to loop
+
+      allRelationships.push(field_1_name, field_2_name);
+      // return the field names to the generateQuery function
     };
 
-    // enter for loop
-    // check if firstObjName is = '', if so then enter the if statement
-    // if not check if customNameTypes = objTypeName if so then enter second if 
-    // otherwise continue to loop
-
-    allRelationships.push(field_1_name, field_2_name);
-    // return the field names to the generateQuery function
-  };
-
-
-  const ARRAY_LENGTH = 5;
+    findCircularRelationship();
+    const ARRAY_LENGTH = 5;
     const FIELD_REPEAT = 10;
     let query = 'query {';
     const first_field = `${field_1_name}`;
@@ -103,7 +119,7 @@ export const circularQuery: VulnerabilityType = {
     for (let i = 0; i < FIELD_REPEAT; i++) {
       count++;
       const closing_braces = '}'.repeat(FIELD_REPEAT * 2) + '}';
-      const payload = `${first_field} { ${second_field} { `;
+      const payload = `${second_field} { ${first_field} { `;
       query += payload;
 
       if (count === FIELD_REPEAT) {
@@ -205,7 +221,7 @@ export const circularQuery: VulnerabilityType = {
     }
     return result;
   },
-}
+};
 
 //   try {
 //     console.log('entered scan');
@@ -236,8 +252,6 @@ export const circularQuery: VulnerabilityType = {
 
 // import { Request, Response, NextFunction, RequestHandler } from 'express';
 
-
-
 // export const injection: InjectionType = {
 //     generateQuery: async (req: Request, res: Response, _next: NextFunction) => {
 //         const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types;
@@ -266,7 +280,7 @@ export const circularQuery: VulnerabilityType = {
 //         const arrOfQueries: string[] = [];
 
 //         for (const typeName of ['queryType', 'mutationType']) {
-//             const name: string | null = res.locals.schema.data.__schema[typeName]?.name; 
+//             const name: string | null = res.locals.schema.data.__schema[typeName]?.name;
 //             if(!name) continue;
 
 //             const types: GraphQLType | undefined = schemaTypes.find(type => type.name === name);
@@ -288,27 +302,25 @@ export const circularQuery: VulnerabilityType = {
 //     }
 // }
 
-
-
 // fields?.forEach((field) => {
 //   if (field.type.ofType?.kind === 'OBJECT') {
 //     let firstObjName = customNameTypes[i].name; // PasteObject
 //     objTypeName = field.type.ofType?.name; // OwnerObject
 //     field_1_name = field.name; // owner
-     
-//   if (customNameTypes[i].name === objTypeName) {      
+
+//   if (customNameTypes[i].name === objTypeName) {
 //     const fields2 = customNameTypes[i].fields;
 //     fields2?.forEach((field) => {
-//       if (field.type.ofType?.kind === 'OBJECT' && 
+//       if (field.type.ofType?.kind === 'OBJECT' &&
 //       field.type.ofType?.name === firstObjName) {
 //         field_2_name = field.name;
-//         return; 
+//         return;
 //       }
 //     })
 //   }
 // }})
 
-// 
+//
 // for (let i = 0; i < customNameTypes.length; i++) {
 //   if (customNameTypes[i].fields !== null) {
 //     const fields = customNameTypes[i].fields;
@@ -317,12 +329,12 @@ export const circularQuery: VulnerabilityType = {
 //         let firstObjName = customNameTypes[i].name; // PasteObject
 //         objTypeName = fields[i].type.ofType?.name; // OwnerObject
 //         field_1_name = fields[i].name; // owner
-    
-//         if (customNameTypes[i].name === objTypeName) {      
-//           if (fields?[i].type.ofType?.kind === 'OBJECT' && 
+
+//         if (customNameTypes[i].name === objTypeName) {
+//           if (fields?[i].type.ofType?.kind === 'OBJECT' &&
 //             fields?[i].type.ofType?.name === firstObjName) {
 //               field_2_name = fields?[i].name;
-//               return; 
+//               return;
 //             }
 //           }
 //       }
@@ -330,23 +342,22 @@ export const circularQuery: VulnerabilityType = {
 //   }
 // }
 
-
 // for (let i = 0; i < customNameTypes.length; i++) {
-  //  fields?.forEach((field) => {
+//  fields?.forEach((field) => {
 //   if (field.type.ofType?.kind === 'OBJECT') {
 //     let firstObjName = customNameTypes[i].name; // PasteObject
 //     objTypeName = field.type.ofType?.name; // OwnerObject
 //     field_1_name = field.name; // owner
-     
-//   if (customNameTypes[i].name === objTypeName) {      
+
+//   if (customNameTypes[i].name === objTypeName) {
 //     const fields2 = customNameTypes[i].fields;
 //     fields2?.forEach((field) => {
-//       if (field.type.ofType?.kind === 'OBJECT' && 
+//       if (field.type.ofType?.kind === 'OBJECT' &&
 //       field.type.ofType?.name === firstObjName) {
 //         field_2_name = field.name;
-//         return; 
+//         return;
 //       }
 //     })
 //   }
 // }})
-  // }
+// }
