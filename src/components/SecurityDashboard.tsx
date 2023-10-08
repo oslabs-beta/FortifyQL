@@ -51,7 +51,14 @@ const SecurityDashboard: React.FC = () => {
 
   return (
     <div className='dashboard__container'>
-      <h1 className='dashboard__header'>FortifyQL</h1>
+      <div className='header'>
+        <img
+          src='../src/assets/fortifyQL.png'
+          alt='FortifyQL logo of an abstract red maze in the shape of a shield with a keyhole at the center'
+          className='img_responsive'
+        ></img>
+        <h1 id='dashboard__header'>FortifyQL</h1>
+      </div>
       {showConfigForm ? (
         <ScanConfigForm onScanSubmit={handleScanSubmit} />
       ) : (

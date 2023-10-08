@@ -2,7 +2,7 @@ import React, { useState, FormEvent } from 'react';
 
 interface IConfigFormProps {
   onScanSubmit: (endpoint: string, tests: string[]) => void;
-};
+}
 
 const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
   // Destructuring props
@@ -36,9 +36,9 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
   };
 
   return (
-    <div className='container'>
+    <div className='config-form__container'>
       <form className='input_form' onSubmit={handleSubmit}>
-        <h2 id='dashboardHeader'>Security Scan Configuration</h2>
+        <h2 id='config-form__header'>Security Scan Configuration</h2>
         <div className='underline'></div>
         <input
           id='textbox'

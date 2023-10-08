@@ -19,6 +19,7 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
 
   const colDefs: ColDef[] = [
     { headerName: 'Test ID', field: 'id' },
+    { field: 'title' },
     { field: 'status', headerTooltip: 'Pending / Pass / Fail' },
     { field: 'description' },
     { field: 'severity', editable: true },
@@ -54,15 +55,17 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
         className='ag-theme-alpine'
         style={{ height: '100%', width: '100%' }}
       >
-        <h2 className='results-table__header'>Security Scan Results</h2>
+        <h2 id='results-table__header'>Security Scan Results</h2>
         <div className='results-table-export__container'>
           <button
-            className='dashboard-test-config__button'
+            id='dashboard-test-config__button'
             onClick={handleDisplayTestConfig}
           >
             Back to Test Configuration
           </button>
-          <button onClick={handleExportCSV}>Export to CSV</button>
+          <button id='dashboard-export-csv_button' onClick={handleExportCSV}>
+            Export to CSV
+          </button>
         </div>
         <AgGridReact
           columnDefs={colDefs}
