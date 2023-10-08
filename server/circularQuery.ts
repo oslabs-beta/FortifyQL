@@ -242,7 +242,9 @@ export const circularQuery: VulnerabilityType = {
           .join('-')}`;
 
         // Currently, pass/fail is based on response data but also need to look at timeout?
-        if (response.data) {
+        if (response.errors) {
+          queryResult.status = 'Pass';
+        } else if (response.data) {
           queryResult.status = 'Fail';
         }
         result.push(queryResult);
