@@ -41,11 +41,11 @@ export const circularQuery: VulnerabilityType = {
     console.log('Generating circular queries...');
     // Retrieves all the operation types "Query, Mutation, Subscription" in the schema
     const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types;
-    let field_1_name: string = '';
-    let field_2_name: string = '';
-    let scalar_name: string = '';
-    let firstObjName: string = '';
-    let objTypeName: string = '';
+    const field_1_name: string = '';
+    const field_2_name: string = '';
+    const scalar_name: string = '';
+    const firstObjName: string = '';
+    const objTypeName: string = '';
     const queries: unknown[] = [];
     const allRelationships: unknown[] = []; // contains all circularly referenced field names along with one scalar field to end the loop
 
@@ -54,6 +54,21 @@ export const circularQuery: VulnerabilityType = {
     const mutationTypeName = res.locals.schema.data.__schema.mutationType?.name;
     const subscriptionTypeName =
       res.locals.schema.data.__schema.subscriptionType?.name;
+
+    const queryTypeObject = schemaTypes.filter(
+      (object) => object.name === queryTypeName,
+    );
+    const queryTypeFields = queryTypeObject[0].fields;
+
+    const interfaceObject = queryTypeFields?.filter(
+      (object) => object.type.kind === 'INTERFACE',
+    );
+
+    let interfaceTypeName: string = '';
+
+    if (interfaceObject?.length !== 0) {
+      interfaceTypeName = interfaceObject![0].name;
+    }
 
     // Create an array of type names to exclude
     const excludedTypeNames = [
@@ -70,38 +85,83 @@ export const circularQuery: VulnerabilityType = {
         object.kind === 'OBJECT',
     );
 
-    for (let i = 0; i < customNameTypes.length; i++) {
-      const fields = customNameTypes[i].fields; // array of objects
-      if (firstObjName === '') {
-        fields?.forEach((field) => {
-          if (
-            field.type?.kind === 'OBJECT' ||
-            field.type.ofType?.kind! === 'OBJECT'
-          ) {
-            firstObjName = customNameTypes[i].name; // PasteObject
-            // objTypeName = field.type.ofType?.name!; // OwnerObject
-            field.type.name !== null
-              ? (objTypeName = field.type?.name!) // OwnerObject
-              : (objTypeName = field.type.ofType?.name!);
-            field_1_name = field.name; // owner
-          }
-        });
-      } else if (customNameTypes[i].name === objTypeName) {
-        const fields2 = customNameTypes[i].fields;
-        fields2?.forEach((field) => {
-          if (field.type.ofType?.kind === 'SCALAR' && scalar_name === '') {
-            scalar_name = field.name;
-          }
-          if (
-            field.type.ofType?.kind === 'OBJECT' &&
-            field.type.ofType?.name === firstObjName
-          ) {
-            field_2_name = field.name;
-            return;
-          }
-        });
-      }
+    const circularRefs: Set<string> = new Set();
+
+    function addUniqueTuple(tuple: [string, string, string]): void {
+      const tupleString = JSON.stringify(tuple);
+      circularRefs.add(tupleString);
     }
+    const findCircularRelationships = (
+      nameType: any,
+    ): [string, string, string][] => {
+      console.log('starting to findCircularRelationships');
+
+      let primFieldName: string = '';
+      let secFieldName: string = '';
+      let scalarName: string = '';
+
+      const traverseFields = (
+        typeName: string,
+        fields: GraphQLField[] | undefined,
+        visitedFields: Set<string>,
+      ) => {
+        if (
+          visitedFields.has(typeName!) &&
+          primFieldName !== '' &&
+          secFieldName !== '' &&
+          scalarName !== ''
+        ) {
+          addUniqueTuple([primFieldName, secFieldName, scalarName]);
+          return circularRefs;
+        }
+        visitedFields.add(typeName);
+        fields?.forEach((field) => {
+          const fieldType = field.type.ofType || field.type;
+          if (field.name === interfaceTypeName) return;
+
+          if (fieldType?.kind === 'OBJECT') {
+            const foundQueryType = queryTypeFields?.find(
+              (obj) => obj.name === field.name,
+            );
+            if (foundQueryType !== undefined) {
+              primFieldName = field.name;
+            } else {
+              secFieldName = field.name;
+              // Find a scalar field on the second object
+              const circularType = nameType.find(
+                (t: any) => t.name === fieldType.name,
+              );
+              const scalarField = circularType?.fields.find(
+                (f: GraphQLField) => f.type.kind === 'SCALAR',
+              );
+              if (scalarField) {
+                scalarName = scalarField.name;
+              }
+            }
+            traverseFields(
+              fieldType.name!,
+              nameType.find((t: any) => t.name === fieldType.name)?.fields,
+              new Set<string>(visitedFields),
+            );
+          }
+        });
+      };
+
+      customNameTypes.forEach((customType) => {
+        traverseFields(customType.name, customType.fields, new Set<string>());
+      });
+
+      console.log('circular refs: ', circularRefs);
+      const uniqueTuples: [string, string, string][] = Array.from(
+        circularRefs,
+        (tupleString) => JSON.parse(tupleString),
+      );
+      return uniqueTuples;
+    };
+
+    const circularReferences = findCircularRelationships(customNameTypes);
+
+    console.log('Circular Reference: ', circularReferences);
 
     const buildQuery = (
       field_1: string,
@@ -114,24 +174,21 @@ export const circularQuery: VulnerabilityType = {
 
       for (let i = 0; i < FIELD_REPEAT; i++) {
         count++;
-        const closing_braces = '}'.repeat(FIELD_REPEAT * 2) + '}';
-        const payload = `${field_2} { ${field_1} { `;
+        const closingBraces = '}'.repeat(FIELD_REPEAT * 2) + '}';
+        const payload = `${field_1} { ${field_2} { `;
         query += payload;
 
         if (count === FIELD_REPEAT) {
-          query += scalar + closing_braces;
+          query += scalar + closingBraces;
         }
       }
       console.log(query);
       queries.push(query);
     };
 
-    console.log('names: ', field_1_name, field_2_name, scalar_name);
-    if (field_1_name !== '' && field_2_name !== '') {
-      buildQuery(field_1_name, field_2_name, scalar_name);
+    for (const array of circularReferences) {
+      buildQuery(array[0], array[1], array[2]);
     }
-
-    // findCircularRelationship();
 
     res.locals.queries = queries;
     console.log('Queries: ', res.locals.queries);
