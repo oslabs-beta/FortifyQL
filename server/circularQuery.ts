@@ -94,8 +94,6 @@ export const circularQuery: VulnerabilityType = {
     const findCircularRelationships = (
       nameType: any,
     ): [string, string, string][] => {
-      console.log('starting to findCircularRelationships');
-
       let primFieldName: string = '';
       let secFieldName: string = '';
       let scalarName: string = '';
@@ -151,7 +149,6 @@ export const circularQuery: VulnerabilityType = {
         traverseFields(customType.name, customType.fields, new Set<string>());
       });
 
-      console.log('circular refs: ', circularRefs);
       const uniqueTuples: [string, string, string][] = Array.from(
         circularRefs,
         (tupleString) => JSON.parse(tupleString),
@@ -160,8 +157,6 @@ export const circularQuery: VulnerabilityType = {
     };
 
     const circularReferences = findCircularRelationships(customNameTypes);
-
-    console.log('Circular Reference: ', circularReferences);
 
     const buildQuery = (
       field_1: string,
@@ -182,7 +177,6 @@ export const circularQuery: VulnerabilityType = {
           query += scalar + closingBraces;
         }
       }
-      console.log(query);
       queries.push(query);
     };
 
@@ -191,7 +185,6 @@ export const circularQuery: VulnerabilityType = {
     }
 
     res.locals.queries = queries;
-    console.log('Queries: ', res.locals.queries);
     return;
   },
   attack: async (req: Request, res: Response, _next: NextFunction) => {
