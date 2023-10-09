@@ -28,7 +28,7 @@ interface GraphQLType {
   fields?: GraphQLField[];
 }
 interface GraphQLField {
-  name: string;
+  name: strin
   args?: GraphQLArgs[];
   type: GraphQLTypeReference;
   fields?: GraphQLField;
