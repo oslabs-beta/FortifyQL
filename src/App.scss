@@ -74,11 +74,11 @@ body {
 
 .switch {
   position: relative;
-  display: inline-block;
+  display: flex;
+  align-items: center;
   width: 63px;
   height: 33px;
   margin: 0 10px;
-  margin: 15px;
 }
 .switch input {
   display: none;
@@ -86,10 +86,8 @@ body {
 
 .tests {
   display: flex;
-  flex-direction: row;
-  align-items: center;
   margin-bottom: 10px;
-  flex-wrap: wrap;
+  align-items: center;
 }
 
 .slider {
@@ -137,10 +135,9 @@ input:checked + .slider:before {
 }
 
 .text {
-  position: relative;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  flex: 1;
+  flex-direction: column;
   font-size: 15px;
 }
 
