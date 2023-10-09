@@ -22,7 +22,7 @@ const SecurityDashboard: React.FC = () => {
         tests: selectedTests,
       });
 
-      const response = await fetch('/api/test', {
+      const response = await fetch('/api/runPentest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

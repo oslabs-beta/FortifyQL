@@ -49,11 +49,7 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
 
         <div className='tests'>
           <label className='switch'>
-            <input
-              type='checkbox'
-              value='injection-scan'
-              onChange={handleSelectedTests}
-            />
+            <input type='checkbox' value='SQL' onChange={handleSelectedTests} />
             <span className='slider' />
           </label>
           <label className='text'>
@@ -67,7 +63,7 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
           <label className='switch'>
             <input
               type='checkbox'
-              value='dos-scan'
+              value='Circular'
               onChange={handleSelectedTests}
             />
             <span className='slider' />
@@ -113,7 +109,7 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
           <label className='switch'>
             <input
               type='checkbox'
-              value='introspection-scan'
+              value='Verbose'
               onChange={handleSelectedTests}
             />
             <span className='slider' />
