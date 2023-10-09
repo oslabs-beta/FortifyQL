@@ -87,8 +87,9 @@ body {
 .tests {
   display: flex;
   flex-direction: row;
-  float: left;
-  vertical-align: middle;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 .slider {
@@ -138,9 +139,8 @@ input:checked + .slider:before {
 .text {
   position: relative;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  overflow: hidden;
-  white-space: nowrap;
   font-size: 15px;
 }
 
