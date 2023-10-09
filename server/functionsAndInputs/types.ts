@@ -1,17 +1,9 @@
 import { RequestHandler } from "express";
 
-export type InjectionType = {
+export type PentestType = {
   generateQueries: RequestHandler;
   attack: RequestHandler;
 };
-export type VerboseType = {
-    generateQueries: RequestHandler;
-    attack: RequestHandler;
-  };
-export type BatchingType = {
-    generateQueries: RequestHandler;
-    attack: RequestHandler;
-  };
 export interface GraphQLType {
   name: string;
   kind: string;

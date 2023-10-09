@@ -55,7 +55,7 @@ export const generateSQLQuery = (
   return `${queryName} { ${field.name}(${args}) ${subFields} }`;
 };
 
-//Function to generate queries given field with no type arguments 
+//Function to generate queries given field with no type arguments
 export const generateBatchQuery = (
   field: GraphQLField,
   QueryType: string,
@@ -124,26 +124,30 @@ export const generateQueryNested = (
   return `${queryName} { ${field.name} ${subFields} }`;
 };
 export const getVerboseSubFields = (
-    type: GraphQLType | GraphQLTypeReference,
-    schemaTypes: GraphQLType[],
-    depth: number = 0,
-    maxDepth: number = 1,
-  ): string => {
-    if (!type.fields || depth > maxDepth) return '';
-    return `{ ${type.fields
-      .filter((field) => {
-        const baseTypeName = getBaseType(field.type);
-        const baseType = schemaTypes.find((t) => t.name === baseTypeName);
-        return !baseType?.fields;
-      })
-      .map((field) => field.name)
-      .join('s ')} }`;
-  };
-export const generateVerboseQuery = (field: GraphQLField, QueryType: string, schemaTypes: GraphQLType[]) => {
-    const queryName = QueryType === 'queryType' ? 'query' : 'mutation';
-    const baseTypeName = field.type ? getBaseType(field.type) : '';
-    const baseType = schemaTypes.find((type) => type.name === baseTypeName);
-    const subFields = baseType ? getVerboseSubFields(baseType, schemaTypes) : '';
+  type: GraphQLType | GraphQLTypeReference,
+  schemaTypes: GraphQLType[],
+  depth: number = 0,
+  maxDepth: number = 1,
+): string => {
+  if (!type.fields || depth > maxDepth) return '';
+  return `{ ${type.fields
+    .filter((field) => {
+      const baseTypeName = getBaseType(field.type);
+      const baseType = schemaTypes.find((t) => t.name === baseTypeName);
+      return !baseType?.fields;
+    })
+    .map((field) => field.name)
+    .join('s ')} }`;
+};
+export const generateVerboseQuery = (
+  field: GraphQLField,
+  QueryType: string,
+  schemaTypes: GraphQLType[],
+) => {
+  const queryName = QueryType === 'queryType' ? 'query' : 'mutation';
+  const baseTypeName = field.type ? getBaseType(field.type) : '';
+  const baseType = schemaTypes.find((type) => type.name === baseTypeName);
+  const subFields = baseType ? getVerboseSubFields(baseType, schemaTypes) : '';
 
-    return `${queryName} { ${field.name} ${subFields} }`;
-  };
+  return `${queryName} { ${field.name} ${subFields} }`;
+};
