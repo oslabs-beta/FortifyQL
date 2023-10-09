@@ -9,7 +9,7 @@
  * ************************************
  */
 
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
 const getSchema = async (req: Request, res: Response) => {
   const fetchModule = await import('node-fetch');

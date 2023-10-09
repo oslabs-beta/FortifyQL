@@ -10,44 +10,13 @@
  */
 
 import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { VerboseType, GraphQLType, GraphQLField, GraphQLArgs, GraphQLTypeReference, QueryResult } from './types';
 
 // move all of the following types and interfaces to a TS file
 // also can some of them be removed they seem duplicative
-type VulnerabilityType = {
-  generateQueries: RequestHandler;
-  attack: RequestHandler;
-};
 
-interface Schema {
-  __schema: {
-    types: GraphQLType[];
-    queryType?: { name: string };
-    mutationType?: { name: string };
-  };
-}
-interface GraphQLType {
-  name: string;
-  kind: string;
-  fields?: GraphQLField[];
-}
-interface GraphQLField {
-  name: string;
-  args?: GraphQLArgs[];
-  type: GraphQLTypeReference;
-  fields?: GraphQLField;
-}
-interface GraphQLArgs {
-  name: string;
-  type?: GraphQLTypeReference;
-}
-interface GraphQLTypeReference {
-  kind: string;
-  name?: string;
-  ofType?: GraphQLTypeReference;
-  fields?: GraphQLField[];
-}
 
-export const verboseError: VulnerabilityType = {
+export const verboseError: VerboseType = {
   // method for generating queries that trigger an error response by purposefully creating a typo
   generateQueries: async (req: Request, res: Response, next: NextFunction) => {
     console.log('Generating Queries for verbose...');

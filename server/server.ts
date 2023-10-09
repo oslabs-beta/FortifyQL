@@ -86,7 +86,7 @@ server.use('/runPentest', async (req: Request, res: Response) => {
   }
 })
 
-server.use('/bashing', getSchema, batching.generateQueries)
+server.use('/batching', getSchema, batching.generateQueries, batching.attack)
 
 // GLOBAL ERROR HANDLER
 interface CustomError {
