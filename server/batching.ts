@@ -10,6 +10,7 @@
  */
 
 import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { BatchingType, GraphQLType, GraphQLField, GraphQLArgs, GraphQLTypeReference, QueryResult } from './types';
 
 //remove arguments
 //2 types
@@ -17,48 +18,6 @@ import { Request, Response, NextFunction, RequestHandler } from 'express';
 //grab sub fields without arguments
 //multiple resource intensive
 //grab subfields with a specified depth
-
-type BatchingType = {
-  generateQueries: RequestHandler;
-  attack: RequestHandler;
-};
-interface Schema {
-  __schema: {
-    types: GraphQLType[];
-    queryType?: { name: string };
-    mutationType?: { name: string };
-  };
-}
-interface GraphQLType {
-  name: string;
-  kind: string;
-  fields?: GraphQLField[];
-}
-interface GraphQLField {
-  name: string;
-  args?: GraphQLArgs[];
-  type: GraphQLTypeReference;
-  fields?: GraphQLField;
-}
-interface GraphQLArgs {
-  name: string;
-  type?: GraphQLTypeReference;
-}
-interface GraphQLTypeReference {
-  kind: string;
-  name?: string;
-  ofType?: GraphQLTypeReference;
-  fields?: GraphQLField[];
-}
-interface QueryResult {
-  id: string;
-  status: string;
-  title: string;
-  description: string;
-  severity: string | number;
-  testDuration: string | number;
-  lastDetected: string | number;
-}
 
 export const batching: BatchingType = {
   generateQueries: async (req: Request, res: Response, next: NextFunction) => {
@@ -188,6 +147,7 @@ export const batching: BatchingType = {
       id: `BATCH-${ID++}`,
       status: 'Error',
       title: 'Failed Test',
+      query: '',
       description: `Error occured`,
       severity: 'P1',
       testDuration: '',
@@ -199,8 +159,8 @@ export const batching: BatchingType = {
     };
 
     const titles = {
-      identical: 'Boolean Based SQL Injection',
-      exhaustive: 'Error Based SQL Injection',
+      identical: 'Multiple Identical Queries',
+      exhaustive: 'Resource Exhaustive and Nested',
     };
 
     const sendReqAndEvaluate = async (query: string): Promise<QueryResult> => {
@@ -208,6 +168,7 @@ export const batching: BatchingType = {
         id: `BATCH-${ID++}`,
         status: 'Pass',
         title: '',
+        query: query,
         description: '',
         severity: 'P1',
         testDuration: '',
@@ -245,17 +206,57 @@ export const batching: BatchingType = {
         //check if identical or exhaustive- then change title
         //check if vulnerable- change status
         //depending on vulnerability- change description
-          //checks would be:
-            //if data is returned 
-            //if certain key words in the error leak info 
-            //time based- they are processing the query 
+        //checks would be:
+        //if data is returned
+        //if certain key words in the error leak info
+        //time based- they are processing the query
         if (query[0] === query[1]) {
           queryResult.title = titles.identical;
         } else {
           queryResult.title = titles.exhaustive;
         }
-          
+        //first check if data is given
+        //status fail
+        //check if error exist
+        //make an arr of key words
+        //loop through array and evaluate messages for key words
+        //fail
 
+        if (response.data) {
+          queryResult.status = 'Fail';
+          queryResult.description =
+            'Batching enabled, Rate Limiting Not Found';
+        }
+        if (response.errors) {
+          const batchingErrorKeywords: string[] = [
+            'too many operations',
+            'batch size exceeds',
+            'operation limit',
+            'query complexity exceeds',
+            'rate limit exceeded',
+            'throttle',
+            'unauthorized batch request',
+            'unexpected token',
+            'batching not supported',
+            'anonymous operation',
+            'must be the only defined operation',
+            'batch',
+            'rate limit',
+            'server error',
+            'API limit exceeded',
+          ];
+          if (
+            response.errors.some((error: { message: string }) =>
+              batchingErrorKeywords.some((keyword) =>
+                error.message.toLowerCase().includes(keyword),
+              ),
+            )
+          ) {
+            queryResult.status = 'Fail';
+            queryResult.description = 'Potential Exposure of Sensitive Information Through Error Message';
+          }
+        }
+        return queryResult
       } catch (err) {
         console.log(err);
         return errorResult;

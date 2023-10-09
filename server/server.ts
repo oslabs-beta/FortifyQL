@@ -38,49 +38,49 @@ server.use((req, _res, next) => {
   return next();
 });
 //PATHS
-// server.use('/runPentest', async (req: Request, res: Response) => {
-//   try {
-//     console.log("Starting Penetration Testing...")
-//     await getSchema(req, res);
+server.use('/runPentest', async (req: Request, res: Response) => {
+  try {
+    console.log("Starting Penetration Testing...")
+    await getSchema(req, res);
 
-//     const testsMap: {[key:string]: {generate: Function, evaluate: Function}} = {
-//       SQL: {
-//         generate: injection.generateQueries,
-//         evaluate: injection.attack
-//       },
-//       Verbose: {
-//         generate: verboseError.generateQueries,
-//         evaluate: verboseError.attack
-//       },
-//       // batching: {
-//       //   generate: batching.generateQueries,
-//       //   evaluate: batching.attack
-//       // }
-//     };
+    const testsMap: {[key:string]: {generate: Function, evaluate: Function}} = {
+      SQL: {
+        generate: injection.generateQueries,
+        evaluate: injection.attack
+      },
+      Verbose: {
+        generate: verboseError.generateQueries,
+        evaluate: verboseError.attack
+      },
+      // batching: {
+      //   generate: batching.generateQueries,
+      //   evaluate: batching.attack
+      // }
+    };
 
-//     const results: {[key: string]: any[]} = {};
+    const results: {[key: string]: any[]} = {};
 
-//     const runTest = async (test: string) => {
-//       if(req.body.tests.includes(test)) {
-//         await testsMap[test].generate(req, res);
-//         const testResult = await testsMap[test].evaluate(req, res);
-//         results[test] = testResult;
-//       }
-//     }
+    const runTest = async (test: string) => {
+      if(req.body.tests.includes(test)) {
+        await testsMap[test].generate(req, res);
+        const testResult = await testsMap[test].evaluate(req, res);
+        results[test] = testResult;
+      }
+    }
 
-//     const runAllTests = async () => {
-//       console.log("running all tests")
-//       await Promise.all(Object.keys(testsMap).map(runTest));
-//     } 
+    const runAllTests = async () => {
+      console.log("running all tests")
+      await Promise.all(Object.keys(testsMap).map(runTest));
+    } 
 
-//     await runAllTests();
-//     console.log("sending response")
-//     return res.status(200).json(results);
+    await runAllTests();
+    console.log("sending response")
+    return res.status(200).json(results);
 
-//   }catch(err) {
-//     return res.status(400).json("error running tests")
-//   }
-// })
+  }catch(err) {
+    return res.status(400).json("error running tests")
+  }
+})
 
 server.use('/batching', getSchema, batching.generateQueries, batching.attack)
 
