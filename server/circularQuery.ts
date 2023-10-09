@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-loop-func */
 /**
  * ************************************
 *
@@ -58,14 +59,17 @@ export const circularQuery: VulnerabilityType = {
 
     // Iterate over the array of customNameType objects
     for (let i = 0; i < customNameTypes.length; i++) {
+      console.log('-------> In customNameTypes object <--------');
       const fields = customNameTypes[i].fields;
       if (firstObjName === '') {
         fields?.forEach((field) => {
           if (field.type.ofType?.kind === 'OBJECT') {
+            console.log('-----------> In the first field object <-----------');
             firstObjName = customNameTypes[i].name; // PasteObject
             objTypeName = field.type.ofType?.name!; // OwnerObject
             // (field.type.name != null) ? objTypeName = field.type.name : objTypeName = field.type.ofType.name;
             field_1_name = field.name; // owner
+            console.log('field_1_name', field_1_name);
           }
         })
       } else if (customNameTypes[i].name === objTypeName) {      
@@ -76,13 +80,16 @@ export const circularQuery: VulnerabilityType = {
           }
           if (field.type.ofType?.kind === 'OBJECT' && 
             field.type.ofType?.name === firstObjName) {
+              console.log('---------> In the second field object <----------');
               field_2_name = field.name;
+              console.log('field_2_name', field_2_name);
               return; 
             }
         })
       }
     };
 
+    console.log('names: ', field_1_name, field_2_name);
     // enter for loop
     // check if firstObjName is = '', if so then enter the if statement
     // if not check if customNameTypes = objTypeName if so then enter second if 
