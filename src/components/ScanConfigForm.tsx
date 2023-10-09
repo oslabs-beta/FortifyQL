@@ -69,7 +69,7 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
             <span className='slider' />
           </label>
           <label className='text'>
-            <b>Denial of Service (DoS) Scan:&nbsp;</b> Resource exhaustion via
+            <b>Denial of Service (DoS) Scan:&nbsp;</b>Resource exhaustion via
             nested queries.
           </label>
         </div>
@@ -84,7 +84,7 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
             <span className='slider' />
           </label>
           <label className='text'>
-            <b>Authorization Configuration Scan:&nbsp;</b> Use administration
+            <b>Authorization Configuration Scan:&nbsp;</b>Use administration
             email and brute force login credentials.
           </label>
         </div>
@@ -99,9 +99,9 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
             <span className='slider' />
           </label>
           <label className='text'>
-            <b>Batching Scan:&nbsp;</b> Common for authentication
-            vulnerabilities and bypassing rate limiting. A mutation to password
-            reset, bypassing 2FA/OTP by batch sending tokens.
+            <b>Batching Scan:&nbsp;</b>Common for authentication vulnerabilities
+            and bypassing rate limiting. A mutation to password reset, bypassing
+            2FA/OTP by batch sending tokens.
           </label>
         </div>
 
@@ -115,7 +115,7 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
             <span className='slider' />
           </label>
           <label className='text'>
-            <b>Introspection Scan:&nbsp;</b> A query that performs an operation
+            <b>Introspection Scan:&nbsp;</b>A query that performs an operation
             to pull the information from the backend of the application.
           </label>
         </div>
