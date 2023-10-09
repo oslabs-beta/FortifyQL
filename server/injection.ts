@@ -23,14 +23,13 @@ import {
   getSubFields,
   generateSQLQuery,
 } from './generateHelper.ts';
-import { SQLInputs } from './inputs.ts';
+import { SQLInputs, sqlErrorKeywords } from './inputsAndKeywords.ts';
 import { SQLtitles } from './titles.ts';
 import { createQueryResult, createErrorResult } from './query.ts';
 
 export const injection: InjectionType = {
   generateQueries: async (req: Request, res: Response) => {
     console.log('Generating SQL Injection Queries...');
-    // const schema: Schema = res.locals.schema.data;
     const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types;
 
     const arrOfQueries: string[] = [];
@@ -74,7 +73,7 @@ export const injection: InjectionType = {
       const queryResult = createQueryResult('INJ', query, ID);
       const errorResult = createErrorResult('INJ', query, ID);
       ID++;
-      
+
       try {
         const sendTime = Date.now();
 
@@ -93,13 +92,6 @@ export const injection: InjectionType = {
         const response = await data.json();
         const timeTaken = Date.now() - sendTime;
         queryResult.testDuration = `${timeTaken} ms`;
-        queryResult.lastDetected = `${new Date().toLocaleTimeString(
-          'en-GB',
-        )} - ${new Date()
-          .toLocaleDateString('en-GB')
-          .split('/')
-          .reverse()
-          .join('-')}`;
 
         if (query.includes('OR 1=1') || query.includes("'1'='1")) {
           queryResult.title = SQLtitles.booleanBased;
@@ -118,12 +110,7 @@ export const injection: InjectionType = {
           queryResult.description =
             'Potentially Excessive/Sensitive Information Given';
         }
-        const sqlErrorKeywords = [
-          'syntax error',
-          'unexpected',
-          'mysql_fetch',
-          'invalid query',
-        ];
+  
         if (
           response.errors &&
           response.errors.some((error: { message: string }) =>
