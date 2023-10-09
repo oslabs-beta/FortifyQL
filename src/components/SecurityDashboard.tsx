@@ -57,7 +57,9 @@ const SecurityDashboard: React.FC = () => {
           alt='FortifyQL logo of an abstract red maze in the shape of a shield with a keyhole at the center'
           className='img_responsive'
         ></img>
-        <h1 id='dashboard__header'>FortifyQL</h1>
+        <h1 id='dashboard__header'>
+          Fortify<b id='QL'>QL</b>
+        </h1>
       </div>
       {showConfigForm ? (
         <ScanConfigForm onScanSubmit={handleScanSubmit} />
