@@ -10,12 +10,25 @@
  */
 
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { InjectionType, GraphQLType, GraphQLField, GraphQLArgs, GraphQLTypeReference, QueryResult } from './types';
-import { getBaseType, getSubFields, generateQuery } from './generateHelper.ts';
+import {
+  InjectionType,
+  GraphQLType,
+  GraphQLField,
+  GraphQLArgs,
+  GraphQLTypeReference,
+  QueryResult,
+} from './types';
+import {
+  getBaseType,
+  getSubFields,
+  generateSQLQuery,
+} from './generateHelper.ts';
 import { SQLInputs } from './inputs.ts';
+import { SQLtitles } from './titles.ts';
+import { createQueryResult, createErrorResult } from './query.ts';
 
 export const injection: InjectionType = {
-  generateQueries: async (req: Request, res: Response, next: NextFunction) => {
+  generateQueries: async (req: Request, res: Response) => {
     console.log('Generating SQL Injection Queries...');
     // const schema: Schema = res.locals.schema.data;
     const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types;
@@ -40,7 +53,7 @@ export const injection: InjectionType = {
           )
         ) {
           for (const input of SQLInputs) {
-            const query = generateQuery(field, input, typeName, schemaTypes);
+            const query = generateSQLQuery(field, input, typeName, schemaTypes);
             arrOfQueries.push(query);
           }
         }
@@ -57,36 +70,11 @@ export const injection: InjectionType = {
     const API: string = req.body.API;
     let ID: number = 1;
 
-    const titles = {
-      booleanBased: 'Boolean Based SQL Injection',
-      errorBased: 'Error Based SQL Injection',
-      timeBased: 'Time-Based Blind SQL Injection',
-    };
-    const errorResult = {
-      id: `Inj-${ID++}`,
-      status: 'Error',
-      query: 'Request errored out',
-      title: 'Failed Test',
-      description: `Error occured`,
-      severity: 'P1',
-      testDuration: '',
-      lastDetected: `${new Date().toLocaleTimeString('en-GB')} - ${new Date()
-        .toLocaleDateString('en-GB')
-        .split('/')
-        .reverse()
-        .join('-')}`,
-    };
     const sendReqAndEvaluate = async (query: string): Promise<QueryResult> => {
-      const queryResult: QueryResult = {
-        id: `Inj-${ID++}`,
-        status: 'Pass',
-        query: query,
-        title: '',
-        description: '',
-        severity: 'P1',
-        testDuration: '',
-        lastDetected: '',
-      };
+      const queryResult = createQueryResult('INJ', query, ID);
+      const errorResult = createErrorResult('INJ', query, ID);
+      ID++;
+      
       try {
         const sendTime = Date.now();
 
@@ -114,20 +102,21 @@ export const injection: InjectionType = {
           .join('-')}`;
 
         if (query.includes('OR 1=1') || query.includes("'1'='1")) {
-          queryResult.title = titles.booleanBased;
+          queryResult.title = SQLtitles.booleanBased;
         } else if (
           query.includes("'") ||
           query.includes(';') ||
           query.includes('--')
         ) {
-          queryResult.title = titles.errorBased;
+          queryResult.title = SQLtitles.errorBased;
         } else if (query.toLowerCase().includes('sleep')) {
-          queryResult.title = titles.timeBased;
+          queryResult.title = SQLtitles.timeBased;
         }
 
         if (response.data && response.data.length > 1) {
           queryResult.status = 'Fail';
-          queryResult.description = 'Potentially Excessive/Sensitive Information Given';
+          queryResult.description =
+            'Potentially Excessive/Sensitive Information Given';
         }
         const sqlErrorKeywords = [
           'syntax error',
@@ -160,13 +149,8 @@ export const injection: InjectionType = {
     const arrofQueries: string[] = res.locals.SQLQueries;
 
     for (const query of arrofQueries) {
-      try {
-        const result = await sendReqAndEvaluate(query);
-        results.push(result);
-      } catch (err) {
-        console.log(err);
-        results.push(errorResult);
-      }
+      const result = await sendReqAndEvaluate(query);
+      results.push(result);
     }
     return results;
   },

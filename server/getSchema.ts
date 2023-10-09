@@ -97,7 +97,6 @@ fragment TypeRef on __Type {
         }
     }
 }`;
-
   try {
     console.log('Executing Introspection Query...');
     const API = req.body.API;

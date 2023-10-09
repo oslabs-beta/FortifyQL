@@ -11,6 +11,7 @@
 
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { BatchingType, GraphQLType, GraphQLField, GraphQLArgs, GraphQLTypeReference, QueryResult } from './types';
+import { getBaseType, getSubFields, generateBatchQuery, getSubFieldsNested, generateQueryNested } from './generateHelper.ts';
 
 //remove arguments
 //2 types
@@ -25,90 +26,10 @@ export const batching: BatchingType = {
     // const schema: Schema = res.locals.schema.data;
     const schemaTypes: GraphQLType[] = res.locals.schema.data.__schema.types;
 
-    const getBaseType = (type: GraphQLTypeReference): string => {
-      let curr = type;
-      while (curr.ofType) {
-        curr = curr.ofType;
-      }
-      return curr.name || '';
-    };
-
-    const getSubFields = (
-      type: GraphQLType | GraphQLTypeReference,
-      depth: number = 0,
-      maxDepth: number = 1,
-    ): string => {
-      if (!type.fields || depth > maxDepth) return '';
-      return `{ ${type.fields
-        .filter((field) => {
-          const baseTypeName = getBaseType(field.type);
-          const baseType = schemaTypes.find((t) => t.name === baseTypeName);
-          return !baseType?.fields;
-        })
-        .map((field) => field.name)
-        .join(' ')} }`;
-    };
-
-    const generateQuery = (field: GraphQLField, QueryType: string) => {
-      const queryName = QueryType === 'queryType' ? 'query' : 'mutation';
-
-      const baseTypeName = field.type ? getBaseType(field.type) : '';
-      const baseType = schemaTypes.find((type) => type.name === baseTypeName);
-      const subFields = baseType ? getSubFields(baseType) : '';
-
-      return `${queryName} { ${field.name} ${subFields} }`;
-    };
-
     /*
     Generates a nested GraphQL query string for selecting subfields
     of a given GraphQL type up to a specified maximum depth.
     */
-    const getSubFieldsNested = (
-      type: GraphQLType | GraphQLTypeReference,
-      depth: number = 0,
-      maxDepth: number = 1,
-    ): string => {
-      // If the type has no fields or reached the maximum depth, return an empty string
-      if (!type.fields || depth > maxDepth) return '';
-
-      // Filter and concat valid subfields for the current type
-      const validSubFields = type.fields
-        .map((field) => {
-          const baseTypeName = field.type ? getBaseType(field.type) : '';
-          const baseType = schemaTypes.find((t) => t.name === baseTypeName);
-
-          // If reached max depth, return the field name if it has no subfields,
-          // otherwise, return an empty string
-          if (depth === maxDepth) {
-            return !baseType?.fields ? field.name : '';
-          }
-
-          // Recursively get subfields for the baseType and concat them
-          const subFields = baseType
-            ? getSubFieldsNested(baseType, depth + 1, maxDepth)
-            : '';
-
-          return subFields ? `${field.name} ${subFields}` : '';
-        })
-        .filter(Boolean)
-        .join(' ');
-
-      // If there are no valid subfields, return an empty string
-      if (!validSubFields) return '';
-
-      // Return the selected subfields within curly braces as a GraphQL query string
-      return `{ ${validSubFields} }`;
-    };
-
-    const generateQueryNested = (field: GraphQLField, QueryType: string) => {
-      const queryName = QueryType === 'queryType' ? 'query' : 'mutation';
-
-      const baseTypeName = field.type ? getBaseType(field.type) : '';
-      const baseType = schemaTypes.find((type) => type.name === baseTypeName);
-      const subFields = baseType ? getSubFieldsNested(baseType) : '';
-
-      return `${queryName} { ${field.name} ${subFields} }`;
-    };
 
     const arrOfQueries: (string | string[])[] = [];
     const arrOfNested: string[] = [];
@@ -124,10 +45,10 @@ export const batching: BatchingType = {
       if (!types?.fields) continue;
 
       for (const field of types.fields) {
-        const singularQuery: string = generateQuery(field, typeName);
+        const singularQuery: string = generateBatchQuery(field, typeName, schemaTypes);
         const identicalQuery: string[] = new Array(10).fill(singularQuery);
         arrOfQueries.push(identicalQuery);
-        const nestedQuery = generateQueryNested(field, typeName);
+        const nestedQuery = generateQueryNested(field, typeName, schemaTypes);
         arrOfNested.push(nestedQuery);
       }
     }

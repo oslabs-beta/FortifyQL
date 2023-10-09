@@ -55,11 +55,11 @@ server.use('/runPentest', async (req: Request, res: Response) => {
       Circular: {
         generate: circularQuery.generateQueries,
         evaluate: circularQuery.attack
-      }
-      // batching: {
-      //   generate: batching.generateQueries,
-      //   evaluate: batching.attack
-      // },
+      },
+      Batching: {
+        generate: batching.generateQueries,
+        evaluate: batching.attack
+      },
     };
 
     const results: {[key: string]: any[]} = {};
