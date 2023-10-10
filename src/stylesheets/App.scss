@@ -23,7 +23,7 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-size: 1.2em;
+  font-size: 1.3em;
   color: #005c55;
 }
 
@@ -113,17 +113,11 @@ input:checked + .slider:before {
   transform: translateX(28px);
 }
 
-#select_all_button {
-  float: left;
-  margin: 30px;
-  margin-left: 10px;
-}
-
-#submit_button {
-  float: left;
-  margin: 30px;
-  margin-left: 0.5px;
-}
+// #select_all_button {
+//   float: left;
+//   margin: 30px;
+//   margin-left: 10px;
+// }
 
 .text {
   display: flex;
@@ -199,7 +193,7 @@ input:checked + .slider:before {
   background-color: #2e9991;
   border-radius: 6px;
   height: 44px;
-  margin: 12px 20px 20px;
+  margin: 0px 20px;
   padding: 0 25px;
   width: 100px;
   &:hover {
