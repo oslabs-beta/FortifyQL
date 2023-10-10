@@ -618,43 +618,24 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
 
   return (
     <div className='results-table__container'>
-<<<<<<< HEAD
-      <div
-        className='ag-theme-alpine'
-        style={{ height: '100%', width: '100%' }}
-      >
-        <h2 id='results-table__header'>Security Scan Results</h2>
-        <div className='results-table-export__container'>
-          <button
-            id='dashboard-test-config__button'
-            className='buttons'
-            onClick={handleDisplayTestConfig}
-          >
-            Back to Test Configuration
-          </button>
-          <button
-            id='dashboard-export-csv_button'
-            className='buttons'
-            onClick={handleExportCSV}
-          >
-            Export to CSV
-          </button>
-        </div>
-=======
       <h2 id='results-table__header'>Security Scan Results</h2>
       <div className='results-table-export__container'>
         <button
           id='dashboard-test-config__button'
+          className='buttons'
           onClick={handleDisplayTestConfig}
         >
           Back to Test Configuration
         </button>
-        <button id='dashboard-export-csv_button' onClick={handleExportCSV}>
+        <button
+          id='dashboard-export-csv_button'
+          className='buttons'
+          onClick={handleExportCSV}
+        >
           Export to CSV
         </button>
       </div>
       <div style={gridStyle} className='ag-theme-alpine'>
->>>>>>> 8b35d28cca9361e8fb583e04606c200436fe16c8
         <AgGridReact
           columnDefs={colDefs}
           rowData={resultsData}

@@ -61,28 +61,24 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
 
         <div className='tests'>
           <label className='switch'>
-<<<<<<< HEAD
             <input
               type='checkbox'
               value='Circular'
               onChange={handleSelectedTests}
             />
-=======
-            <input type='checkbox' value='SQL' onChange={handleSelectedTests} />
->>>>>>> 8b35d28cca9361e8fb583e04606c200436fe16c8
             <span className='slider' />
           </label>
           <label className='text'>
             <b>Denial of Service (DoS) Scan:&nbsp;</b>Resource exhaustion via
-            nested queries.
+            nested circular queries.
           </label>
         </div>
 
-        <div className='tests'>
+        {/* <div className='tests'>
           <label className='switch'>
             <input
               type='checkbox'
-              value='authorization-scan'
+              value='Authorization'
               onChange={handleSelectedTests}
             />
             <span className='slider' />
@@ -91,13 +87,13 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
             <b>Authorization Configuration Scan:&nbsp;</b>Use administration
             email and brute force login credentials.
           </label>
-        </div>
+        </div> */}
 
         <div className='tests'>
           <label className='switch'>
             <input
               type='checkbox'
-              value='batching-scan'
+              value='Batching'
               onChange={handleSelectedTests}
             />
             <span className='slider' />
@@ -110,21 +106,25 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
         </div>
 
         <div className='tests'>
-<<<<<<< HEAD
           <label className='switch'>
             <input
               type='checkbox'
               value='Verbose'
-=======
-          <label className='text'>
-            <b>Verbose Error Scan:&nbsp;</b> A query that performs an operation
-            to pull the information from the backend of the application.
+              onChange={handleSelectedTests}
+            />
+            <span className='slider' />
           </label>
+          <label className='text'>
+            <b>Verbose Error Scan:&nbsp;</b>A query that analyzes error response
+            for verbose error messages revealing system information.
+          </label>
+        </div>
+
+        {/* <div className='tests'>
           <label className='switch'>
             <input
               type='checkbox'
-              value='verboseError'
->>>>>>> 8b35d28cca9361e8fb583e04606c200436fe16c8
+              value='Introspection'
               onChange={handleSelectedTests}
             />
             <span className='slider' />
@@ -133,7 +133,7 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
             <b>Introspection Scan:&nbsp;</b>A query that performs an operation
             to pull the information from the backend of the application.
           </label>
-        </div>
+        </div> */}
 
         {/* <button id='select_all_button' onChange={handleSelectAllButton}>Select All Tests</button> */}
         <button id='submit_button' className='buttons'>

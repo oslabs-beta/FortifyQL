@@ -36,7 +36,7 @@ server.use((req, _res, next) => {
   return next();
 });
 //PATHS
-server.use('/api/runPentest', async (req: Request, res: Response) => {
+server.use('/api/runpentest', async (req: Request, res: Response) => {
   try {
     console.log('Starting Penetration Testing...');
     await getSchema(req, res);
