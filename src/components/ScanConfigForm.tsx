@@ -37,6 +37,7 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
 
   return (
     <div className='config-form__container'>
+      <div id='error'></div>
       <form className='input_form' onSubmit={handleSubmit}>
         <h2 id='config-form__header'>Security Scan Configuration</h2>
         <div className='underline'></div>
@@ -44,6 +45,7 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
           id='textbox'
           type='text'
           placeholder='Enter GraphQL API URI Here'
+          required
           onChange={handleEndpoint}
         ></input>
 
