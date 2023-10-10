@@ -17,23 +17,11 @@ const server = express();
 const PORT = 3000;
 
 // REQUIRED ROUTES && MIDDLEWARE
-import getSchema from './getSchema.ts';
-import { injection } from './injection.ts';
-import { batching } from './batching.ts';
-import { verboseError } from './verboseError.ts';
-import { circularQuery } from './circularQuery.ts';
-import dashboard from './dashboard.ts';
-import { get } from 'http';
-
-interface ITestResult {
-  id: number;
-  status: string;
-  title: string;
-  description: string;
-  severity: string;
-  testDuration: string;
-  lastDetected: string;
-}
+import getSchema from './pentesting/getSchema.ts';
+import { injection } from './pentesting/injection.ts';
+import { batching } from './pentesting/batching.ts';
+import { verboseError } from './pentesting/verboseError.ts';
+import { circularQuery } from './pentesting/circularQuery.ts';
 
 // Use cors
 server.use(cors());
@@ -68,13 +56,13 @@ server.use('/api/runPentest', async (req: Request, res: Response) => {
         generate: circularQuery.generateQueries,
         evaluate: circularQuery.attack,
       },
-      // batching: {
-      //   generate: batching.generateQueries,
-      //   evaluate: batching.attack
-      // },
+      Batching: {
+        generate: batching.generateQueries,
+        evaluate: batching.attack,
+      },
     };
 
-    const results: ITestResult[] = [];
+    const results: { [key: string]: any[] } = {};
 
     const runTest = async (test: string) => {
       if (req.body.tests.includes(test)) {
