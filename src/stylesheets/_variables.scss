@@ -1,0 +1,19 @@
+$target-colors: (
+  green-color: #a1dd1b,
+  red-color: #e81c26,
+  blue-color: #129188,
+);
+
+$tones: 10, 20, 30, 40, 50, 60, 70, 80;
+
+@mixin generate-color-var($key, $value) {
+  --#{$key}: #{$value};
+  --#{$key}-rgb: #{red($value)}, #{green($value)}, #{blue($value)};
+  @each $tone in $tones {
+    $scale-value: adjust-color($value, $lightness: $tone / 2 * 1%);
+    --#{$key}-#{$tone}: #{$scale-value};
+    --#{$key}-#{$tone}-rgb: #{red($scale-value)}, #{green($scale-value)},
+      #{blue($scale-value)};
+  }
+}
+// Color Palette: Triadic Scheme
