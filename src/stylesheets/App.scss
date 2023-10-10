@@ -90,7 +90,7 @@ body {
   bottom: 0;
   transition: 0.4s;
   border-radius: 20px;
-  background-color: grey;
+  background-color: rgb(173, 172, 172);
 }
 
 .slider:before {
@@ -100,13 +100,13 @@ body {
   width: 30px;
   left: 3px;
   top: 2px;
-  background-color: whitesmoke;
+  background-color: #005c55;
   transition: 0.4s;
   border-radius: 20px;
 }
 
 input:checked + .slider {
-  background-color: #129188;
+  background-color: #2e9991;
 }
 
 input:checked + .slider:before {
