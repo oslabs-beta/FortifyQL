@@ -22,6 +22,7 @@ import { injection } from './pentesting/injection.ts';
 import { batching } from './pentesting/batching.ts';
 import { verboseError } from './pentesting/verboseError.ts';
 import { circularQuery } from './pentesting/circularQuery.ts';
+import { ITestResult } from '../src/interfaces/results.ts';
 
 // Use cors
 server.use(cors());
@@ -62,7 +63,7 @@ server.use('/api/runpentest', async (req: Request, res: Response) => {
       },
     };
 
-    const results: { [key: string]: any[] } = {};
+    const results: ITestResult[] = [];
 
     const runTest = async (test: string) => {
       if (req.body.tests.includes(test)) {
