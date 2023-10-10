@@ -4,4 +4,7 @@
     "Time-Based Blind SQL Injection": "In this subtle attack, perpetrators submit specific SQL queries and then measure the response time of the application. Extended delays can hint at the validity of the attacker's query, allowing them to piece together database insights over time.",
     "Multiple Identical Batching Attack": "By repeatedly sending the same or similar queries in bulk, attackers aim to either uncover vulnerabilities in the application's handling of batched requests or create disruptions in its operations.",
     "Resource Exhaustive and Nested Batching Attack": "Attackers craft intricate and nested SQL queries, then send them in large batches. The goal is to overburden the database or application resources, potentially leading to failures or unintentional exposure of information.",
+    "Verbose Errors": "Errors that provide detailed diagnostic information, often useful for debugging but can reveal system internals, configurations, or other sensitive data when displayed to end users. Attackers can exploit such verbose messages to gain insights into potential vulnerabilities within the system.",
+    "Circular DoS Queries": "Attackers send specially crafted SQL queries that create infinite loops or recursive operations in the database. Such queries can consume extensive server resources, leading to denial of service as the database gets overwhelmed and can't handle other requests.",
+    "link":"https://cheatsheetseries.owasp.org/cheatsheets/GraphQL_Cheat_Sheet.html"
 }
