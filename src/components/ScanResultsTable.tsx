@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useRef } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef, GridApi } from 'ag-grid-community';
+import { ColDef, GridApi, RowClassParams } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { ITestResult } from '../interfaces/results';
@@ -57,6 +57,15 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
     [],
   );
 
+  // Assign classes to rows based on pass/fail to color code
+  const getRowClass = (params: RowClassParams) => {
+    if (params.data.status === 'Fail') {
+      return 'row-fail';
+    } else {
+      return 'row-pass';
+    }
+  };
+
   const components = useMemo(
     () => ({
       modalCellRenderer: ModalCellRenderer,
@@ -80,18 +89,10 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
       <h2 className='dashboard__headers'>Security Scan Results</h2>
       <div className='underline'></div>
       <div className='results-table-export__container'>
-        <button
-          id='dashboard-test-config__button'
-          className='buttons'
-          onClick={handleDisplayTestConfig}
-        >
+        <button className='buttons' onClick={handleDisplayTestConfig}>
           Back to Test Configuration
         </button>
-        <button
-          id='dashboard-export-csv_button'
-          className='buttons'
-          onClick={handleExportCSV}
-        >
+        <button className='buttons' onClick={handleExportCSV}>
           Export to CSV
         </button>
       </div>
@@ -99,6 +100,7 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
         <AgGridReact
           columnDefs={colDefs}
           rowData={resultsData}
+          getRowClass={getRowClass}
           defaultColDef={defaultColDef}
           animateRows={true}
           onGridReady={(params) => setGridApi(params.api)}
