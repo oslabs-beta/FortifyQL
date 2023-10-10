@@ -19,7 +19,7 @@ body {
   height: 3em;
 }
 
-.header {
+.main_header {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -37,7 +37,7 @@ body {
   font-size: 30px;
 }
 
-.dashboard__container {
+.main__container {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -76,7 +76,7 @@ body {
 
 .tests {
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   margin-right: 10px;
   align-items: center;
 }
@@ -142,21 +142,6 @@ input:checked + .slider:before {
   );
   background-clip: content-box;
   padding: 1px; /* This will act as the border */
-}
-
-.config-form__container {
-  background-color: #fff;
-  margin-left: 0;
-  padding-left: 0;
-  border: 1px solid grey;
-  border-radius: 10px;
-  box-shadow:
-    rgba(0, 92, 85, 0.7) 3px 3px,
-    rgba(0, 92, 85, 0.5) 6px 6px,
-    rgba(0, 92, 85, 0.3) 9px 9px,
-    rgba(0, 92, 85, 0.1) 12px 12px,
-    rgba(0, 92, 85, 0.05) 15px 15px;
-  /* box-shadow: 5px 5px 5px rgb(159, 154, 154); */
 }
 
 .buttons {
@@ -226,6 +211,21 @@ input:checked + .slider:before {
   &:hover {
     background-color: rgba(0, 92, 85);
   }
+}
+
+.config-form__container {
+  background-color: #fff;
+  margin-left: 0;
+  padding-left: 0;
+  border: 1px solid grey;
+  border-radius: 10px;
+  box-shadow:
+    rgba(0, 92, 85, 0.7) 3px 3px,
+    rgba(0, 92, 85, 0.5) 6px 6px,
+    rgba(0, 92, 85, 0.3) 9px 9px,
+    rgba(0, 92, 85, 0.1) 12px 12px,
+    rgba(0, 92, 85, 0.05) 15px 15px;
+  /* box-shadow: 5px 5px 5px rgb(159, 154, 154); */
 }
 
 .results-table__container {

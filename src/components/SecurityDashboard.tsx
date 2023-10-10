@@ -52,8 +52,8 @@ const SecurityDashboard: React.FC = () => {
   };
 
   return (
-    <div className='dashboard__container'>
-      <div className='header'>
+    <div className='main__container'>
+      <div className='main_header'>
         <img
           src='../src/assets/fortifyQL.png'
           alt='FortifyQL logo of an abstract red maze in the shape of a shield with a keyhole at the center'
