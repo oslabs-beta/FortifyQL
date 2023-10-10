@@ -121,7 +121,9 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
         </div>
 
         {/* <button id='select_all_button' onChange={handleSelectAllButton}>Select All Tests</button> */}
-        <button id='submit_button'>Scan</button>
+        <button id='submit_button' className='buttons'>
+          Scan
+        </button>
       </form>
     </div>
   );

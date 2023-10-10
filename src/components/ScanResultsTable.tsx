@@ -59,11 +59,16 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
         <div className='results-table-export__container'>
           <button
             id='dashboard-test-config__button'
+            className='buttons'
             onClick={handleDisplayTestConfig}
           >
             Back to Test Configuration
           </button>
-          <button id='dashboard-export-csv_button' onClick={handleExportCSV}>
+          <button
+            id='dashboard-export-csv_button'
+            className='buttons'
+            onClick={handleExportCSV}
+          >
             Export to CSV
           </button>
         </div>

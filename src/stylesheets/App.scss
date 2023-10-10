@@ -1,22 +1,13 @@
-$target-colors: (
-  green-color: #a1dd1b,
-  red-color: #e81c26,
-  blue-color: #129188,
-);
+/* reset default styles */
+// @import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Oswald:wght@200;300;400;500;600;700&display=swap');
 
-$tones: 10, 20, 30, 40, 50, 60, 70, 80;
-
-@mixin generate-color-var($key, $value) {
-  --#{$key}: #{$value};
-  --#{$key}-rgb: #{red($value)}, #{green($value)}, #{blue($value)};
-  @each $tone in $tones {
-    $scale-value: adjust-color($value, $lightness: $tone / 2 * 1%);
-    --#{$key}-#{$tone}: #{$scale-value};
-    --#{$key}-#{$tone}-rgb: #{red($scale-value)}, #{green($scale-value)},
-      #{blue($scale-value)};
-  }
-}
-// Color Palette: Triadic Scheme
+//Sass variables
+$primary-color: rgb(0, 0, 0);
+$secondary-color: lighten($primary-color, 30%);
+$light-color: lighten($primary-color, 70%);
+$super-light-color: lighten($primary-color, 95%);
+$button-color: #0d738d;
+$button-light-color: lighten($button-color, 50%);
 
 body {
   background-color: rgb(237, 231, 231);
@@ -94,6 +85,7 @@ body {
 .tests {
   display: flex;
   margin-bottom: 10px;
+  margin-right: 10px;
   align-items: center;
 }
 
@@ -181,11 +173,9 @@ input:checked + .slider:before {
   /* box-shadow: 5px 5px 5px rgb(159, 154, 154); */
 }
 
-#submit_button {
+.buttons {
   appearance: button;
   backface-visibility: hidden;
-  background-color: #2e9991;
-  border-radius: 6px;
   border-width: 0;
   box-shadow:
     rgba(50, 50, 93, 0.1) 0 0 0 1px inset,
@@ -197,12 +187,9 @@ input:checked + .slider:before {
   font-family: -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue',
     Ubuntu, sans-serif;
   font-size: 100%;
-  height: 44px;
   line-height: 1.15;
-  margin: 12px 20px 20px;
   outline: none;
   overflow: hidden;
-  padding: 0 25px;
   position: relative;
   text-align: center;
   text-transform: none;
@@ -214,6 +201,14 @@ input:checked + .slider:before {
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+}
+
+#submit_button {
+  background-color: #2e9991;
+  border-radius: 6px;
+  height: 44px;
+  margin: 12px 20px 20px;
+  padding: 0 25px;
   width: 100px;
   &:hover {
     background-color: rgba(0, 92, 85);
@@ -228,74 +223,20 @@ input:checked + .slider:before {
 }
 
 #dashboard-export-csv_button {
-  appearance: button;
-  backface-visibility: hidden;
-  background-color: #005c55;
   border-radius: 3px;
-  border-width: 0;
-  box-shadow:
-    rgba(50, 50, 93, 0.1) 0 0 0 1px inset,
-    rgba(50, 50, 93, 0.1) 0 2px 5px 0,
-    rgba(0, 0, 0, 0.07) 0 1px 1px 0;
-  box-sizing: border-box;
-  color: #fff;
-  cursor: pointer;
-  font-family: -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue',
-    Ubuntu, sans-serif;
-  font-size: 100%;
-  line-height: 1.15;
-  outline: none;
-  overflow: hidden;
   padding: 5px 5px;
-  position: relative;
-  text-align: center;
-  text-transform: none;
-  transform: translateZ(0);
-  transition:
-    all 0.2s,
-    box-shadow 0.08s ease-in,
-    background-color 0.2s;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
   width: auto;
+  background-color: #005c55;
   &:hover {
     background-color: rgba(46, 153, 145);
   }
 }
 
 #dashboard-test-config__button {
-  appearance: button;
-  backface-visibility: hidden;
-  background-color: #2e9991;
   border-radius: 3px;
-  border-width: 0;
-  box-shadow:
-    rgba(50, 50, 93, 0.1) 0 0 0 1px inset,
-    rgba(50, 50, 93, 0.1) 0 2px 5px 0,
-    rgba(0, 0, 0, 0.07) 0 1px 1px 0;
-  box-sizing: border-box;
-  color: #fff;
-  cursor: pointer;
-  font-family: -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue',
-    Ubuntu, sans-serif;
-  font-size: 100%;
-  line-height: 1.15;
-  outline: none;
-  overflow: hidden;
   padding: 5px 5px;
-  position: relative;
-  text-align: center;
-  text-transform: none;
-  transform: translateZ(0);
-  transition:
-    all 0.2s,
-    box-shadow 0.08s ease-in,
-    background-color 0.2s;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
   width: auto;
+  background-color: #2e9991;
   &:hover {
     background-color: rgba(0, 92, 85);
   }
