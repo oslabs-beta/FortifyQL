@@ -31,14 +31,10 @@ body {
   color: #2e9991;
 }
 
-#config-form__header {
+.dashboard__headers {
   color: #06746c;
   margin-left: 20px;
-}
-
-#results-table__header {
-  color: #06746c;
-  font-size: 2em;
+  font-size: 30px;
 }
 
 .dashboard__container {
@@ -141,9 +137,9 @@ input:checked + .slider:before {
 }
 
 .underline {
-  width: calc(100vw - 100px);
+  width: auto;
   height: 3px; /* Adjust the height to control the thickness of the line */
-  margin-left: 20px;
+  margin: 0 20px 20px;
   background-image: linear-gradient(
     90deg,
     rgba(0, 92, 85, 1) 0%,

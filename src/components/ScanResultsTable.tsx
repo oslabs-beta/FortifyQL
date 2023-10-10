@@ -77,7 +77,8 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
 
   return (
     <div className='results-table__container'>
-      <h2 id='results-table__header'>Security Scan Results</h2>
+      <h2 className='dashboard__headers'>Security Scan Results</h2>
+      <div className='underline'></div>
       <div className='results-table-export__container'>
         <button
           id='dashboard-test-config__button'
