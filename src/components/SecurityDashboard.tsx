@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ScanConfigForm from './ScanConfigForm';
 import ScanResultsTable from './ScanResultsTable';
 import { ITestResult } from '../interfaces/results';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 const SecurityDashboard: React.FC = () => {
   const [scanResults, setScanResults] = useState<ITestResult[]>([]);
@@ -17,12 +18,18 @@ const SecurityDashboard: React.FC = () => {
     setLoading(true);
 
     try {
+      setShowConfigForm(false); // Hide the config form after submitting
+
       const requestBody = JSON.stringify({
         API: endpoint,
         tests: selectedTests,
       });
 
+<<<<<<< HEAD
       const response = await fetch('/api/runPentest', {
+=======
+      const response = await fetch('/api/runpentest', {
+>>>>>>> 8b35d28cca9361e8fb583e04606c200436fe16c8
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,7 +48,6 @@ const SecurityDashboard: React.FC = () => {
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
-      setShowConfigForm(false); // Hide the config form after submitting
     }
   };
 
@@ -66,7 +72,15 @@ const SecurityDashboard: React.FC = () => {
       ) : (
         <div>
           {loading ? (
-            <p>Loading...</p>
+            <div className='loader__container'>
+              <ClipLoader
+                color={'green'}
+                loading={loading}
+                size={150}
+                aria-label='Loading Spinner'
+                data-testid='table-loader'
+              />
+            </div>
           ) : (
             <ScanResultsTable
               resultsData={scanResults}
