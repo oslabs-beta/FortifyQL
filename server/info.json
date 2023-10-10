@@ -1,0 +1,7 @@
+{
+    "Boolean Based SQL Injection": "A technique where attackers manipulate an application by sending SQL queries that produce true or false outcomes.By observing the application's behavior to these binary results, they can deduce valuable information about the underlying database.",
+    "Error Based SQL Injection": "Attackers intentionally send erroneous SQL queries to provoke the application into revealing database error messages. These messages can inadvertently expose details about the database structure or other sensitive information.",
+    "Time-Based Blind SQL Injection": "In this subtle attack, perpetrators submit specific SQL queries and then measure the response time of the application. Extended delays can hint at the validity of the attacker's query, allowing them to piece together database insights over time.",
+    "Multiple Identical Batching Attack": "By repeatedly sending the same or similar queries in bulk, attackers aim to either uncover vulnerabilities in the application's handling of batched requests or create disruptions in its operations.",
+    "Resource Exhaustive and Nested Batching Attack": "Attackers craft intricate and nested SQL queries, then send them in large batches. The goal is to overburden the database or application resources, potentially leading to failures or unintentional exposure of information.",
+}

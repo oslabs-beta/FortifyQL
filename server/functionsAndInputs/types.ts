@@ -29,8 +29,13 @@ export interface QueryResult {
   id: string;
   status: string;
   title: string;
-  query: string;
-  description: string;
+  details: {
+    query: string;
+    response: string;
+    description: string;
+    solution?: string;
+    link?: string;
+  }
   severity: string | number;
   testDuration: string | number;
   lastDetected: string | number;
