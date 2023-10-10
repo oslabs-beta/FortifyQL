@@ -54,11 +54,7 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
             execute arbitrary code on the database server.
           </label>
           <label className='switch'>
-            <input
-              type='checkbox'
-              value='injection-scan'
-              onChange={handleSelectedTests}
-            />
+            <input type='checkbox' value='SQL' onChange={handleSelectedTests} />
             <span className='slider' />
           </label>
         </div>
@@ -111,13 +107,13 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
 
         <div className='tests'>
           <label className='text'>
-            <b>Introspection Scan:&nbsp;</b> A query that performs an operation
+            <b>Verbose Error Scan:&nbsp;</b> A query that performs an operation
             to pull the information from the backend of the application.
           </label>
           <label className='switch'>
             <input
               type='checkbox'
-              value='introspection-scan'
+              value='verboseError'
               onChange={handleSelectedTests}
             />
             <span className='slider' />
