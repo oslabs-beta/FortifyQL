@@ -9,13 +9,11 @@ $primary-color: rgb(75, 119, 141);
 $secondary-color: rgb(40, 181, 181);
 $tertiary-color: rgb(143, 217, 168);
 $quatenary-color: rgb(210, 230, 156);
-$five-color: lighten($primary-color, 95%);
-$ten-color: lighten($primary-color, 90%);
-$thirty-color: lighten($primary-color, 70%);
-$fifty-color: lighten($primary-color, 50%);
-$seventy-color: lighten($primary-color, 30%);
-$button-color: rgb(40, 181, 181);
-$button-light-color: lighten($button-color, 50%);
+$seventy-color: rgba(75, 119, 141, 0.7);
+$fifty-color: rgba(75, 119, 141, 0.5);
+$thirty-color: rgba(75, 119, 141, 0.3);
+$ten-color: rgba(75, 119, 141, 0.1);
+$five-color: rgba(75, 119, 141, 0.05);
 $background-color: rgb(237, 231, 231);
 $slider-color: rgb(173, 172, 172);
 
@@ -65,11 +63,11 @@ body {
   max-width: 400px;
   font-size: 15px;
   margin: 0 20px 20px;
-  background-color: $thirty-color;
+  background-color: $ten-color;
 }
 #textbox:focus {
   outline: none;
-  border: 2px solid $secondary-color;
+  border: 2px solid $tertiary-color;
 }
 
 .switch {
@@ -116,7 +114,7 @@ body {
 }
 
 input:checked + .slider {
-  background-color: $secondary-color;
+  background-color: $tertiary-color;
 }
 
 input:checked + .slider:before {
@@ -167,8 +165,8 @@ input:checked + .slider:before {
   backface-visibility: hidden;
   border-width: 0;
   box-shadow:
-    rgba(50, 50, 93, 0.1) 0 0 0 1px inset,
-    rgba(50, 50, 93, 0.1) 0 2px 5px 0,
+    $ten-color 0 0 0 1px inset,
+    $ten-color 0 2px 5px 0,
     rgba(0, 0, 0, 0.07) 0 1px 1px 0;
   box-sizing: border-box;
   color: $white;
@@ -214,11 +212,11 @@ input:checked + .slider:before {
   border: 1px solid grey;
   border-radius: 10px;
   box-shadow:
-    rgba(75, 119, 141, 0.7) 3px 3px,
-    rgba(75, 119, 141, 0.5) 6px 6px,
-    rgba(75, 119, 141, 0.3) 9px 9px,
-    rgba(75, 119, 141, 0.1) 12px 12px,
-    rgba(75, 119, 141, 0.05) 15px 15px;
+    $seventy-color 3px 3px,
+    $fifty-color 6px 6px,
+    $thirty-color 9px 9px,
+    $ten-color 12px 12px,
+    $five-color 15px 15px;
 }
 
 .row-fail {
