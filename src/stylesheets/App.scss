@@ -1,22 +1,13 @@
-$target-colors: (
-  green-color: #a1dd1b,
-  red-color: #e81c26,
-  blue-color: #129188,
-);
+/* reset default styles */
+// @import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Oswald:wght@200;300;400;500;600;700&display=swap');
 
-$tones: 10, 20, 30, 40, 50, 60, 70, 80;
-
-@mixin generate-color-var($key, $value) {
-  --#{$key}: #{$value};
-  --#{$key}-rgb: #{red($value)}, #{green($value)}, #{blue($value)};
-  @each $tone in $tones {
-    $scale-value: adjust-color($value, $lightness: $tone / 2 * 1%);
-    --#{$key}-#{$tone}: #{$scale-value};
-    --#{$key}-#{$tone}-rgb: #{red($scale-value)}, #{green($scale-value)},
-      #{blue($scale-value)};
-  }
-}
-// Color Palette: Triadic Scheme
+//Sass variables
+$primary-color: rgb(0, 0, 0);
+$secondary-color: lighten($primary-color, 30%);
+$light-color: lighten($primary-color, 70%);
+$super-light-color: lighten($primary-color, 95%);
+$button-color: #0d738d;
+$button-light-color: lighten($button-color, 50%);
 
 body {
   background-color: rgb(237, 231, 231);
@@ -24,20 +15,26 @@ body {
 }
 
 .img_responsive {
-  width: 5em;
+  width: 3em;
+  height: 3em;
 }
 
-#dashboard_header {
-  font-size: 5em;
+#dashboard__header {
+  font-size: 2em;
+  color: #005c55;
+}
+
+#QL {
+  color: #2e9991;
 }
 
 #config-form__header {
-  color: #005c55;
+  color: #06746c;
   margin-left: 20px;
 }
 
 #results-table__header {
-  color: #005c55;
+  color: #06746c;
   font-size: 2em;
 }
 
@@ -51,20 +48,22 @@ body {
 .header {
   display: flex;
   flex-direction: row;
+  align-items: center;
   font-size: 2em;
 }
 
 .input_form {
   width: 100%; /* Occupy full width of the container */
-  max-width: 400px; /* Limit the maximum width */
   margin-bottom: 20px; /* Add space below the form */
 }
 
 #textbox {
   height: 35px;
   width: 100%;
+  max-width: 400px;
   font-size: 14pt;
   margin: 20px;
+  background-color: rgba(0, 92, 85, 0.05);
 }
 #textbox:focus {
   outline: none;
@@ -73,18 +72,21 @@ body {
 
 .switch {
   position: relative;
-  display: inline-block;
+  display: flex;
+  align-items: center;
   width: 63px;
   height: 33px;
   margin: 0 10px;
-  margin: 15px;
+}
+.switch input {
+  display: none;
 }
 
 .tests {
   display: flex;
-  flex-direction: row-reverse;
-  float: left;
-  vertical-align: middle;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  align-items: center;
 }
 
 .slider {
@@ -97,10 +99,6 @@ body {
   transition: 0.4s;
   border-radius: 20px;
   background-color: grey;
-}
-
-.switch input {
-  display: none;
 }
 
 .slider:before {
@@ -136,12 +134,10 @@ input:checked + .slider:before {
 }
 
 .text {
-  position: relative;
   display: flex;
-  align-items: center;
-  overflow: hidden;
-  white-space: nowrap;
-  font-size: 20px;
+  flex: 1;
+  flex-direction: column;
+  font-size: 15px;
 }
 
 .checkbox {
@@ -164,7 +160,6 @@ input:checked + .slider:before {
 
 .config-form__container {
   background-color: #fff;
-  margin-top: 10px;
   margin-left: 0;
   padding-left: 0;
   border: 1px solid grey;
@@ -178,11 +173,9 @@ input:checked + .slider:before {
   /* box-shadow: 5px 5px 5px rgb(159, 154, 154); */
 }
 
-#submit_button {
+.buttons {
   appearance: button;
   backface-visibility: hidden;
-  background-color: #2e9991;
-  border-radius: 6px;
   border-width: 0;
   box-shadow:
     rgba(50, 50, 93, 0.1) 0 0 0 1px inset,
@@ -194,12 +187,9 @@ input:checked + .slider:before {
   font-family: -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue',
     Ubuntu, sans-serif;
   font-size: 100%;
-  height: 44px;
   line-height: 1.15;
-  margin: 12px 20px 20px;
   outline: none;
   overflow: hidden;
-  padding: 0 25px;
   position: relative;
   text-align: center;
   text-transform: none;
@@ -211,6 +201,14 @@ input:checked + .slider:before {
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+}
+
+#submit_button {
+  background-color: #2e9991;
+  border-radius: 6px;
+  height: 44px;
+  margin: 12px 20px 20px;
+  padding: 0 25px;
   width: 100px;
   &:hover {
     background-color: rgba(0, 92, 85);
@@ -225,74 +223,20 @@ input:checked + .slider:before {
 }
 
 #dashboard-export-csv_button {
-  appearance: button;
-  backface-visibility: hidden;
-  background-color: #005c55;
   border-radius: 3px;
-  border-width: 0;
-  box-shadow:
-    rgba(50, 50, 93, 0.1) 0 0 0 1px inset,
-    rgba(50, 50, 93, 0.1) 0 2px 5px 0,
-    rgba(0, 0, 0, 0.07) 0 1px 1px 0;
-  box-sizing: border-box;
-  color: #fff;
-  cursor: pointer;
-  font-family: -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue',
-    Ubuntu, sans-serif;
-  font-size: 100%;
-  line-height: 1.15;
-  outline: none;
-  overflow: hidden;
   padding: 5px 5px;
-  position: relative;
-  text-align: center;
-  text-transform: none;
-  transform: translateZ(0);
-  transition:
-    all 0.2s,
-    box-shadow 0.08s ease-in,
-    background-color 0.2s;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
   width: auto;
+  background-color: #005c55;
   &:hover {
     background-color: rgba(46, 153, 145);
   }
 }
 
 #dashboard-test-config__button {
-  appearance: button;
-  backface-visibility: hidden;
-  background-color: #2e9991;
   border-radius: 3px;
-  border-width: 0;
-  box-shadow:
-    rgba(50, 50, 93, 0.1) 0 0 0 1px inset,
-    rgba(50, 50, 93, 0.1) 0 2px 5px 0,
-    rgba(0, 0, 0, 0.07) 0 1px 1px 0;
-  box-sizing: border-box;
-  color: #fff;
-  cursor: pointer;
-  font-family: -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue',
-    Ubuntu, sans-serif;
-  font-size: 100%;
-  line-height: 1.15;
-  outline: none;
-  overflow: hidden;
   padding: 5px 5px;
-  position: relative;
-  text-align: center;
-  text-transform: none;
-  transform: translateZ(0);
-  transition:
-    all 0.2s,
-    box-shadow 0.08s ease-in,
-    background-color 0.2s;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
   width: auto;
+  background-color: #2e9991;
   &:hover {
     background-color: rgba(0, 92, 85);
   }
