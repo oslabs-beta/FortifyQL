@@ -19,8 +19,11 @@ body {
   height: 3em;
 }
 
-#dashboard__header {
-  font-size: 2em;
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 1.2em;
   color: #005c55;
 }
 
@@ -43,13 +46,6 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   padding: 20px;
-}
-
-.header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  font-size: 2em;
 }
 
 .input_form {
