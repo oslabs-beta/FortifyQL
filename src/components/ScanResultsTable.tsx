@@ -76,7 +76,7 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
   };
 
   return (
-    <div className='results-table__container'>
+    <div className='dashboard__container'>
       <h2 className='dashboard__headers'>Security Scan Results</h2>
       <div className='underline'></div>
       <div className='results-table-export__container'>
