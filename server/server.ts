@@ -36,7 +36,7 @@ server.use((req, _res, next) => {
   return next();
 });
 //PATHS
-server.use('/runPentest', async (req: Request, res: Response) => {
+server.use('/api/runPentest', async (req: Request, res: Response) => {
   try {
     console.log('Starting Penetration Testing...');
     await getSchema(req, res);
@@ -68,7 +68,7 @@ server.use('/runPentest', async (req: Request, res: Response) => {
       if (req.body.tests.includes(test)) {
         await testsMap[test].generate(req, res);
         const testResult = await testsMap[test].evaluate(req, res);
-        results[test] = testResult;
+        results.push(...testResult);
       }
     };
 
