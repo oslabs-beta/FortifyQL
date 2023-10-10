@@ -2,7 +2,7 @@ import React, { useState, FormEvent } from 'react';
 
 interface IConfigFormProps {
   onScanSubmit: (endpoint: string, tests: string[]) => void;
-};
+}
 
 const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
   // Destructuring props
