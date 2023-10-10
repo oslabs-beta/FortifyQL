@@ -53,8 +53,8 @@ body {
   height: 35px;
   width: 100%;
   max-width: 400px;
-  font-size: 14pt;
-  margin: 20px;
+  font-size: 15px;
+  margin: 0 20px 20px;
   background-color: rgba(0, 92, 85, 0.05);
 }
 #textbox:focus {
@@ -76,7 +76,7 @@ body {
 
 .tests {
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   margin-right: 10px;
   align-items: center;
 }
