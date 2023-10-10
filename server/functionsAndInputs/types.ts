@@ -30,11 +30,12 @@ export interface QueryResult {
   status: string;
   title: string;
   details: {
+    error?: string;
     query: string;
     response: string;
     description: string;
-    solution?: string;
-    link?: string;
+    solution: string;
+    link: string;
   }
   severity: string | number;
   testDuration: string | number;
