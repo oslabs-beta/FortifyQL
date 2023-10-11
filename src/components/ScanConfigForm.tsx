@@ -44,6 +44,7 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
           id='textbox'
           type='text'
           placeholder='Enter GraphQL API URI Here'
+          required
           onChange={handleEndpoint}
         ></input>
 
