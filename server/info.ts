@@ -1,4 +1,4 @@
-{
+export const info = {
     "Boolean Based SQL Injection": "A technique where attackers manipulate an application by sending SQL queries that produce true or false outcomes.By observing the application's behavior to these binary results, they can deduce valuable information about the underlying database.",
     "BBSQLI Solution": "Utilize parameterized queries or prepared statements to ensure data is securely handled. By doing this, you ensure that user input is always treated as data and not executable code. Regularly review and update your database permissions to limit unnecessary access.",
     "Error Based SQL Injection": "Attackers intentionally send erroneous SQL queries to provoke the application into revealing database error messages. These messages can inadvertently expose details about the database structure or other sensitive information.",
