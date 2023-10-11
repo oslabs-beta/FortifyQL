@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ScanConfigForm from './ScanConfigForm';
 import ScanResultsTable from './ScanResultsTable';
 import { ITestResult } from '../interfaces/results';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 const SecurityDashboard: React.FC = () => {
   const [scanResults, setScanResults] = useState<ITestResult[]>([]);
@@ -17,12 +18,14 @@ const SecurityDashboard: React.FC = () => {
     setLoading(true);
 
     try {
+      setShowConfigForm(false); // Hide the config form after submitting
+
       const requestBody = JSON.stringify({
         API: endpoint,
         tests: selectedTests,
       });
 
-      const response = await fetch('/api/runPentest', {
+      const response = await fetch('/api/runpentest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,7 +44,6 @@ const SecurityDashboard: React.FC = () => {
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
-      setShowConfigForm(false); // Hide the config form after submitting
     }
   };
 
@@ -50,14 +52,14 @@ const SecurityDashboard: React.FC = () => {
   };
 
   return (
-    <div className='dashboard__container'>
-      <div className='header'>
+    <div className='main__container'>
+      <div className='main_header'>
         <img
           src='../src/assets/fortifyQL.png'
           alt='FortifyQL logo of an abstract red maze in the shape of a shield with a keyhole at the center'
           className='img_responsive'
         ></img>
-        <h1 id='dashboard__header'>
+        <h1>
           Fortify<b id='QL'>QL</b>
         </h1>
       </div>
@@ -66,7 +68,15 @@ const SecurityDashboard: React.FC = () => {
       ) : (
         <div>
           {loading ? (
-            <p>Loading...</p>
+            <div className='loader__container'>
+              <ClipLoader
+                color={'green'}
+                loading={loading}
+                size={150}
+                aria-label='Loading Spinner'
+                data-testid='table-loader'
+              />
+            </div>
           ) : (
             <ScanResultsTable
               resultsData={scanResults}

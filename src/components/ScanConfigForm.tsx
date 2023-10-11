@@ -36,9 +36,9 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
   };
 
   return (
-    <div className='config-form__container'>
+    <div className='dashboard__container'>
       <form className='input_form' onSubmit={handleSubmit}>
-        <h2 id='config-form__header'>Security Scan Configuration</h2>
+        <h2 className='dashboard__headers'>Security Scan Configuration</h2>
         <div className='underline'></div>
         <input
           id='textbox'
@@ -70,15 +70,15 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
           </label>
           <label className='text'>
             <b>Denial of Service (DoS) Scan:&nbsp;</b>Resource exhaustion via
-            nested queries.
+            nested circular queries.
           </label>
         </div>
 
-        <div className='tests'>
+        {/* <div className='tests'>
           <label className='switch'>
             <input
               type='checkbox'
-              value='authorization-scan'
+              value='Authorization'
               onChange={handleSelectedTests}
             />
             <span className='slider' />
@@ -87,13 +87,13 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
             <b>Authorization Configuration Scan:&nbsp;</b>Use administration
             email and brute force login credentials.
           </label>
-        </div>
+        </div> */}
 
         <div className='tests'>
           <label className='switch'>
             <input
               type='checkbox'
-              value='batching-scan'
+              value='Batching'
               onChange={handleSelectedTests}
             />
             <span className='slider' />
@@ -115,10 +115,25 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
             <span className='slider' />
           </label>
           <label className='text'>
+            <b>Verbose Error Scan:&nbsp;</b>A query that analyzes error response
+            for verbose error messages revealing system information.
+          </label>
+        </div>
+
+        {/* <div className='tests'>
+          <label className='switch'>
+            <input
+              type='checkbox'
+              value='Introspection'
+              onChange={handleSelectedTests}
+            />
+            <span className='slider' />
+          </label>
+          <label className='text'>
             <b>Introspection Scan:&nbsp;</b>A query that performs an operation
             to pull the information from the backend of the application.
           </label>
-        </div>
+        </div> */}
 
         {/* <button id='select_all_button' onChange={handleSelectAllButton}>Select All Tests</button> */}
         <button id='submit_button' className='buttons'>
