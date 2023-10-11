@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
+import { ITestResult } from '../interfaces/results';
 
 interface ModalCellRendererProps {
   isModalOpen: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   closeModal: () => void;
-  modalData?: string[];
+  data: ITestResult;
 }
 
 Modal.setAppElement('#root');
 
 const customStyles = {
+  overlay: {
+    backgroundColor: '#ede7e7',
+  },
   content: {
     top: '50%',
     left: '50%',
@@ -21,8 +25,9 @@ const customStyles = {
   },
 };
 
-const ModalCellRenderer: React.FC<ModalCellRendererProps> = () => {
+const ModalCellRenderer: React.FC<ModalCellRendererProps> = ({ data }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalData, setModalData] = useState(data);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -31,6 +36,10 @@ const ModalCellRenderer: React.FC<ModalCellRendererProps> = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    setModalData(data);
+  }, [data]);
 
   return (
     <div className='details-modal__container'>
@@ -42,24 +51,22 @@ const ModalCellRenderer: React.FC<ModalCellRendererProps> = () => {
           style={customStyles}
         >
           <button onClick={closeModal}>Close</button>
-          <h2>Test Result Details</h2>
-          {/* <p>ID: {modalData.id}</p>
-            <p>Vulnerability: {modalData.vulnerability}</p>
-            <p>Solution: {modalData.solution}</p> */}
-          <p>Vulnerability: Boolean Based SQL Injection</p>
-          <p>
-            Solution: Have checks in place for GraphQL input. These checks
-            validate that the input has an expected format and doesn’t include
-            special characters frequently used in injection attacks. While input
-            validation and sanitization can be performed in the resolvers
-            (execution stage), it is recommended to do it earlier, in the
-            validation stage, when the AST is validated against the GraphQL
-            schema to determine that only valid types and fields are being
-            requested. In addition to the basic Int, Float, String, Booleans,
-            types, you can additionally enforce that inputs match custom scalar
-            types, like email addresses. This helps you identify the data and
-            validate it before even transferring it to the server.
-          </p>
+          <h3>{modalData.title}</h3>
+          <p>Description: {modalData.details.description}</p>
+          <p>Query: </p>
+          <div>
+            <pre>
+              <code>{modalData.details.query}</code>
+            </pre>
+          </div>
+          <p>Response:{JSON.stringify(modalData.details.response)}</p>
+          <div>
+            <pre>
+              {/* <code>{JSON.stringify(modalData.details.response)}</code> */}
+            </pre>
+          </div>
+          <p>Solution: {modalData.details.solution}</p>
+          <a href={modalData.details.link}>{modalData.details.link}</a>
         </Modal>
       )}
     </div>
