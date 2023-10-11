@@ -1,11 +1,11 @@
-import { useState, useMemo, useCallback, useRef } from 'react';
+import { useState, useMemo } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { ColDef, GridApi, RowClassParams } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import '../stylesheets/ag-theme-custom.scss';
-import { ITestResult } from '../interfaces/results';
 import ModalCellRenderer from './ModalCellRender';
+import { ITestResult } from '../interfaces/results';
 import { StatusIcons } from './statusIconRenderer';
 
 interface IResultsTableProps {
@@ -17,14 +17,10 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
   resultsData,
   handleDisplayTestConfig,
 }) => {
-  // console.log(resultsData);
-
   // State to store the AG Grid API
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
 
   const gridStyle = useMemo(() => ({ height: '600px', width: '100%' }), []);
-
-  // const [modalData, setModalData] = useState<string | null>(null);
 
   const colDefs: ColDef[] = [
     {
@@ -43,7 +39,6 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
       cellRenderer: 'modalCellRenderer',
       maxWidth: 100,
     },
-    // { field: 'description' },
     // { field: 'severity', editable: true, maxWidth: 120 },
     { field: 'testDuration', maxWidth: 170 },
     { field: 'lastDetected' },
@@ -60,7 +55,7 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
     [],
   );
 
-  // Assign classes to rows based on pass/fail to color code
+  // AG Grid assign classes to rows based on pass/fail to color code
   const getRowClass = (params: RowClassParams) => {
     if (params.data.status === 'Fail') {
       return 'ag-row-fail';
@@ -69,6 +64,7 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
     }
   };
 
+  // AG Grid custom React components to display in table
   const components = useMemo(
     () => ({
       modalCellRenderer: ModalCellRenderer,
