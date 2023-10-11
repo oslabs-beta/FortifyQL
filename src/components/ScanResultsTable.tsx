@@ -95,7 +95,7 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
           Export to CSV
         </button>
       </div>
-      <div style={gridStyle} className='ag-theme-alpine'>
+      <div style={gridStyle} className='ag-theme-alpine' id='ag-results-table'>
         <AgGridReact
           columnDefs={colDefs}
           rowData={resultsData}
