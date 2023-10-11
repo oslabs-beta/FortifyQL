@@ -210,26 +210,17 @@ input:checked + .slider:before {
 
 // Modal Styling
 
-.details-modal__container {
-  background-color: $white;
-  margin-left: 0;
-  padding: 0 20px 20px 20px;
-  border: 1px solid $border-color;
-  border-radius: 10px;
-  box-shadow:
-    $seventy-color 3px 3px 2px,
-    $fifty-color 6px 6px 3px,
-    $thirty-color 9px 9px 3px,
-    $ten-color 12px 12px 4px,
-    $five-color 15px 15px 4px;
-}
-
 .ReactCollapse--collapse {
   transition: height 500ms;
 }
 
 #modal-close__button {
+  margin-left: 20px;
 }
 
 #modal-open__button {
+}
+
+.modal-details__container {
+  padding: 0 10px;
 }

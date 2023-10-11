@@ -16,7 +16,7 @@ const ModalAccordion: React.FC<IAccordionProps> = ({ children }) => {
 
   return (
     <div className='accordion__container'>
-      <button onClick={toggleExpand}>
+      <button className='buttons' onClick={toggleExpand}>
         {isExpanded ? 'Hide Data' : 'Show Data'}
       </button>
       <Collapse isOpened={isExpanded}>{children}</Collapse>

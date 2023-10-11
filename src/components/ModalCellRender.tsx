@@ -15,15 +15,15 @@ Modal.setAppElement('#root');
 
 const customStyles = {
   overlay: {
-    backgroundColor: '#ede7e7',
+    backgroundColor: 'rgba(208, 204, 204)',
   },
   content: {
-    top: '50%',
-    left: '50%',
+    top: '5%',
+    left: 'auto',
     right: 'auto',
     bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
+    // marginRight: '-50%',
+    // transform: 'translate(-50%, -50%)',
   },
 };
 
@@ -44,7 +44,7 @@ const ModalCellRenderer: React.FC<IModalCellRendererProps> = ({ data }) => {
   }, [data]);
 
   return (
-    <div className='details-modal__container'>
+    <div className='outer-modal__container'>
       <button onClick={openModal}>View</button>
       {isModalOpen && (
         <Modal
@@ -52,25 +52,36 @@ const ModalCellRenderer: React.FC<IModalCellRendererProps> = ({ data }) => {
           onRequestClose={closeModal}
           style={customStyles}
         >
-          <button onClick={closeModal}>Close</button>
-          <h2>{modalData.title}</h2>
-          <h3>Description:</h3>
-          <p>{modalData.details.description}</p>
-          <h3>Query: </h3>
-          <ModalAccordion label='Query'>
-            <pre>
-              <code>{prettyPrintGraphQL(modalData.details.query)}</code>
-            </pre>
-          </ModalAccordion>
-          <h3>Response:</h3>
-          <ModalAccordion label='Response'>
-            <pre>
-              <code>{prettifyJson(modalData.details.response)}</code>
-            </pre>
-          </ModalAccordion>
-          <h3>Solution:</h3>
-          <p>{modalData.details.solution}</p>
-          <a href={modalData.details.link}>{modalData.details.link}</a>
+          <button
+            className='buttons'
+            id='modal-close__button'
+            onClick={closeModal}
+          >
+            Close
+          </button>
+          <div className='dashboard__container'>
+            <h2 className='dashboard__headers'>{modalData.title}</h2>
+            <div className='underline'></div>
+            <div className='modal-details__container'>
+              <h3>Description:</h3>
+              <p>{modalData.details.description}</p>
+              <h3>Query: </h3>
+              <ModalAccordion label='Query'>
+                <pre>
+                  <code>{prettyPrintGraphQL(modalData.details.query)}</code>
+                </pre>
+              </ModalAccordion>
+              <h3>Response:</h3>
+              <ModalAccordion label='Response'>
+                <pre>
+                  <code>{prettifyJson(modalData.details.response)}</code>
+                </pre>
+              </ModalAccordion>
+              <h3>Solution:</h3>
+              <p>{modalData.details.solution}</p>
+              <a href={modalData.details.link}>{modalData.details.link}</a>
+            </div>
+          </div>
         </Modal>
       )}
     </div>
