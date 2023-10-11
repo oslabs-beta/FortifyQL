@@ -1,0 +1,222 @@
+/* reset default styles */
+// @import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Oswald:wght@200;300;400;500;600;700&display=swap');
+
+//Sass variables
+$red: rgb(232, 28, 38);
+$white: rgb(255, 255, 255);
+$black: rgb(0, 0, 0);
+
+$primary-color: rgb(75, 119, 141);
+$secondary-color: rgb(40, 181, 181);
+$tertiary-color: rgb(143, 217, 168);
+$quatenary-color: rgb(210, 230, 156);
+$seventy-color: rgba($primary-color, 0.7);
+$fifty-color: rgba($primary-color, 0.5);
+$thirty-color: rgba($primary-color, 0.3);
+$ten-color: rgba($primary-color, 0.1);
+$five-color: rgba($primary-color, 0.05);
+$background-color: rgb(237, 231, 231);
+$slider-color: rgb(173, 172, 172);
+
+body {
+  background-color: $background-color;
+  font-family: 'Roboto', sans-serif;
+}
+
+.img_responsive {
+  width: 3em;
+  height: 3em;
+}
+
+.main_header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 1.3em;
+  color: $primary-color;
+}
+
+#QL {
+  color: $secondary-color;
+}
+
+.dashboard__headers {
+  color: $primary-color;
+  margin-left: 20px;
+  font-size: 30px;
+}
+
+.main__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 20px;
+}
+
+.input_form {
+  width: 100%; /* Occupy full width of the container */
+  margin-bottom: 20px; /* Add space below the form */
+}
+
+#textbox {
+  height: 35px;
+  width: 100%;
+  max-width: 400px;
+  font-size: 15px;
+  margin: 0 20px 20px;
+  background-color: $ten-color;
+}
+#textbox:focus {
+  outline: none;
+  border: 2px solid $tertiary-color;
+}
+
+.switch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 63px;
+  height: 33px;
+  margin: 0 10px;
+}
+.switch input {
+  display: none;
+}
+
+.tests {
+  display: flex;
+  margin-bottom: 25px;
+  margin-right: 10px;
+  align-items: center;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.4s;
+  border-radius: 20px;
+  background-color: $slider-color;
+}
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 29px;
+  width: 30px;
+  left: 3px;
+  top: 2px;
+  background-color: $primary-color;
+  transition: 0.4s;
+  border-radius: 20px;
+}
+
+input:checked + .slider {
+  background-color: $tertiary-color;
+}
+
+input:checked + .slider:before {
+  transform: translateX(28px);
+}
+
+// #select_all_button {
+//   float: left;
+//   margin: 30px;
+//   margin-left: 10px;
+// }
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  font-size: 15px;
+}
+
+.checkbox {
+  height: auto;
+}
+
+.underline {
+  width: auto;
+  height: 3px; /* Adjust the height to control the thickness of the line */
+  margin: 0 0 20px;
+  background-image: linear-gradient(
+    90deg,
+    $primary-color 0%,
+    $secondary-color 50%,
+    $tertiary-color 100%
+  );
+  background-clip: content-box;
+  padding: 1px; /* This will act as the border */
+}
+
+#submit_button {
+  border-radius: 6px;
+  height: 44px;
+  margin-left: 20px;
+  margin-top: 10px;
+  padding: 0 25px;
+  width: 100px;
+}
+
+.buttons {
+  appearance: button;
+  backface-visibility: hidden;
+  border-width: 0;
+  box-shadow:
+    $ten-color 0 0 0 1px inset,
+    $ten-color 0 2px 5px 0,
+    rgba(0, 0, 0, 0.07) 0 1px 1px 0;
+  box-sizing: border-box;
+  color: $white;
+  cursor: pointer;
+  font-family: -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Ubuntu, sans-serif;
+  font-size: 100%;
+  line-height: 1.15;
+  outline: none;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  text-transform: none;
+  transform: translateZ(0);
+  transition:
+    all 0.2s,
+    box-shadow 0.08s ease-in,
+    background-color 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  border-radius: 3px;
+  padding: 5px 5px;
+  width: auto;
+  background-color: $primary-color;
+  &:hover {
+    background-color: $secondary-color;
+  }
+}
+
+.results-table-export__container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  padding: 0;
+}
+
+.dashboard__container {
+  background-color: $white;
+  margin-left: 0;
+  padding: 0 20px 20px 20px;
+  border: 1px solid grey;
+  border-radius: 10px;
+  box-shadow:
+    $seventy-color 3px 3px,
+    $fifty-color 6px 6px,
+    $thirty-color 9px 9px,
+    $ten-color 12px 12px,
+    $five-color 15px 15px;
+}

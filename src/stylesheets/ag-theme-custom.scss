@@ -1,0 +1,18 @@
+$green: rgb(18, 145, 136);
+$red: rgb(232, 28, 38);
+
+$row-fail-color: rgba($red, 0.1);
+$row-pass-color: rgba($green, 0.1);
+
+.ag-row-fail {
+  background-color: $row-fail-color;
+}
+
+.ag-row-pass {
+  background-color: $row-pass-color;
+}
+
+.ag-status-icons {
+  width: 20px;
+  height: 20px;
+}
