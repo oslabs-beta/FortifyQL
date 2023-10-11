@@ -224,6 +224,10 @@ input:checked + .slider:before {
     $five-color 15px 15px 4px;
 }
 
+.ReactCollapse--collapse {
+  transition: height 500ms;
+}
+
 #modal-close__button {
 }
 

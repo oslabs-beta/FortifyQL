@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { ITestResult } from '../interfaces/results';
+import { prettifyJson, prettyPrintGraphQL } from '../utils/format';
+import ModalAccordion from './ModalAccordion';
 
-interface ModalCellRendererProps {
+interface IModalCellRendererProps {
   isModalOpen: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   closeModal: () => void;
@@ -25,7 +27,7 @@ const customStyles = {
   },
 };
 
-const ModalCellRenderer: React.FC<ModalCellRendererProps> = ({ data }) => {
+const ModalCellRenderer: React.FC<IModalCellRendererProps> = ({ data }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(data);
 
@@ -50,39 +52,25 @@ const ModalCellRenderer: React.FC<ModalCellRendererProps> = ({ data }) => {
           onRequestClose={closeModal}
           style={customStyles}
         >
-          <button className='buttons' onClick={closeModal}>
-            Close
-          </button>
-          <div className='dashboard__container'>
-            <h2 className='dashboard__headers'>{modalData.title}</h2>
-            <div className='underline'></div>
-            <p>
-              <b>Description: </b>
-              {modalData.details.description}
-            </p>
-            <p>
-              <b>Query: </b>
-            </p>
-            <div>
-              <pre>
-                <code>{modalData.details.query}</code>
-              </pre>
-            </div>
-            <p>
-              <b>Response: </b>
-              {JSON.stringify(modalData.details.response)}
-            </p>
-            <div>
-              <pre>
-                {/* <code>{JSON.stringify(modalData.details.response)}</code> */}
-              </pre>
-            </div>
-            <p>
-              <b>Solution: </b>
-              {modalData.details.solution}
-            </p>
-            <a href={modalData.details.link}>{modalData.details.link}</a>
-          </div>
+          <button onClick={closeModal}>Close</button>
+          <h2>{modalData.title}</h2>
+          <h3>Description:</h3>
+          <p>{modalData.details.description}</p>
+          <h3>Query: </h3>
+          <ModalAccordion label='Query'>
+            <pre>
+              <code>{prettyPrintGraphQL(modalData.details.query)}</code>
+            </pre>
+          </ModalAccordion>
+          <h3>Response:</h3>
+          <ModalAccordion label='Response'>
+            <pre>
+              <code>{prettifyJson(modalData.details.response)}</code>
+            </pre>
+          </ModalAccordion>
+          <h3>Solution:</h3>
+          <p>{modalData.details.solution}</p>
+          <a href={modalData.details.link}>{modalData.details.link}</a>
         </Modal>
       )}
     </div>
