@@ -196,6 +196,22 @@ input:checked + .slider:before {
 
 .dashboard__container {
   background-color: $white;
+  margin: 20px;
+  padding: 0 20px 20px 20px;
+  border: 1px solid $border-color;
+  border-radius: 10px;
+  box-shadow:
+    $seventy-color 3px 3px 2px,
+    $fifty-color 6px 6px 3px,
+    $thirty-color 9px 9px 3px,
+    $ten-color 12px 12px 4px,
+    $five-color 15px 15px 4px;
+}
+
+// Modal Styling
+
+.details-modal__container {
+  background-color: $white;
   margin-left: 0;
   padding: 0 20px 20px 20px;
   border: 1px solid $border-color;
@@ -206,4 +222,10 @@ input:checked + .slider:before {
     $thirty-color 9px 9px 3px,
     $ten-color 12px 12px 4px,
     $five-color 15px 15px 4px;
+}
+
+#modal-close__button {
+}
+
+#modal-open__button {
 }

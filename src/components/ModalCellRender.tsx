@@ -50,23 +50,39 @@ const ModalCellRenderer: React.FC<ModalCellRendererProps> = ({ data }) => {
           onRequestClose={closeModal}
           style={customStyles}
         >
-          <button onClick={closeModal}>Close</button>
-          <h3>{modalData.title}</h3>
-          <p>Description: {modalData.details.description}</p>
-          <p>Query: </p>
-          <div>
-            <pre>
-              <code>{modalData.details.query}</code>
-            </pre>
+          <button className='buttons' onClick={closeModal}>
+            Close
+          </button>
+          <div className='dashboard__container'>
+            <h2 className='dashboard__headers'>{modalData.title}</h2>
+            <div className='underline'></div>
+            <p>
+              <b>Description: </b>
+              {modalData.details.description}
+            </p>
+            <p>
+              <b>Query: </b>
+            </p>
+            <div>
+              <pre>
+                <code>{modalData.details.query}</code>
+              </pre>
+            </div>
+            <p>
+              <b>Response: </b>
+              {JSON.stringify(modalData.details.response)}
+            </p>
+            <div>
+              <pre>
+                {/* <code>{JSON.stringify(modalData.details.response)}</code> */}
+              </pre>
+            </div>
+            <p>
+              <b>Solution: </b>
+              {modalData.details.solution}
+            </p>
+            <a href={modalData.details.link}>{modalData.details.link}</a>
           </div>
-          <p>Response:{JSON.stringify(modalData.details.response)}</p>
-          <div>
-            <pre>
-              {/* <code>{JSON.stringify(modalData.details.response)}</code> */}
-            </pre>
-          </div>
-          <p>Solution: {modalData.details.solution}</p>
-          <a href={modalData.details.link}>{modalData.details.link}</a>
         </Modal>
       )}
     </div>
