@@ -214,13 +214,18 @@ input:checked + .slider:before {
   transition: height 500ms;
 }
 
+.ReactModal__Body--open,
+.ReactModal__Html--open {
+  overflow: hidden;
+}
+
 #modal-close__button {
   margin-left: 20px;
 }
 
-#modal-open__button {
-}
-
 .modal-details__container {
-  padding: 0 10px;
+  margin: 10px;
+  max-height: 60vh;
+  overflow-y: scroll;
+  min-width: 500px;
 }
