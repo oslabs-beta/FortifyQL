@@ -18,7 +18,7 @@ const customStyles = {
     // backgroundColor: 'rgba(208, 204, 204, .441)',
   },
   content: {
-    backgroundColor: 'rgba(208, 204, 204, .441)',
+    backgroundColor: 'rgba(208, 204, 204',
     top: '5%',
     left: 'auto',
     right: 'auto',
@@ -53,16 +53,14 @@ const ModalCellRenderer: React.FC<IModalCellRendererProps> = ({ data }) => {
           onRequestClose={closeModal}
           style={customStyles}
         >
-          <button
-            className='buttons'
-            id='modal-close__button'
-            onClick={closeModal}
-          >
-            Close
-          </button>
           <div className='dashboard__container'>
+            <span id='modal-close__button'>
+              <button className='buttons' onClick={closeModal}>
+                Close
+              </button>
+            </span>
             <h2 className='dashboard__headers'>{modalData.title}</h2>
-            <div className='underline'></div>
+            <div className='underline' id='modal-underline'></div>
             <div className='modal-details__container'>
               <h3>Description:</h3>
               <p>{modalData.details.description}</p>

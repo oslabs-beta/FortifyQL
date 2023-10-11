@@ -220,12 +220,21 @@ input:checked + .slider:before {
 }
 
 #modal-close__button {
-  margin-left: 20px;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  margin-top: 10px;
+  margin-right: 10px;
 }
 
 .modal-details__container {
-  margin: 10px;
+  margin: 0 10px;
+  padding-right: 20px;
   max-height: 60vh;
   overflow-y: scroll;
   min-width: 500px;
+}
+
+#modal-underline {
+  margin-bottom: 0;
 }
