@@ -1,4 +1,4 @@
-import './App.css';
+import './stylesheets/App.scss';
 import ScanConfigForm from './components/ScanConfigForm';
 import SecurityDashboard from './components/SecurityDashboard';
 

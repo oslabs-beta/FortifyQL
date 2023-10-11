@@ -1,9 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef, GridApi } from 'ag-grid-community';
+import { ColDef, GridApi, RowClassParams } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
+import '../stylesheets/ag-theme-custom.scss';
 import { ITestResult } from '../interfaces/results';
+import ModalCellRenderer from './ModalCellRender';
 
 interface IResultsTableProps {
   resultsData: ITestResult[];
@@ -14,30 +16,65 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
   resultsData,
   handleDisplayTestConfig,
 }) => {
+  // console.log(resultsData);
+
   // State to store the AG Grid API
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
 
+  const gridStyle = useMemo(() => ({ height: '600px', width: '100%' }), []);
+
+  // const [modalData, setModalData] = useState<string | null>(null);
+
   const colDefs: ColDef[] = [
-    { headerName: 'Test ID', field: 'id' },
-    { field: 'status', headerTooltip: 'Pending / Pass / Fail' },
-    { field: 'description' },
-    { field: 'severity', editable: true },
-    { field: 'testDuration' },
+    {
+      field: 'status',
+      maxWidth: 120,
+    },
+    {
+      headerName: 'Test ID',
+      field: 'id',
+      maxWidth: 120,
+    },
+    { field: 'title', minWidth: 250 },
+    {
+      field: 'details',
+      cellRenderer: 'modalCellRenderer',
+      maxWidth: 100,
+    },
+    // { field: 'description' },
+    // { field: 'severity', editable: true, maxWidth: 120 },
+    { field: 'testDuration', maxWidth: 170 },
     { field: 'lastDetected' },
   ];
 
   // AG Grid Column Definitions
   const defaultColDef = useMemo(
     () => ({
-      sortable: true,
-      filter: true,
-      resizeable: true,
       flex: 1,
+      filter: true,
+      sortable: true,
+      resizable: true,
     }),
     [],
   );
 
-  // Function to handle exporting data to CSV
+  // Assign classes to rows based on pass/fail to color code
+  const getRowClass = (params: RowClassParams) => {
+    if (params.data.status === 'Fail') {
+      return 'ag-row-fail';
+    } else {
+      return 'ag-row-pass';
+    }
+  };
+
+  const components = useMemo(
+    () => ({
+      modalCellRenderer: ModalCellRenderer,
+    }),
+    [],
+  );
+
+  // Handles exporting data to CSV
   const handleExportCSV = () => {
     if (gridApi) {
       const params = {
@@ -49,27 +86,26 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
   };
 
   return (
-    <div className='results-table__container'>
-      <div
-        className='ag-theme-alpine'
-        style={{ height: '100%', width: '100%' }}
-      >
-        <h2 className='results-table__header'>Security Scan Results</h2>
-        <div className='results-table-export__container'>
-          <button
-            className='dashboard-test-config__button'
-            onClick={handleDisplayTestConfig}
-          >
-            Back to Test Configuration
-          </button>
-          <button onClick={handleExportCSV}>Export to CSV</button>
-        </div>
+    <div className='dashboard__container'>
+      <h2 className='dashboard__headers'>Security Scan Results</h2>
+      <div className='underline'></div>
+      <div className='results-table-export__container'>
+        <button className='buttons' onClick={handleDisplayTestConfig}>
+          Back to Test Configuration
+        </button>
+        <button className='buttons' onClick={handleExportCSV}>
+          Export to CSV
+        </button>
+      </div>
+      <div style={gridStyle} className='ag-theme-alpine'>
         <AgGridReact
           columnDefs={colDefs}
           rowData={resultsData}
+          getRowClass={getRowClass}
           defaultColDef={defaultColDef}
-          domLayout='autoHeight'
+          animateRows={true}
           onGridReady={(params) => setGridApi(params.api)}
+          components={components}
         />
       </div>
     </div>

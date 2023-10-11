@@ -22,6 +22,7 @@ import { injection } from './pentesting/injection.ts';
 import { batching } from './pentesting/batching.ts';
 import { verboseError } from './pentesting/verboseError.ts';
 import { circularQuery } from './pentesting/circularQuery.ts';
+import { ITestResult } from '../src/interfaces/results.ts';
 
 // Use cors
 server.use(cors());
@@ -36,7 +37,7 @@ server.use((req, _res, next) => {
   return next();
 });
 //PATHS
-server.use('/runPentest', async (req: Request, res: Response) => {
+server.use('/api/runpentest', async (req: Request, res: Response) => {
   try {
     console.log('Starting Penetration Testing...');
     await getSchema(req, res);
@@ -62,13 +63,13 @@ server.use('/runPentest', async (req: Request, res: Response) => {
       },
     };
 
-    const results: { [key: string]: any[] } = {};
+    const results: ITestResult[] = [];
 
     const runTest = async (test: string) => {
       if (req.body.tests.includes(test)) {
         await testsMap[test].generate(req, res);
         const testResult = await testsMap[test].evaluate(req, res);
-        results[test] = testResult;
+        results.push(...testResult);
       }
     };
 
