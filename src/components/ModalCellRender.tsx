@@ -59,7 +59,9 @@ const ModalCellRenderer: React.FC<IModalCellRendererProps> = ({ data }) => {
                 Close
               </button>
             </span>
-            <h2 className='dashboard__headers'>{modalData.title}</h2>
+            <h2 id='modal__header' className='dashboard__headers'>
+              {modalData.title}
+            </h2>
             <div className='underline' id='modal-underline'></div>
             <div className='modal-details__container'>
               <h3>Description:</h3>
