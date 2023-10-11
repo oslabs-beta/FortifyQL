@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { ITestResult } from '../interfaces/results';
+import { prettifyJson, prettyPrintGraphQL } from '../utils/format';
+import ModalAccordion from './ModalAccordion';
 
-interface ModalCellRendererProps {
+interface IModalCellRendererProps {
   isModalOpen: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   closeModal: () => void;
@@ -25,7 +27,7 @@ const customStyles = {
   },
 };
 
-const ModalCellRenderer: React.FC<ModalCellRendererProps> = ({ data }) => {
+const ModalCellRenderer: React.FC<IModalCellRendererProps> = ({ data }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(data);
 
@@ -51,21 +53,23 @@ const ModalCellRenderer: React.FC<ModalCellRendererProps> = ({ data }) => {
           style={customStyles}
         >
           <button onClick={closeModal}>Close</button>
-          <h3>{modalData.title}</h3>
-          <p>Description: {modalData.details.description}</p>
-          <p>Query: </p>
-          <div>
+          <h2>{modalData.title}</h2>
+          <h3>Description:</h3>
+          <p>{modalData.details.description}</p>
+          <h3>Query: </h3>
+          <ModalAccordion label='Query'>
             <pre>
-              <code>{modalData.details.query}</code>
+              <code>{prettyPrintGraphQL(modalData.details.query)}</code>
             </pre>
-          </div>
-          <p>Response:{JSON.stringify(modalData.details.response)}</p>
-          <div>
+          </ModalAccordion>
+          <h3>Response:</h3>
+          <ModalAccordion label='Response'>
             <pre>
-              {/* <code>{JSON.stringify(modalData.details.response)}</code> */}
+              <code>{prettifyJson(modalData.details.response)}</code>
             </pre>
-          </div>
-          <p>Solution: {modalData.details.solution}</p>
+          </ModalAccordion>
+          <h3>Solution:</h3>
+          <p>{modalData.details.solution}</p>
           <a href={modalData.details.link}>{modalData.details.link}</a>
         </Modal>
       )}
