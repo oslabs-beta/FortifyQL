@@ -3,6 +3,7 @@ import { AgGridReact } from 'ag-grid-react';
 import { ColDef, GridApi, RowClassParams } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
+import '../stylesheets/ag-theme-custom.scss';
 import { ITestResult } from '../interfaces/results';
 import ModalCellRenderer from './ModalCellRender';
 
@@ -60,9 +61,9 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
   // Assign classes to rows based on pass/fail to color code
   const getRowClass = (params: RowClassParams) => {
     if (params.data.status === 'Fail') {
-      return 'row-fail';
+      return 'ag-row-fail';
     } else {
-      return 'row-pass';
+      return 'ag-row-pass';
     }
   };
 

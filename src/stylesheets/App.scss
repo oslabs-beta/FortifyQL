@@ -219,11 +219,3 @@ input:checked + .slider:before {
     $ten-color 12px 12px,
     $five-color 15px 15px;
 }
-
-.row-fail {
-  background-color: rgba(232, 28, 38, 0.1);
-}
-
-.row-pass {
-  background-color: rgba(18, 145, 136, 0.1);
-}
