@@ -7,9 +7,14 @@ export function createQueryResult(
   return {
     id: `${category}-${ID}`,
     status: 'Pass',
-    query: query,
     title: '',
-    description: '',
+    details: {
+      query: query,
+      response: '',
+      description: '',
+      solution: '',
+      link: '',
+    },
     severity: 'P1',
     testDuration: '',
     lastDetected: `${new Date().toLocaleTimeString('en-GB')} - ${new Date()
@@ -27,9 +32,14 @@ export function createErrorResult(
   return {
     id: `${category}-${ID}`,
     status: 'Error',
-    query: 'Request errored out',
-    title: 'Failed Test',
-    description: `Error occured`,
+    title: 'Failed to Run Test',
+    details: {
+      query: '',
+      response: '',
+      description: '',
+      solution: '',
+      link: '',
+    },
     severity: 'P1',
     testDuration: '',
     lastDetected: `${new Date().toLocaleTimeString('en-GB')} - ${new Date()

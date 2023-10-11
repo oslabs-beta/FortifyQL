@@ -5,6 +5,6 @@ export const SQLtitles = {
 };
 
 export const batchTitles = {
-  identical: 'Multiple Identical Queries',
-  exhaustive: 'Resource Exhaustive and Nested',
+  identical: 'Multiple Identical Batching Attack',
+  exhaustive: 'Resource Exhaustive and Nested Batching Attack',
 };
