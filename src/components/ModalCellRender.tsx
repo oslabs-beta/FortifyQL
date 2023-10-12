@@ -70,7 +70,9 @@ const ModalCellRenderer: React.FC<IModalCellRendererProps> = ({ data }) => {
               <h3>Query: </h3>
               <ModalAccordion label='Query'>
                 <pre>
-                  <code>{prettyPrintGraphQL(modalData.details.query)}</code>
+                  <code>
+                    {prettyPrintGraphQL(modalData.id, modalData.details.query)}
+                  </code>
                 </pre>
               </ModalAccordion>
               <h3>Response:</h3>
