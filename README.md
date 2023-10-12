@@ -1,3 +1,8 @@
+FortifyQL is a security scanning tool to provide developers insight into potential security vulnerabilities on their GraphQL API's. FortifyQL is equipped with dynamic tests that mimic common attacks identified by OWASP. Our tests analyze for insecure default configurations and missing security measures that can lead to Injection, Denial of Service (DOS), and Batching attacks.
+
+Let's explore how FortifyQL's features can provide you peace-of-mind concerning the safety of your application. 
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
