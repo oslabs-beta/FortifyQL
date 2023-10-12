@@ -8,6 +8,7 @@ export interface ITestResult {
     description: string;
     solution?: string;
     link?: string;
+    error?: string;
   };
   severity: string;
   testDuration: string;

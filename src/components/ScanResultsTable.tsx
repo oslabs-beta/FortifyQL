@@ -6,7 +6,7 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 import '../stylesheets/ag-theme-custom.scss';
 import ModalCellRenderer from './ModalCellRender';
 import { ITestResult } from '../interfaces/results';
-import { StatusIcons } from './statusIconRenderer';
+import { StatusIcons } from './StatusIconRenderer';
 
 interface IResultsTableProps {
   resultsData: ITestResult[];
@@ -33,7 +33,7 @@ const ScanResultsTable: React.FC<IResultsTableProps> = ({
       field: 'id',
       maxWidth: 120,
     },
-    { field: 'title', minWidth: 250 },
+    { field: 'title', minWidth: 250, maxWidth: 400 },
     {
       field: 'details',
       cellRenderer: 'modalCellRenderer',
