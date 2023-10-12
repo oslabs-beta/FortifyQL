@@ -1,18 +1,18 @@
 export const SQLInputs = [
   // Boolean Based SQL Injection
-  "'OR 1=1'",
-  "' OR '1'='1",
-  "') OR ('1'='1",
+  "' OR 1 = 1; --",
+  "1' OR '1' = '1 /*",
+  "admin' OR '1'='1'--",
 
   // Error Based SQL Injection
   "'",
-  "';",
+  ';',
   '--',
 
   // Time-Based Blind SQL Injection
-  'OR IF(1=1, SLEEP(5), 0)', // MySQL, MariaDB
-  'OR pg_sleep(5)', // PostgreSQL
-  'OR 1=(SELECT 1 FROM (SELECT SLEEP(5))A)', // Another example for MySQL
+  '; SELECT SLEEP(15) --', // MySQL, MariaDB
+  '; SELECT pg_sleep(15); --', // PostgreSQL
+  "; IF (1=1) WAITFOR DELAY '00:00:15'--", // Another example for MySQL
 ];
 export const sqlErrorKeywords = [
   'syntax error',
@@ -35,5 +35,15 @@ export const batchingErrorKeywords: string[] = [
   'batch',
   'rate limit',
   'server error',
-  'API limit exceeded',
+  'api limit exceeded',
+];
+export const verboseErrorKeywords: string[] = [
+  'did you mean ',
+  'syntax error graphql',
+  'expected',
+  'found',
+  'is required',
+  'not provided',
+  'argument',
+  'sub selection',
 ];

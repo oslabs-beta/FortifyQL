@@ -137,7 +137,7 @@ export const getVerboseSubFields = (
       return !baseType?.fields;
     })
     .map((field) => field.name)
-    .join('s ')} }`;
+    .join('E ')} }`;
 };
 export const generateVerboseQuery = (
   field: GraphQLField,
