@@ -69,6 +69,7 @@ const SecurityDashboard: React.FC = () => {
         <div>
           {loading ? (
             <div className='loader__container'>
+              <h2>Scanning...</h2>
               <ClipLoader
                 color={'green'}
                 loading={loading}
