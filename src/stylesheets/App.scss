@@ -16,6 +16,7 @@ body {
   align-items: center;
   font-size: 1.3em;
   color: $primary-color;
+  margin-left: 7px;
 }
 
 #QL {
@@ -39,6 +40,10 @@ body {
 .input_form {
   width: 100%; /* Occupy full width of the container */
   margin-bottom: 20px; /* Add space below the form */
+}
+
+input {
+  padding-left: 10px;
 }
 
 #textbox {
@@ -206,6 +211,14 @@ input:checked + .slider:before {
     $thirty-color 9px 9px 3px,
     $ten-color 12px 12px 4px,
     $five-color 15px 15px 4px;
+}
+
+.loader__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: $primary-color;
 }
 
 // Modal Styling

@@ -5,7 +5,6 @@ interface IConfigFormProps {
 }
 
 const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
-  // Destructuring props
   const { onScanSubmit } = props;
 
   // Sets the state of textbox input
