@@ -14,9 +14,6 @@ interface IModalCellRendererProps {
 Modal.setAppElement('#root');
 
 const customStyles = {
-  overlay: {
-    // backgroundColor: 'rgba(208, 204, 204)',
-  },
   content: {
     backgroundColor: 'rgba(208, 204, 204, 0)',
     top: '5%',
@@ -24,14 +21,18 @@ const customStyles = {
     right: 'auto',
     bottom: 'auto',
     border: 0,
-    // marginRight: '-50%',
-    // transform: 'translate(-50%, -50%)',
   },
 };
 
 const ModalCellRenderer: React.FC<IModalCellRendererProps> = ({ data }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(data);
+  const [isError, setError] = useState(false);
+
+  useEffect(() => {
+    setModalData(data);
+    if (data.details.error) setError(true);
+  }, [data]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -40,10 +41,6 @@ const ModalCellRenderer: React.FC<IModalCellRendererProps> = ({ data }) => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
-  useEffect(() => {
-    setModalData(data);
-  }, [data]);
 
   return (
     <div className='outer-modal__container'>
@@ -81,9 +78,17 @@ const ModalCellRenderer: React.FC<IModalCellRendererProps> = ({ data }) => {
                   <code>{prettifyJson(modalData.details.response)}</code>
                 </pre>
               </ModalAccordion>
+              {isError && (
+                <div>
+                  <h3>Issue Detected: </h3>
+                  <p>{data.details.error}</p>
+                </div>
+              )}
               <h3>Solution:</h3>
               <p>{modalData.details.solution}</p>
-              <a href={modalData.details.link}>{modalData.details.link}</a>
+              <a href={modalData.details.link} target='_blank'>
+                {modalData.details.link}{' '}
+              </a>
             </div>
           </div>
         </Modal>
