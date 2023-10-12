@@ -7,6 +7,7 @@ export const prettifyJson = (json: string): string => {
   return JSON.stringify(json, null, 2);
 };
 
+//
 /**
  *
  * Pretty-print GraphQL batching queries by adding line breaks and indentation.
