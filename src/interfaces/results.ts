@@ -3,7 +3,7 @@ export interface ITestResult {
   status: string;
   title: string;
   details: {
-    query: string;
+    query: string[] | string;
     response: string;
     description: string;
     solution?: string;
