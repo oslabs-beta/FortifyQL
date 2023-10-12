@@ -1,0 +1,18 @@
+@import './variables';
+
+.ag-row-fail {
+  background-color: $row-fail-color;
+}
+
+.ag-row-pass {
+  background-color: $row-pass-color;
+}
+
+.ag-status-icons {
+  width: 20px;
+  height: 20px;
+}
+
+#ag-results-table {
+  padding: 10px;
+}

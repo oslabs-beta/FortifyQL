@@ -2,7 +2,7 @@ import React, { useState, FormEvent } from 'react';
 
 interface IConfigFormProps {
   onScanSubmit: (endpoint: string, tests: string[]) => void;
-};
+}
 
 const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
   // Destructuring props
@@ -36,96 +36,110 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
   };
 
   return (
-    <div className='container'>
+    <div className='dashboard__container'>
       <form className='input_form' onSubmit={handleSubmit}>
-        <h2 id='dashboardHeader'>Security Scan Configuration</h2>
+        <h2 className='dashboard__headers'>Security Scan Configuration</h2>
         <div className='underline'></div>
         <input
           id='textbox'
           type='text'
           placeholder='Enter GraphQL API URI Here'
+          required
           onChange={handleEndpoint}
         ></input>
 
         <div className='tests'>
+          <label className='switch'>
+            <input type='checkbox' value='SQL' onChange={handleSelectedTests} />
+            <span className='slider' />
+          </label>
           <label className='text'>
             <b>Injection Scan:&nbsp;</b>Allows an attacker to execute arbitrary
             SQL queries on a database, used to steal data, modify data, or even
             execute arbitrary code on the database server.
           </label>
+        </div>
+
+        <div className='tests'>
           <label className='switch'>
             <input
               type='checkbox'
-              value='injection-scan'
+              value='Circular'
               onChange={handleSelectedTests}
             />
             <span className='slider' />
           </label>
+          <label className='text'>
+            <b>Denial of Service (DoS) Scan:&nbsp;</b>Resource exhaustion via
+            nested circular queries.
+          </label>
         </div>
 
-        <div className='tests'>
-          <label className='text'>
-            <b>Denial of Service (DoS) Scan:&nbsp;</b> Resource exhaustion via
-            nested queries.
-          </label>
+        {/* <div className='tests'>
           <label className='switch'>
             <input
               type='checkbox'
-              value='dos-scan'
+              value='Authorization'
               onChange={handleSelectedTests}
             />
             <span className='slider' />
           </label>
-        </div>
-
-        <div className='tests'>
           <label className='text'>
-            <b>Authorization Configuration Scan:&nbsp;</b> Use administration
+            <b>Authorization Configuration Scan:&nbsp;</b>Use administration
             email and brute force login credentials.
           </label>
+        </div> */}
+
+        <div className='tests'>
           <label className='switch'>
             <input
               type='checkbox'
-              value='authorization-scan'
+              value='Batching'
               onChange={handleSelectedTests}
             />
             <span className='slider' />
           </label>
+          <label className='text'>
+            <b>Batching Scan:&nbsp;</b>Common for authentication vulnerabilities
+            and bypassing rate limiting. A mutation to password reset, bypassing
+            2FA/OTP by batch sending tokens.
+          </label>
         </div>
 
         <div className='tests'>
-          <label className='text'>
-            <b>Batching Scan:&nbsp;</b> Common for authentication
-            vulnerabilities and bypassing rate limiting. A mutation to password
-            reset, bypassing 2FA/OTP by batch sending tokens.
-          </label>
           <label className='switch'>
             <input
               type='checkbox'
-              value='batching-scan'
+              value='Verbose'
               onChange={handleSelectedTests}
             />
             <span className='slider' />
           </label>
+          <label className='text'>
+            <b>Verbose Error Scan:&nbsp;</b>A query that analyzes error response
+            for verbose error messages revealing system information.
+          </label>
         </div>
 
-        <div className='tests'>
+        {/* <div className='tests'>
+          <label className='switch'>
+            <input
+              type='checkbox'
+              value='Introspection'
+              onChange={handleSelectedTests}
+            />
+            <span className='slider' />
+          </label>
           <label className='text'>
-            <b>Introspection Scan:&nbsp;</b> A query that performs an operation
+            <b>Introspection Scan:&nbsp;</b>A query that performs an operation
             to pull the information from the backend of the application.
           </label>
-          <label className='switch'>
-            <input
-              type='checkbox'
-              value='introspection-scan'
-              onChange={handleSelectedTests}
-            />
-            <span className='slider' />
-          </label>
-        </div>
+        </div> */}
 
         {/* <button id='select_all_button' onChange={handleSelectAllButton}>Select All Tests</button> */}
-        <button id='submit_button'>Scan</button>
+        <button id='submit_button' className='buttons'>
+          Scan
+        </button>
       </form>
     </div>
   );

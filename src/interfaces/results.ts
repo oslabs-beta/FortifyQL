@@ -1,8 +1,14 @@
 export interface ITestResult {
-  id: number;
+  id: string;
   status: string;
   title: string;
-  description: string;
+  details: {
+    query: string[] | string;
+    response: string;
+    description: string;
+    solution?: string;
+    link?: string;
+  };
   severity: string;
   testDuration: string;
   lastDetected: string;
