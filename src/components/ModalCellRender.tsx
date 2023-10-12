@@ -15,14 +15,15 @@ Modal.setAppElement('#root');
 
 const customStyles = {
   overlay: {
-    // backgroundColor: 'rgba(208, 204, 204, .441)',
+    // backgroundColor: 'rgba(208, 204, 204)',
   },
   content: {
-    backgroundColor: 'rgba(208, 204, 204',
+    backgroundColor: 'rgba(208, 204, 204, 0)',
     top: '5%',
     left: 'auto',
     right: 'auto',
     bottom: 'auto',
+    border: 0,
     // marginRight: '-50%',
     // transform: 'translate(-50%, -50%)',
   },
