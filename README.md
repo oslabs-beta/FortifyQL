@@ -2,6 +2,15 @@ FortifyQL is a sophisticated security scanning tool designed to provide develope
 
 Let's further explore FortifyQL's initial robust test suites. 
 
+## Table of Contents
+
+1. [Features](##Features)
+2. [Setup](##Setup)
+3. [Roadmap](##Roadmap)
+4. [Contributors](##Contributors)
+
+## Features:
+
 • SQL Injection (Boolean, Error, and Time-based): These tests check for vulnerabilities in different types of database systems, using various injection techniques to expose weaknesses.
 
 • Denial of Service (DoS: Circular): This test simulates a circular DoS-type attack, rendering a system unresponsive through excessive resource consumption.
@@ -9,6 +18,25 @@ Let's further explore FortifyQL's initial robust test suites.
 • Batching (Multiple Queries and Resource Exhaustive/Nested): Batching and nesting tests aim to uncover resource exhaustion and complex operations that could harm your server.
 
 • Verbose Error: This test identifies security misconfigurations by exposing excessive system information.
+
+## Setup:
+
+1. Clone the FortifyQL repository locally and install required modules:
+
+```bash
+npm install
+```
+2. Launch FortifyQL from the command line:
+-`npm run dev`: Runs frontend and backend development servers concurrently for an integrated development experience.
+
+3. Enable introspection for GraphQL endpoint.
+
+4. Navigate to http://localhost:5173/ to view web application
+
+5. Input GraphQL URI into input field
+
+6. Toggle desired tests to execute
+
 
 ## Roadmap
 | Feature                                          | Status |
@@ -25,25 +53,15 @@ Let's further explore FortifyQL's initial robust test suites.
 - ⏳ = In-Progress
 - ⚡️ = Backlog
 
-## Scripts 
--`npm run dev:frontend`: Initiates the Vite-powered frontend development environment.
+## Contributors
 
--`npm run dev:backend`: Spins up the backend server using Nodemon and ts-node.
+• Rachel Power: LinkedIn | GitHub
 
--`npm run dev`: Runs frontend and backend development servers concurrently for an integrated development experience.
+• Ayden Yip: LinkedIn | GitHub
 
--`npm run build:frontend`: Executes a frontend build using Vite.
+• Megan Kabat: LinkedIn | GitHub
 
--`npm run build:backend`: Compiles the backend code for production readiness.
+• David Yoon: LinkedIn | GitHub
 
--`npm run build`: Simultaneously builds both frontend and backend components.
 
--`npm run lint`: Lints TypeScript and TypeScript React files, ensuring adherence to coding standards.
 
--`npm run lint:fix`: Automatically corrects detectable linting discrepancies within the source.
-
--`npm run preview`: Provides a Vite-powered preview, offering a glance at the build output.
-
--`npm run format`: Standardizes the source files' appearance using Prettier.
-
--`npm run test`: Runs Jest tests, verifying code integrity and behavior.
