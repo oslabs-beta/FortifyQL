@@ -19,6 +19,8 @@ Let's further explore FortifyQL's initial robust test suites.
 
 • Verbose Error: This test identifies security misconfigurations by exposing excessive system information.
 
+![](/src/assets/FortifyQLDemo4.gif)
+
 ## Setup:
 
 1. Clone the FortifyQL repository locally and install required modules:
