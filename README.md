@@ -55,13 +55,13 @@ npm install
 
 ## Contributors
 
-• Rachel Power: LinkedIn | GitHub
+• Rachel Power: [LinkedIn](https://www.linkedin.com/in/rachel-b-power/) | [GitHub](https://github.com/rpower15)
 
-• Ayden Yip: LinkedIn | GitHub
+• Ayden Yip: [LinkedIn](https://www.linkedin.com/in/aydenyip/) | [GitHub](https://github.com/aydenyipcs)
 
-• Megan Kabat: LinkedIn | GitHub
+• Megan Kabat: [LinkedIn](https://www.linkedin.com/in/megan-kabat/) | [GitHub](https://github.com/mnkabat)
 
-• David Yoon: LinkedIn | GitHub
+• David Yoon: [LinkedIn](https://www.linkedin.com/in/davidlyoon/) | [GitHub](https://github.com/DYoonity)
 
 
 
