@@ -1,3 +1,15 @@
+FortifyQL is a sophisticated security scanning tool designed to provide developers with deep insights into potential security vulnerabilities within their GraphQL API's. FortifyQL dynamically generates queries that emulate common attacks identified by the Open Web Application Security Project (OWASP). The responses are analyzed for insecure default configurations and missing security measures that may lead to Injection, Denial of Service (DOS), and Batching attacks. The data is displayed within an intuitive and user-friendly interface, making it accessible to developers of all skill levels.
+
+Let's further explore FortifyQL's initial robust test suites. 
+
+• SQL Injection (Boolean, Error, and Time-based): These tests check for vulnerabilities in different types of database systems, using various injection techniques to expose weaknesses.
+
+• Denial of Service (DoS: Circular): This test simulates a circular DoS-type attack, rendering a system unresponsive through excessive resource consumption.
+
+• Batching (Multiple Queries and Resource Exhaustive/Nested): Batching and nesting tests aim to uncover resource exhaustion and complex operations that could harm your server.
+
+• Verbose Error: This test identifies security misconfigurations by exposing excessive system information.
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
