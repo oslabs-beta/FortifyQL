@@ -1,24 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../stylesheets/ag-theme-custom.scss';
 
-export class StatusIcons {
-  init(params) {
-    const element = document.createElement('span');
-    const imageElement = document.createElement('img');
-    if (params.data.status === 'Fail') {
-      imageElement.src = '../src/assets/cross.png';
-      imageElement.alt = 'red x indicating status failed';
-      imageElement.className = 'ag-status-icons';
-    } else {
-      imageElement.src = '../src/assets/tick.png';
-      imageElement.alt = 'green check indicating status passed';
-      imageElement.className = 'ag-status-icons';
-    }
-    element.appendChild(imageElement);
-    this.eGui = element;
-  }
-
-  getGui() {
-    return this.eGui;
-  }
+interface IStatusIconsParams {
+  data: {
+    status: string;
+  };
 }
+
+export const StatusIcons: React.FC<IStatusIconsParams> = ({ data }) => {
+  const [imageSrc, setImageSrc] = useState<string>('');
+  const [imageAlt, setImageAlt] = useState<string>('');
+
+  useEffect(() => {
+    if (data.status === 'Fail') {
+      setImageSrc('../src/assets/cross.png');
+      setImageAlt('red x indicating status failed');
+    } else {
+      setImageSrc('../src/assets/tick.png');
+      setImageAlt('green check indicating status passed');
+    }
+  }, [data.status]);
+
+  return (
+    <span>
+      <img src={imageSrc} alt={imageAlt} className='ag-status-icons' />
+    </span>
+  );
+};
