@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { ITestResult } from '../interfaces/results';
-import { prettifyJson, prettyPrintGraphQL } from '../utils/format';
 import ModalAccordion from './ModalAccordion';
 
 interface IModalCellRendererProps {
@@ -68,14 +67,15 @@ const ModalCellRenderer: React.FC<IModalCellRendererProps> = ({ data }) => {
               <ModalAccordion label='Query'>
                 <pre>
                   <code>
-                    {prettyPrintGraphQL(modalData.id, modalData.details.query)}
+                    {modalData.id}
+                    {modalData.details.query}
                   </code>
                 </pre>
               </ModalAccordion>
               <h3>Response:</h3>
               <ModalAccordion label='Response'>
                 <pre>
-                  <code>{prettifyJson(modalData.details.response)}</code>
+                  <code>{modalData.details.response}</code>
                 </pre>
               </ModalAccordion>
               {isError && (
