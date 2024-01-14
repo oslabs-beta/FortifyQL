@@ -1,4 +1,15 @@
+/**
+ * ************************************
+ *
+ * @module  ScanConfigForm.tsx
+ * @author  MADR Productions - MK
+ * @date    01-13-24
+ * @description This component represents a form for configuring a security scan. It includes input fields for a GraphQL API URI, checkboxes for different scan types, and buttons to submit the form and select all available scan types. The component manages the state of selected tests and the URI textbox.
+ *
+ * ************************************
+ */
 import React, { useState, FormEvent } from 'react';
+import Checkbox from './Checkbox';
 
 interface IConfigFormProps {
   onScanSubmit: (endpoint: string, tests: string[]) => void;
@@ -10,28 +21,34 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
   // Sets the state of textbox input
   const [endpoint, setEndpoint] = useState<string>('');
 
-  // Function that handles and updates the textbox state
+  // Sets the state of the selected tests array
+  const [selectedTests, setSelectedTests] = useState<string[]>([]);
+  
+  // Function that manages the textbox state
   const handleEndpoint = (e: React.BaseSyntheticEvent) => {
     setEndpoint(e.target.value);
   };
 
-  // Sets the state of the selected tests array
-  const [selectedTests, setSelectedTests] = useState<string[]>([]);
-
-  // Function that evaluates the 'value' and 'checked' properties on the event object and updates the state of the selectedTests array accordingly
-  const handleSelectedTests = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const testType = e.target.value;
-    if (e.target.checked === true) {
-      setSelectedTests([...selectedTests, testType]);
-    } else if (e.target.checked === false) {
-      setSelectedTests(selectedTests.filter((test) => test !== testType));
-    }
+  // Function that manages the checkbox state
+  const handleCheckboxChange = (testType: string, isChecked: boolean) => {
+    setSelectedTests((prevSelectedTests) => {
+      return isChecked
+        ? [...prevSelectedTests, testType]
+        : prevSelectedTests.filter((test) => test !== testType);
+    });
   };
 
-  // Submits the form data
+  // Button that submits the form data
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onScanSubmit(endpoint, selectedTests);
+  };
+
+  // Button that updates the state of selectedTests to include all tests
+  const selectAllTests = (e: React.BaseSyntheticEvent) => {
+    e.preventDefault();
+    const allTests = ['Batching', 'Circular', 'SQL', 'Verbose'];
+    setSelectedTests(allTests);
   };
 
   return (
@@ -44,101 +61,35 @@ const ScanConfigForm: React.FC<IConfigFormProps> = (props) => {
           type='text'
           placeholder='Enter GraphQL API URI Here'
           required
-          onChange={handleEndpoint}
-        ></input>
+          onChange={handleEndpoint}>
+        </input>
 
-        <div className='tests'>
-          <label className='switch'>
-            <input type='checkbox' value='SQL' onChange={handleSelectedTests} />
-            <span className='slider' />
-          </label>
-          <label className='text'>
-            <b>Injection Scan:&nbsp;</b>Allows an attacker to execute arbitrary
-            SQL queries on a database, used to steal data, modify data, or even
-            execute arbitrary code on the database server.
-          </label>
-        </div>
+        <Checkbox value='Batching' label='Batching Scan' 
+          onChange={handleCheckboxChange}
+          isChecked={selectedTests.includes('Batching')}
+          description='Common for authentication vulnerabilities
+          and bypassing rate limiting. A mutation to password reset, bypassing
+          2FA/OTP by batch sending tokens.'/>
 
-        <div className='tests'>
-          <label className='switch'>
-            <input
-              type='checkbox'
-              value='Circular'
-              onChange={handleSelectedTests}
-            />
-            <span className='slider' />
-          </label>
-          <label className='text'>
-            <b>Denial of Service (DoS) Scan:&nbsp;</b>Resource exhaustion via
-            nested circular queries.
-          </label>
-        </div>
+        <Checkbox value='Circular' label='Denial of Service (DoS) Scan' 
+          onChange={handleCheckboxChange}
+          isChecked={selectedTests.includes('Circular')}
+          description='Resource exhaustion via nested circular queries.'/>
 
-        {/* <div className='tests'>
-          <label className='switch'>
-            <input
-              type='checkbox'
-              value='Authorization'
-              onChange={handleSelectedTests}
-            />
-            <span className='slider' />
-          </label>
-          <label className='text'>
-            <b>Authorization Configuration Scan:&nbsp;</b>Use administration
-            email and brute force login credentials.
-          </label>
-        </div> */}
+        <Checkbox value='SQL' label='Injection Scan'
+          onChange={handleCheckboxChange}
+          isChecked={selectedTests.includes('SQL')}
+          description='Allows an attacker to execute arbitrary SQL queries on a database, used to steal data, modify data, or even execute arbitrary code on the database server.'/>
 
-        <div className='tests'>
-          <label className='switch'>
-            <input
-              type='checkbox'
-              value='Batching'
-              onChange={handleSelectedTests}
-            />
-            <span className='slider' />
-          </label>
-          <label className='text'>
-            <b>Batching Scan:&nbsp;</b>Common for authentication vulnerabilities
-            and bypassing rate limiting. A mutation to password reset, bypassing
-            2FA/OTP by batch sending tokens.
-          </label>
-        </div>
+        <Checkbox value='Verbose' label='Verbose Error Scan' 
+          onChange={handleCheckboxChange}
+          isChecked={selectedTests.includes('Verbose')}
+          description='A query that analyzes error response
+          for verbose error messages revealing system information.'/>
 
-        <div className='tests'>
-          <label className='switch'>
-            <input
-              type='checkbox'
-              value='Verbose'
-              onChange={handleSelectedTests}
-            />
-            <span className='slider' />
-          </label>
-          <label className='text'>
-            <b>Verbose Error Scan:&nbsp;</b>A query that analyzes error response
-            for verbose error messages revealing system information.
-          </label>
-        </div>
-
-        {/* <div className='tests'>
-          <label className='switch'>
-            <input
-              type='checkbox'
-              value='Introspection'
-              onChange={handleSelectedTests}
-            />
-            <span className='slider' />
-          </label>
-          <label className='text'>
-            <b>Introspection Scan:&nbsp;</b>A query that performs an operation
-            to pull the information from the backend of the application.
-          </label>
-        </div> */}
-
-        {/* <button id='select_all_button' onChange={handleSelectAllButton}>Select All Tests</button> */}
-        <button id='submit_button' className='buttons'>
-          Scan
-        </button>
+        <button id='select_all_button' className='buttons' 
+          onClick={selectAllTests}>Select All</button>
+        <button id='submit_button' className='buttons'>Scan</button>
       </form>
     </div>
   );
