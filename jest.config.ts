@@ -1,11 +1,13 @@
 export default {
-  testEnvironment: 'jest-environment-jsdom',
-  setupFiles: ['<rootDir>/test/__mocks__/text-encoder.mock.ts'],
-  transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+  "transform": {
+    "^.+\\.(ts|tsx)$": "ts-jest",
+    "^.+\\.(js|jsx)$": "babel-jest"
   },
-  moduleNameMapper: {
-    '\\.(gif|ttf|eot|svg|png)$': '<rootDir>/test/__mocks__/fileMock.js',
-    '\\.(css|less|sassscss)$': 'identity-obj-proxy',
+  "testEnvironment": "jest-environment-jsdom",
+  "setupFiles": ["<rootDir>/test/__mocks__/text-encoder.mock.ts"],
+  "moduleNameMapper": {
+    "\\.(gif|ttf|eot|svg|png)$": "<rootDir>/test/__mocks__/fileMock.js",
+    "\\.(css|less|sass|scss)$": "identity-obj-proxy"
   },
-};
+  "testPathIgnorePatterns": ["<rootDir>/src/__tests__/mocks/"]
+}

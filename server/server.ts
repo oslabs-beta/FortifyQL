@@ -86,8 +86,6 @@ server.use('/api/runpentest', async (req: Request, res: Response) => {
   }
 });
 
-server.use('/batching', getSchema, batching.generateQueries, batching.attack);
-
 // GLOBAL ERROR HANDLER
 interface CustomError {
   log?: string;
@@ -112,3 +110,5 @@ server.use(
 );
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+
+export default server;

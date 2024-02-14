@@ -1,8 +1,16 @@
 import React from 'react';
 import '../stylesheets/ag-theme-custom.scss';
 
+interface InitParams {
+  data: {
+    status: string;
+  };
+}
+
 export class StatusIcons {
-  init(params) {
+
+  eGui: HTMLElement | null = null
+  init(params: InitParams) {
     const element = document.createElement('span');
     const imageElement = document.createElement('img');
     if (params.data.status === 'Fail') {
@@ -18,7 +26,7 @@ export class StatusIcons {
     this.eGui = element;
   }
 
-  getGui() {
+  getGui(): HTMLElement | null {
     return this.eGui;
   }
 }
