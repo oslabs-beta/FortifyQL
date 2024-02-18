@@ -6,7 +6,7 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 import '../stylesheets/ag-theme-custom.scss';
 import ModalCellRenderer from './ModalCellRender';
 import { ITestResult } from '../interfaces/results';
-import { StatusIcons } from './StatusIconRenderer';
+import { StatusIcons } from './statusIconRenderer';
 
 interface IResultsTableProps {
   resultsData: ITestResult[];

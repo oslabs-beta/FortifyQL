@@ -68,8 +68,9 @@ export const prettyPrintGraphQL = (
   queryId: string,
   query: string[] | string,
 ): string => {
+  const queryArray = typeof query === 'string' ? [query] : query;
   if (queryId.toLowerCase().includes('batch')) {
-    return prettyPrintGraphQLBatch(query);
+    return prettyPrintGraphQLBatch(queryArray);
   }
 
   // Indentation string (two spaces)
